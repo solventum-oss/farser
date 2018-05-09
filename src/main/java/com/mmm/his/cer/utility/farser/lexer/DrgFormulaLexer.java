@@ -100,11 +100,7 @@ public class DrgFormulaLexer {
    */
   private static Optional<String> parsePrefix(String atom) {
     if (!atom.contains(":")) {
-      if (atom.startsWith("~")) {
-        return Optional.of("negated");
-      } else {
-        return Optional.empty();
-      }
+      return Optional.empty();
     }
     return prefixDelimiter.splitAsStream(atom).findFirst();
   }
@@ -117,11 +113,7 @@ public class DrgFormulaLexer {
    */
   private static Optional<String> parseListName(String atom) {
     if (!atom.contains(":")) {
-      if (atom.startsWith("~")) {
-        return Optional.of(atom.substring(1));
-      } else {
-        return Optional.of(atom);
-      }
+      return Optional.of(atom);
     }
     return Optional
         .ofNullable(prefixDelimiter.splitAsStream(atom).reduce((arg1, arg2) -> arg2).orElse(null));

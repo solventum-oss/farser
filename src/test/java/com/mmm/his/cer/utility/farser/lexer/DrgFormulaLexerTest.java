@@ -15,9 +15,67 @@ import java.util.List;
  * @author a30w4zz
  */
 public class DrgFormulaLexerTest {
+
   @Test
-  public void lex() throws Exception {
+  public void lex1() throws Exception {
     List<LexerToken> lex = DrgFormulaLexer.lex("larynx |(~PDX:dxlarx & ~otlarynx)");
+
+    // Rather than checking equality on lists, make sure values from Lex are what we expect
+
+    int index = 0;
+
+    assertThat(lex.get(index).type, is(TokenType.ATOM));
+    assertThat(lex.get(index).value, is("larynx"));
+    assertFalse(lex.get(index).prefix.isPresent());
+
+    index++;
+    assertThat(lex.get(index).type, is(TokenType.OR));
+    assertThat(lex.get(index).value, is("|"));
+    assertFalse(lex.get(index).prefix.isPresent());
+
+    index++;
+    assertThat(lex.get(index).type, is(TokenType.LPAREN));
+    assertThat(lex.get(index).value, is("("));
+    assertFalse(lex.get(index).prefix.isPresent());
+
+    index++;
+    assertThat(lex.get(index).type, is(TokenType.NOT));
+    assertThat(lex.get(index).value, is("~"));
+    assertFalse(lex.get(index).prefix.isPresent());
+
+    index++;
+    assertThat(lex.get(index).type, is(TokenType.ATOM));
+    assertThat(lex.get(index).value, is("dxlarx"));
+    assertThat(lex.get(index).prefix.get(), is("PDX"));
+
+    index++;
+    assertThat(lex.get(index).type, is(TokenType.AND));
+    assertThat(lex.get(index).value, is("&"));
+    assertFalse(lex.get(index).prefix.isPresent());
+
+    index++;
+    assertThat(lex.get(index).type, is(TokenType.NOT));
+    assertThat(lex.get(index).value, is("~"));
+    assertFalse(lex.get(index).prefix.isPresent());
+
+    index++;
+    assertThat(lex.get(index).type, is(TokenType.ATOM));
+    assertThat(lex.get(index).value, is("otlarynx"));
+    assertFalse(lex.get(index).prefix.isPresent());
+
+    index++;
+    assertThat(lex.get(index).type, is(TokenType.RPAREN));
+    assertThat(lex.get(index).value, is(")"));
+    assertFalse(lex.get(index).prefix.isPresent());
+
+    assertThat(lex.size(), is(index + 1));
+
+  }
+
+  @Test
+  public void lex2() throws Exception {
+    // Testing with more and less spacing
+    List<LexerToken> lex = DrgFormulaLexer.lex(" larynx |   (~ PDX:dxlarx&~otlarynx  )");
 
     // Rather than checking equality on lists, make sure values from Lex are what we expect
 
