@@ -5,7 +5,7 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 
 /**
- * Token class that can be used to represent the pieces of a DRG formula.
+ * Token class that can be used to represent the pieces of a lexed string.
  * 
  * @author a30w4zz
  *
@@ -28,6 +28,7 @@ public class LexerToken {
   public static final Pattern PREFIX_SEPARATOR_PATTERN =
       Pattern.compile(LexerToken.PREFIX_SEPARATOR_STRING);
 
+
   public final TokenType type;
   public final String value;
 
@@ -40,7 +41,6 @@ public class LexerToken {
    * A new token with the value from the {@link TokenType}.
    * 
    * @param type The token type
-   * @param value The token value
    */
   public LexerToken(TokenType type) {
     this.type = type;

@@ -6,18 +6,51 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Major types of tokens that we need to be concerned with when Lexing a DRG formula.
+ * All recognized types of tokens that we need to be concerned with when lexing a string.
  * 
  * @author a30w4zz
  *
  */
 public enum TokenType {
+
+  /**
+   * Left parenthesis.
+   */
   LPAREN('('),
+
+  /**
+   * Right parenthesis.
+   */
   RPAREN(')'),
+
+  /**
+   * Any substring which is not in a set of defined token characters here. This can be a list name
+   * in the application of our DRG formulas, it can be a method name etc.<br />
+   * The atom token type here has no defined value. It will be available as {@link LexerToken} with
+   * the value set to the non-token substring.
+   */
   ATOM(null),
+
+  /**
+   * Logical AND.
+   */
   AND('&'),
+
+  /**
+   * Logical OR.
+   */
   OR('|'),
-  NOT('~');
+
+  /**
+   * Logical NOT.
+   */
+  NOT('~'),
+
+  /**
+   * A comma separating multiple function parameters.
+   */
+  COMMA(',');
+
 
   /**
    * All the values of the existing {@link TokenType}s which are not <code>null</code>.

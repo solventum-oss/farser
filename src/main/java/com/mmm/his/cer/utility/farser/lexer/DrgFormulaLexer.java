@@ -48,20 +48,18 @@ public class DrgFormulaLexer {
     for (int i = 0; i < input.length(); i++) {
 
       char charAtIndex = input.charAt(i);
-      // Skip all whitespaces
+      // Skip all whitespaces in between tokens. The tokens itself (mainly the ATOMs) can contain
+      // whitespaces but they are trimmed.
       if (!Character.isWhitespace(input.charAt(i))) {
         Optional<TokenType> tokenType = TokenType.getForValue(charAtIndex);
 
         if (tokenType.isPresent()) {
           result.add(new LexerToken(tokenType.get()));
         } else {
-          // Skip all whitespaces
           // Read anything that is not a token type as atom
           String atom = getAtom(input, i);
           // Advance by the atom length (one character less because the loop increases the index)
           i += atom.length() - 1;
-          // The atom might end with whitespaces if there were any before the next token type
-          atom = atom.trim();
           Optional<String> value = parseValue(atom);
           if (value.isPresent()) {
             Optional<String> prefix = parsePrefix(atom);
@@ -86,7 +84,13 @@ public class DrgFormulaLexer {
     if (!atom.contains(LexerToken.PREFIX_SEPARATOR_STRING)) {
       return Optional.empty();
     }
-    return LexerToken.PREFIX_SEPARATOR_PATTERN.splitAsStream(atom).findFirst();
+
+    Optional<String> prefix = LexerToken.PREFIX_SEPARATOR_PATTERN.splitAsStream(atom).findFirst();
+    if (prefix.isPresent()) {
+      return Optional.of(prefix.get().trim());
+    } else {
+      return prefix;
+    }
   }
 
   /**
@@ -98,11 +102,14 @@ public class DrgFormulaLexer {
    */
   private static Optional<String> parseValue(String atom) {
     if (!atom.contains(LexerToken.PREFIX_SEPARATOR_STRING)) {
-      return Optional.of(atom);
+      return Optional.of(atom.trim());
     }
 
     String withoutPrefix = LexerToken.PREFIX_SEPARATOR_PATTERN.splitAsStream(atom)
         .reduce((arg1, arg2) -> arg2).orElse(null);
+    if (withoutPrefix != null) {
+      withoutPrefix = withoutPrefix.trim();
+    }
     return Optional.ofNullable(withoutPrefix);
   }
 
@@ -114,7 +121,7 @@ public class DrgFormulaLexer {
    * @return List of strings that only contain values
    */
   public static List<String> getValues(List<LexerToken> tokens) {
-    return tokens.stream().filter(token -> token.type == TokenType.ATOM).map(token -> token.value)
-        .collect(Collectors.toList());
+    return tokens.stream().filter(token -> token.getType() == TokenType.ATOM)
+        .map(token -> token.getValue()).collect(Collectors.toList());
   }
 }
