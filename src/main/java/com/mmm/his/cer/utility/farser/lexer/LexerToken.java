@@ -11,16 +11,10 @@ import java.util.regex.Pattern;
  *
  */
 public class LexerToken {
-
-  /**
-   * Separates {@link #prefix} from the {@link #value}.
-   */
-  public static final char PREFIX_SEPARATOR_CHAR = ':';
-
   /**
    * {@link #PREFIX_SEPARATOR_CHAR} as string.
    */
-  public static final String PREFIX_SEPARATOR_STRING = String.valueOf(PREFIX_SEPARATOR_CHAR);
+  public static final String PREFIX_SEPARATOR_STRING = String.valueOf(":");
 
   /**
    * The regex pattern for {@link #PREFIX_SEPARATOR_STRING}.
@@ -44,7 +38,7 @@ public class LexerToken {
    */
   public LexerToken(TokenType type) {
     this.type = type;
-    this.value = type.getStringValue().orElse(null);
+    this.value = type.getValue().orElse(null);
     this.prefix = Optional.empty();
   }
 
@@ -90,7 +84,7 @@ public class LexerToken {
   @Override
   public String toString() {
     if (type == TokenType.ATOM) {
-      return "ATOM<" + value + ">" + (prefix.isPresent() ? " with prefix: " + prefix.get() : "");
+      return "ATOM<" + value + ">" + (prefix.isPresent() ? " with prefix " + prefix.get() : "");
     }
     return type.toString();
   }

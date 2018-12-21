@@ -1,5 +1,6 @@
 package com.mmm.his.cer.utility.farser.lexer;
 
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -12,28 +13,50 @@ import java.util.stream.Collectors;
  */
 public class DrgFormulaLexer {
 
-  /**
-   * Given a String and an Index, get the content of the string starting from that index. Stop at
-   * the next known {@link TokenType} value.
-   * 
-   * @param str {@link String} from which to extract the substring.
-   * @param index the index at which we will start the substring process.
-   * @return the value of the substring
-   */
-  private static String getAtom(String str, int index) {
-    int charIndex = index;
-    for (; charIndex < str.length(); charIndex++) {
-      char charAtIndex = str.charAt(charIndex);
+  private DrgFormulaLexer() {
+    // Hide constructor. Only static methods in here.
+  }
 
-      if (TokenType.TOKEN_TYPE_VALUES.contains(charAtIndex)) {
-        // As soon as a token type is found, return what we have read so far.
-        // Anything that is not a token type is an atom.
-        return str.substring(index, charIndex);
+  /**
+   * Looks for a token which matches the characters starting at the current start index.
+   * 
+   * @param str The string which may contain tokens
+   * @param tokenStartIndex The start index within the provided string where the lookup of a token
+   *        should start
+   * @return The token if one was found, or <code>null</code> if no token was found
+   */
+  private static LexerToken lookForMatchingToken(String str, int tokenStartIndex) {
+
+    String possibleToken = "";
+
+    // Loop over list of all tokens. The list of all tokens should be ordered in increasing token
+    // value length for optimization.
+    for (TokenType tokenType : TokenType.values()) {
+      Optional<String> value = tokenType.getValue();
+      if (!value.isPresent()) {
+        // Skip NULL values (no token to compare)
+        continue;
       }
+      String tokenTypeValue = value.get();
+
+      if (possibleToken.length() != tokenTypeValue.length()) {
+        int tokenEndIndex = tokenStartIndex + tokenTypeValue.length();
+        if (tokenEndIndex > str.length()) {
+          // End reached, no token found for current span of characters.
+          // Continue with next token.
+          continue;
+        }
+        possibleToken = str.substring(tokenStartIndex, tokenEndIndex);
+      }
+
+      if (possibleToken.equals(tokenTypeValue)) {
+        return new LexerToken(tokenType);
+      }
+
     }
 
-    // Return all of it
-    return str.substring(index, charIndex);
+    // We looked through all tokens. No match found.
+    return null;
   }
 
   /**
@@ -45,29 +68,41 @@ public class DrgFormulaLexer {
   public static List<LexerToken> lex(String input) {
     List<LexerToken> result = new ArrayList<>();
 
-    for (int i = 0; i < input.length(); i++) {
+    StringBuilder atomSubstring = new StringBuilder();
 
-      char charAtIndex = input.charAt(i);
-      // Skip all whitespaces in between tokens. The tokens itself (mainly the ATOMs) can contain
-      // whitespaces but they are trimmed.
-      if (!Character.isWhitespace(input.charAt(i))) {
-        Optional<TokenType> tokenType = TokenType.getForValue(charAtIndex);
+    for (int strCharIndex = 0; strCharIndex < input.length(); strCharIndex++) {
+      char charAtIndex = input.charAt(strCharIndex);
 
-        if (tokenType.isPresent()) {
-          result.add(new LexerToken(tokenType.get()));
-        } else {
-          // Read anything that is not a token type as atom
-          String atom = getAtom(input, i);
-          // Advance by the atom length (one character less because the loop increases the index)
-          i += atom.length() - 1;
-          Optional<String> value = parseValue(atom);
-          if (value.isPresent()) {
-            Optional<String> prefix = parsePrefix(atom);
-            result.add(new LexerToken(TokenType.ATOM, value.get(), prefix));
-          }
+      LexerToken token = lookForMatchingToken(input, strCharIndex);
+      if (token == null) {
+        // No matching token at the current start index.
+
+        // Must be a new atom or we are still within an atom.
+        // Keep adding characters to atom string.
+        atomSubstring.append(charAtIndex);
+      } else {
+        // A token has been found at the current start index.
+
+        // If previous characters were an atom string, process them first.
+        String atom = atomSubstring.toString().trim();
+        if (!atom.isEmpty()) {
+          result.add(buildTokenFromAtom(atom));
+          atomSubstring = new StringBuilder();
         }
 
+        result.add(token);
+
+        // Jump ahead to continue after the token we just found.
+        // One less because the for-loop increases by 1.
+        strCharIndex += token.getValue().length() - 1;
       }
+
+    }
+
+    // If the formula ended with an atom, add it now
+    String atom = atomSubstring.toString().trim();
+    if (!atom.isEmpty()) {
+      result.add(buildTokenFromAtom(atom));
     }
 
     return result;
@@ -75,42 +110,24 @@ public class DrgFormulaLexer {
   }
 
   /**
-   * Given an string, figure out and return the prefix.
+   * Splits an atom string into its prefix and value if both are present, or just creates a token
+   * with the value if no prefix is present.
    * 
-   * @param atom {@link String} to analyze for prefix
-   * @return Optional String value for the prefix
+   * @param atom the atom string
+   * @return The token with value and with or without prefix
    */
-  private static Optional<String> parsePrefix(String atom) {
-    if (!atom.contains(LexerToken.PREFIX_SEPARATOR_STRING)) {
-      return Optional.empty();
-    }
-
-    Optional<String> prefix = LexerToken.PREFIX_SEPARATOR_PATTERN.splitAsStream(atom).findFirst();
-    if (prefix.isPresent()) {
-      return Optional.of(prefix.get().trim());
+  private static LexerToken buildTokenFromAtom(String atom) {
+    String[] split = LexerToken.PREFIX_SEPARATOR_PATTERN.split(atom);
+    if (split.length == 2) {
+      // Prefix and value
+      return new LexerToken(TokenType.ATOM, split[1].trim(), Optional.of(split[0].trim()));
+    } else if (split.length == 1) {
+      // Only value
+      return new LexerToken(TokenType.ATOM, split[0].trim());
     } else {
-      return prefix;
+      throw new InvalidParameterException("Invalid " + TokenType.ATOM.name() + ". Only 'prefix"
+          + LexerToken.PREFIX_SEPARATOR_STRING + "value' or 'value' are allowed.");
     }
-  }
-
-  /**
-   * Parse the value from a given atom. Ignores any prefix (separated by
-   * {@link LexerToken#PREFIX_SEPARATOR_CHAR}) if present.
-   * 
-   * @param atom {@link String} to get the value from
-   * @return Optional String value
-   */
-  private static Optional<String> parseValue(String atom) {
-    if (!atom.contains(LexerToken.PREFIX_SEPARATOR_STRING)) {
-      return Optional.of(atom.trim());
-    }
-
-    String withoutPrefix = LexerToken.PREFIX_SEPARATOR_PATTERN.splitAsStream(atom)
-        .reduce((arg1, arg2) -> arg2).orElse(null);
-    if (withoutPrefix != null) {
-      withoutPrefix = withoutPrefix.trim();
-    }
-    return Optional.ofNullable(withoutPrefix);
   }
 
   /**

@@ -1,8 +1,5 @@
 package com.mmm.his.cer.utility.farser.lexer;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -13,64 +10,96 @@ import java.util.Optional;
  */
 public enum TokenType {
 
-  /**
-   * Left parenthesis.
+  /*
+   ************************************************************************************************
+   *
+   * The order of appearance of these tokens matters.
+   * 
+   * The token lookup happens as they appear in this order, meaning that a "<" checked before a "<="
+   * will return the "<" and "=" as separate token for an input string of "<=", and not the "<="
+   * token as it should.
+   * 
+   * For optimization it is advised to (when possible) group tokens with the same token value length
+   * together. The token lookup retrieves a new substring whenever the token value length changes
+   * and avoiding that would be beneficial.
+   * 
    */
-  LPAREN('('),
 
   /**
-   * Right parenthesis.
-   */
-  RPAREN(')'),
-
-  /**
-   * Any substring which is not in a set of defined token characters here. This can be a list name
-   * in the application of our DRG formulas, it can be a method name etc.<br />
+   * Any substring which is not in a set of defined token characters here in {@link TokenType}. This
+   * can be a list name in the application of our DRG formulas, it can be a method name etc.<br />
    * The atom token type here has no defined value. It will be available as {@link LexerToken} with
-   * the value set to the non-token substring.
+   * the value set as the non-token substring.
    */
   ATOM(null),
 
   /**
+   * Assigning a value to a variable.
+   */
+  ASSIGN(":="),
+
+  /**
+   * A logical less-than-equal check (e.g. in an if-statement).
+   */
+  LT_EQUAL("<="),
+
+  /**
+   * A logical greater-than-equal check (e.g. in an if-statement).
+   */
+  GT_EQUAL(">="),
+
+  /**
+   * Left parenthesis.
+   */
+  LPAREN("("),
+
+  /**
+   * Right parenthesis.
+   */
+  RPAREN(")"),
+
+  /**
    * Logical AND.
    */
-  AND('&'),
+  AND("&"),
 
   /**
    * Logical OR.
    */
-  OR('|'),
+  OR("|"),
 
   /**
    * Logical NOT.
    */
-  NOT('~'),
+  NOT("~"),
 
   /**
    * A comma separating multiple function parameters.
    */
-  COMMA(',');
-
+  COMMA(","),
 
   /**
-   * All the values of the existing {@link TokenType}s which are not <code>null</code>.
+   * A logical is-equal check (e.g. in an if-statement).
    */
-  public static final List<Character> TOKEN_TYPE_VALUES;
+  EQUAL("="),
 
-  static {
-    List<Character> nonNullValues = new ArrayList<>();
-    for (TokenType type : values()) {
-      Optional<Character> value = type.getCharValue();
-      if (value.isPresent()) {
-        nonNullValues.add(value.get());
-      }
-    }
+  /**
+   * A logical less-than check (e.g. in an if-statement).
+   */
+  GREATER_THAN(">"),
 
-    TOKEN_TYPE_VALUES = Collections.unmodifiableList(nonNullValues);
-  }
+  /**
+   * A logical greater-than check (e.g. in an if-statement).
+   */
+  LESS_THAN("<");
 
-  private Optional<Character> value = null;
-  private Optional<String> stringValue = null;
+  /*
+   * 
+   * See comment at the beginning of the class about the order of the appearance of these tokens.
+   * 
+   ************************************************************************************************/
+
+  private Optional<String> value = null;
 
   /**
    * A new token type.
@@ -78,17 +107,12 @@ public enum TokenType {
    * @param value The token value, or <code>null</code> if there is no specific value associated
    *        with this token type
    */
-  private TokenType(Character value) {
+  private TokenType(String value) {
     this.value = Optional.ofNullable(value);
-    this.stringValue = Optional.ofNullable(String.valueOf(value));
   }
 
-  public Optional<Character> getCharValue() {
+  public Optional<String> getValue() {
     return value;
-  }
-
-  public Optional<String> getStringValue() {
-    return stringValue;
   }
 
   /**
@@ -97,9 +121,9 @@ public enum TokenType {
    * @param value The character value to look for
    * @return The optional token type if there is one
    */
-  public static Optional<TokenType> getForValue(char value) {
+  public static Optional<TokenType> getForValue(String value) {
     for (TokenType type : values()) {
-      Optional<Character> typeValue = type.getCharValue();
+      Optional<String> typeValue = type.getValue();
       if (typeValue.isPresent() && typeValue.get().equals(value)) {
         return Optional.of(type);
       }
