@@ -1,135 +1,126 @@
 package com.mmm.his.cer.utility.farser.lexer;
 
+import java.util.Map;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 /**
- * All recognized types of tokens that we need to be concerned with when lexing a string.
+ * The interface to use for an enumeration which defines tokens that are recognized for this
+ * specific type of code.<br />
+ * <br />
+ * Example:
+ * 
+ * <pre>
+ * public enum DrgFormulaToken implements
+ *     TokenType&lt;DrgFormulaToken&gt; {
+ *
+ * ...
+ * 
+ * }
+ * </pre>
  * 
  * @author a30w4zz
+ * 
+ * @param <T> The enumeration type which implements this interface.
  *
  */
-public enum TokenType {
+public interface TokenType<T extends Enum<T>> {
 
-  /*
-   ************************************************************************************************
-   *
-   * The order of appearance of these tokens matters.
+  /**
+   * The name of the enumeration element.
    * 
-   * The token lookup happens as they appear in this order, meaning that a "<" checked before a "<="
-   * will return the "<" and "=" as separate token for an input string of "<=", and not the "<="
-   * token as it should.
+   * @return The enumeration name
+   */
+  public String name();
+
+  /**
+   * The token value (e.g. the formula operator).<br />
+   * Returns an empty optional for the ATOM token with the value {@link #ATOM_VALUE}.
    * 
-   * For optimization it is advised to (when possible) group tokens with the same token value length
-   * together. The token lookup retrieves a new substring whenever the token value length changes
-   * and avoiding that would be beneficial.
+   * @return The token value.
+   */
+  public Optional<String> getValue();
+
+  /**
+   * The marker for {@link CommonTokenType}s. Not all tokens need such a common token type.
    * 
+   * @return The common token type, or an empty optional if there is none.
    */
+  public Optional<CommonTokenType> getCommonTokenType();
 
   /**
-   * Any substring which is not in a set of defined token characters here in {@link TokenType}. This
-   * can be a list name in the application of our DRG formulas, it can be a method name etc.<br />
-   * The atom token type here has no defined value. It will be available as {@link LexerToken} with
-   * the value set as the non-token substring.
-   */
-  ATOM(null),
-
-  /**
-   * Assigning a value to a variable.
-   */
-  ASSIGN(":="),
-
-  /**
-   * A logical less-than-equal check (e.g. in an if-statement).
-   */
-  LT_EQUAL("<="),
-
-  /**
-   * A logical greater-than-equal check (e.g. in an if-statement).
-   */
-  GT_EQUAL(">="),
-
-  /**
-   * Left parenthesis.
-   */
-  LPAREN("("),
-
-  /**
-   * Right parenthesis.
-   */
-  RPAREN(")"),
-
-  /**
-   * Logical AND.
-   */
-  AND("&"),
-
-  /**
-   * Logical OR.
-   */
-  OR("|"),
-
-  /**
-   * Logical NOT.
-   */
-  NOT("~"),
-
-  /**
-   * A comma separating multiple function parameters.
-   */
-  COMMA(","),
-
-  /**
-   * A logical is-equal check (e.g. in an if-statement).
-   */
-  EQUAL("="),
-
-  /**
-   * A logical less-than check (e.g. in an if-statement).
-   */
-  GREATER_THAN(">"),
-
-  /**
-   * A logical greater-than check (e.g. in an if-statement).
-   */
-  LESS_THAN("<");
-
-  /*
+   * Retrieves the token which is marked with the given {@link CommonTokenType}.
    * 
-   * See comment at the beginning of the class about the order of the appearance of these tokens.
-   * 
-   ************************************************************************************************/
-
-  private Optional<String> value = null;
-
-  /**
-   * A new token type.
-   * 
-   * @param value The token value, or <code>null</code> if there is no specific value associated
-   *        with this token type
+   * @param tokenTypeClass The enumeration class with the tokens
+   * @param commonType The {@link CommonTokenType} to look for
+   * @return The token
+   * @throws IllegalArgumentException If the token type class is not an enumeration
    */
-  private TokenType(String value) {
-    this.value = Optional.ofNullable(value);
+  public static <T extends TokenType<?>> Optional<T> getForCommonType(Class<T> tokenTypeClass,
+      CommonTokenType commonType) {
+
+    // Build lookup map or retrieve cached lookup map
+    Map<CommonTokenType, T> lookup = TokenTypeLookup.getCommonTypeLookupMap(tokenTypeClass);
+
+    if (!lookup.containsKey(commonType)) {
+      return Optional.empty();
+    } else {
+      return Optional.ofNullable(lookup.get(commonType));
+    }
   }
 
-  public Optional<String> getValue() {
-    return value;
+
+  /**
+   * Retrieves the token which has the given value.
+   * 
+   * @param tokenTypeClass The enumeration class with the tokens
+   * @param value The value to look for
+   * @return The token
+   * @throws IllegalArgumentException If the token type class is not an enumeration
+   */
+  public static <T extends TokenType<?>> Optional<T> getForValue(Class<T> tokenTypeClass,
+      String value) {
+
+    // Build lookup map or retrieve cached lookup map
+    Map<String, T> lookup = TokenTypeLookup.getValueLookupMap(tokenTypeClass);
+
+    if (!lookup.containsKey(value)) {
+      return Optional.empty();
+    } else {
+      return Optional.ofNullable(lookup.get(value));
+    }
   }
 
   /**
-   * Returns the {@link TokenType} which has the given character value.
+   * Retrieves all token values from the enumeration class.
    * 
-   * @param value The character value to look for
-   * @return The optional token type if there is one
+   * @param tokenTypeClass The enumeration class
+   * @return All tokens
+   * @throws IllegalArgumentException If the token type class is not an enumeration
    */
-  public static Optional<TokenType> getForValue(String value) {
-    for (TokenType type : values()) {
-      Optional<String> typeValue = type.getValue();
-      if (typeValue.isPresent() && typeValue.get().equals(value)) {
-        return Optional.of(type);
-      }
+  public static <T extends TokenType<?>> T[] values(Class<T> tokenTypeClass) {
+
+    if (!tokenTypeClass.isEnum()) {
+      throw new IllegalArgumentException(tokenTypeClass.getName() + " has to be an enumeration");
     }
 
-    return Optional.empty();
+    return tokenTypeClass.getEnumConstants();
   }
+
+
+  /**
+   * Creates a RegEx OR pattern ("A|B|C...") based on all the token values in the provided
+   * {@link TokenType} class.<br />
+   * Tokens with no value are ignored.
+   * 
+   * @param enumClass The token type enumeration class
+   * @return The RegEx pattern
+   * @throws IllegalArgumentException If the token type class is not an enumeration
+   */
+  public static Pattern createTokenPattern(Class<? extends TokenType<?>> enumClass) {
+    // Build pattern or retrieve cached pattern
+    return TokenTypeLookup.getPattern(enumClass);
+  }
+
 
 }

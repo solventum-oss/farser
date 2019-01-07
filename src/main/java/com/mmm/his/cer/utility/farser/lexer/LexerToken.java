@@ -1,91 +1,30 @@
 package com.mmm.his.cer.utility.farser.lexer;
 
-
-import java.util.Optional;
-import java.util.regex.Pattern;
-
 /**
- * Token class that can be used to represent the pieces of a lexed string.
+ * Token class which represents the pieces of a lexed string.
  * 
  * @author a30w4zz
  *
+ * @param <T> The type of tokens used
+ * 
  */
-public class LexerToken {
-  /**
-   * {@link #PREFIX_SEPARATOR_CHAR} as string.
-   */
-  public static final String PREFIX_SEPARATOR_STRING = String.valueOf(":");
+public interface LexerToken<T extends TokenType<?>> {
+
 
   /**
-   * The regex pattern for {@link #PREFIX_SEPARATOR_STRING}.
-   */
-  public static final Pattern PREFIX_SEPARATOR_PATTERN =
-      Pattern.compile(LexerToken.PREFIX_SEPARATOR_STRING);
-
-
-  public final TokenType type;
-  public final String value;
-
-  /**
-   * Separated from value with {@link #PREFIX_SEPARATOR_CHAR}.
-   */
-  public final Optional<String> prefix;
-
-  /**
-   * A new token with the value from the {@link TokenType}.
+   * The token.
    * 
-   * @param type The token type
+   * @return The token
    */
-  public LexerToken(TokenType type) {
-    this.type = type;
-    this.value = type.getValue().orElse(null);
-    this.prefix = Optional.empty();
-  }
+  public T getType();
 
   /**
-   * A new token with a provided value.
+   * The value of the token.<br />
+   * Is the same as {@link TokenType#getValue()} for any {@link TokenType} other than the ones
+   * marked with {@link CommonTokenType#ATOM}.
    * 
-   * @param type The token type
-   * @param value The token value
+   * @return The token value
    */
-  public LexerToken(TokenType type, String value) {
-    this.type = type;
-    this.value = value;
-    this.prefix = Optional.empty();
-  }
+  public String getValue();
 
-  /**
-   * A new token.
-   * 
-   * @param type The token type
-   * @param value The token value
-   * @param prefix The prefix (if there is one)
-   */
-  public LexerToken(TokenType type, String value, Optional<String> prefix) {
-    this.type = type;
-    this.value = value;
-    this.prefix = prefix;
-  }
-
-
-  public TokenType getType() {
-    return type;
-  }
-
-  public String getValue() {
-    return value;
-  }
-
-  public Optional<String> getPrefix() {
-    return prefix;
-  }
-
-
-  @Override
-  public String toString() {
-    if (type == TokenType.ATOM) {
-      return "ATOM<" + value + ">" + (prefix.isPresent() ? " with prefix " + prefix.get() : "");
-    }
-    return type.toString();
-  }
 }

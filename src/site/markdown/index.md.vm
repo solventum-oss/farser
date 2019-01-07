@@ -5,11 +5,13 @@ Farser
 
 ------
 
-*Farser* is a very simplistic lexer library which splits a formula string into tokens.
+*Farser* is a very simplistic lexer library which splits a formula or domain code string into tokens.
 
 The purpose of a lexer is simply to separate the input into tokens. No validation of the input is performed (this would be the task of a parser).
 
 At the time of this writing, the lexer recognized the following token types:
+  
+  **3M domain code:** (`DomainCodeToken`)
   
   * **"("** - Left parenthesis
   * **")"** - Right parenthesis
@@ -23,15 +25,30 @@ At the time of this writing, the lexer recognized the following token types:
   * **">="** - Greater than/equal 
   * **"<="** - Less than/equal
   * **":="** - Assign a value to a variable
+  * **"->"** - A pointer
   * ATOM - Anything that is not a token symbol from above
   
-  -> See the `TokenType` enumeration for a complete list of recognized symbols.
+  **DRG formulas:** (`DrgFormulaToken`)
   
-In addition to splitting a formula into tokens it also supports a prefix for any ATOM tokens. If it finds a string, separated by colon ":" (see `LexerToken#PREFIX_SEPARATOR_CHAR`) it splits this into a value and a prefix (e.g. "PFX:val" is split into prefix "PFX" and value "val").
+  * **"("** - Left parenthesis
+  * **")"** - Right parenthesis
+  * **"&"** - Logical and
+  * **"|"** - Logical or
+  * **"~"** - Logical not
+  * ATOM - Anything that is not a token symbol from above
+  
+  In addition to splitting a DRG formula into tokens, `DrgLexerToken` also supports a prefix for any ATOM tokens. If it finds a string separated by colon ":" (see `DrgLexerToken#PREFIX_SEPARATOR_CHAR`) it splits this into a value and a prefix (e.g. "PFX:val" is split into prefix "PFX" and value "val").
 
-**Note:**
-The focus of this lexer is currently on 3M domain code syntax.
- 
+
+  **Custom tokens:**
+  
+  A custom set of tokens can be created by implementing
+  
+  * an enum with `TokenType`
+    * ensure any mandatory `CommonTokenType` are implemented
+  * a class with `LexerTokenFactory`
+  * and a class with `LexerToken`
+
 
 -------------------
 
@@ -54,34 +71,33 @@ Usage
 Example
 ---------
 
-**Formula:**
+**DRG Formula:**
 
 `"A | (~PFX:someValue & ~otherValue) & aFunction(param1, param2)"`
 
-**This will result in a list of LexerTokens with the following content:**
-
-  1. `TokenType.ATOM`, value = "A"
-  2. `TokenType.OR`, value = "|"
-  3. `TokenType.LPAREN`, value = "("
-  4. `TokenType.NOT`, value = "~"
-  5. `TokenType.ATOM`, value = "someValue", prefix = "PFX"
-  6. `TokenType.AND`, value = "&"
-  7. `TokenType.NOT`, value = "~"
-  8. `TokenType.ATOM`, value = "otherValue"
-  9. `TokenType.RPAREN`, value = ")"
-  10. `TokenType.AND`, value = "&"
-  11. `TokenType.ATOM`, value = "aFunction"
-  12. `TokenType.LPAREN`, value = "("
-  13. `TokenType.ATOM`, value = "param1"
-  14. `TokenType.COMMA`, value = ","
-  15. `TokenType.ATOM`, value = "param2"
-  16. `TokenType.RPAREN`, value = ")"
-
-**Code example:**
+Processing this as DRG formula 
 
 ```java
-    List<LexerToken> lexed = DrgFormulaLexer.lex("... your formula ...");
+    List<DrgLexerToken> lexed = DrgFormulaLexer.lex("... your formula ...");
 
 ```
 
+will result in a list of `DrgLexerToken` with the following:
+
+  1. `DrgFormulaToken.ATOM`, value = "A"
+  2. `DrgFormulaToken.OR`, value = "|"
+  3. `DrgFormulaToken.LPAREN`, value = "("
+  4. `DrgFormulaToken.NOT`, value = "~"
+  5. `DrgFormulaToken.ATOM`, value = "someValue", prefix = "PFX"
+  6. `DrgFormulaToken.AND`, value = "&"
+  7. `DrgFormulaToken.NOT`, value = "~"
+  8. `DrgFormulaToken.ATOM`, value = "otherValue"
+  9. `DrgFormulaToken.RPAREN`, value = ")"
+  10. `DrgFormulaToken.AND`, value = "&"
+  11. `DrgFormulaToken.ATOM`, value = "aFunction"
+  12. `DrgFormulaToken.LPAREN`, value = "("
+  13. `DrgFormulaToken.ATOM`, value = "param1"
+  14. `DrgFormulaToken.COMMA`, value = ","
+  15. `DrgFormulaToken.ATOM`, value = "param2"
+  16. `DrgFormulaToken.RPAREN`, value = ")"
 
