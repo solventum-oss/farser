@@ -15,7 +15,10 @@ public class DrgFormulaTokenFactory implements LexerTokenFactory<DrgLexerToken, 
 
   @Override
   public DrgLexerToken create(DrgFormulaToken tokenType, String value) {
-    if (tokenType == DrgFormulaToken.ATOM) {
+    if (tokenType == DrgFormulaToken.SPACE) {
+      // Ignore spaces
+      return null;
+    } else if (tokenType == DrgFormulaToken.ATOM) {
       return buildTokenFromAtom(value);
     } else {
       return new DrgLexerToken(tokenType, value);

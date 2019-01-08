@@ -13,6 +13,11 @@ public class DomainCodeTokenFactory
 
   @Override
   public DomainCodeLexerToken create(DomainCodeToken tokenType, String value) {
+    if (tokenType == DomainCodeToken.SPACE) {
+      // Ignore spaces
+      return null;
+    }
+
     return new DomainCodeLexerToken(tokenType, value);
   }
 

@@ -21,7 +21,14 @@ public enum DomainCodeToken implements
    * The atom token type here has no defined value. It will be available as {@link LexerToken} with
    * the value set as the non-token substring.
    */
-  ATOM(),
+  ATOM(null,
+      CommonTokenType.ATOM),
+
+  /**
+   * A space in the domain code string. Gets filtered out in {@link DomainCodeTokenFactory}.
+   */
+  SPACE(" ",
+      CommonTokenType.SPACE),
 
   /**
    * Left parenthesis.
@@ -113,15 +120,6 @@ public enum DomainCodeToken implements
    */
   private DomainCodeToken(String value) {
     this(value, null);
-
-  }
-
-  /**
-   * A new {@link CommonTokenType#ATOM} token.
-   * 
-   */
-  private DomainCodeToken() {
-    this(null, CommonTokenType.ATOM);
 
   }
 

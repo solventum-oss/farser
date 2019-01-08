@@ -26,7 +26,7 @@ public class Lexer {
    * @param factory The factory that creates the {@link LexerToken}s
    * @return List of {@link LexerToken} that were created from the input string.
    */
-  protected static <L extends LexerToken<T>, T extends TokenType<?>> List<L> lex(
+  public static <L extends LexerToken<T>, T extends TokenType<?>> List<L> lex(
       Class<T> tokenTypeEnumClass, String input, LexerTokenFactory<L, T> factory) {
     List<L> result = new ArrayList<>();
     Pattern delimiterPattern = TokenType.createTokenPattern(tokenTypeEnumClass);
@@ -35,6 +35,9 @@ public class Lexer {
     Optional<T> atomTokenTypeTmp =
         TokenType.getForCommonType(tokenTypeEnumClass, CommonTokenType.ATOM);
     T atomTokenType = atomTokenTypeTmp.get();
+
+    Optional<T> spaceTokenTypeTmp =
+        TokenType.getForCommonType(tokenTypeEnumClass, CommonTokenType.SPACE);
 
     int pos = 0;
     while (delimiterMatcher.find()) {
@@ -53,19 +56,24 @@ public class Lexer {
       }
 
       String delimiter = delimiterMatcher.group();
-      // Only care about delimiters with actual data
-      if (!delimiter.equals(TokenTypeLookup.SPACE_AS_DUMMY_TOKEN)) {
-        Optional<T> delimiterTokenType = TokenType.getForValue(tokenTypeEnumClass, delimiter);
-        if (delimiterTokenType.isPresent()) {
-          L atomToken = factory.create(delimiterTokenType.get(), delimiter);
-          if (atomToken != null) {
-            result.add(atomToken);
-          }
-        } else {
-          // This should never happen. The regex should hit all tokens which exist in the token type
-          // enum.
-          throw new FarserException("No match found for delimiter '" + delimiter + "'");
+      Optional<T> delimiterTokenType = null;
+
+      if (delimiter.trim().isEmpty()) {
+        // Handle special SPACE token
+        delimiterTokenType = spaceTokenTypeTmp;
+      } else {
+        delimiterTokenType = TokenType.getForValue(tokenTypeEnumClass, delimiter);
+      }
+
+      if (delimiterTokenType.isPresent()) {
+        L atomToken = factory.create(delimiterTokenType.get(), delimiter);
+        if (atomToken != null) {
+          result.add(atomToken);
         }
+      } else {
+        // This should never happen. The regex should hit all tokens which exist in the token type
+        // enum.
+        throw new FarserException("No match found for delimiter '" + delimiter + "'");
       }
 
       // Remember end of delimiter

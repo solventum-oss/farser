@@ -421,10 +421,10 @@ public class DrgFormulaLexerTest {
   @Test
   public void testOperandAndOperatorWithVariousSpacing() throws Exception {
     // Tests that operators are recognized properly even though there is no spacing.
-    //
+    // And test that multiple spaces do not interfere.
     String input = "someAtom and otherAtom or anAtomWith_oror and anAtomWith_andandand "
-        + "and a = 2 or(not operatorWithoutSpacing)and something "
-        + "and not somethingNegated and>invalidAndGreaterThanButLexingDoesNotCare a:=b";
+        + "and a   =   2 or(not operatorWithoutSpacing)and something "
+        + "and not    somethingNegated and>invalidAndGreaterThanButLexingDoesNotCare a:=b";
     List<DomainCodeLexerToken> lex = DomainCodeLexer.lex(input);
 
     System.out.println("");

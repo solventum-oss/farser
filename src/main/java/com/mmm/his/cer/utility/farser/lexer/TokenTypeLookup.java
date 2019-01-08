@@ -19,14 +19,6 @@ import java.util.regex.Pattern;
  */
 public class TokenTypeLookup {
 
-
-  /**
-   * A space is always used as a token. This is needed so that it splits up ATOMs which are not
-   * separated by token (e.g. "someAtom anotherAtom" should be split, like "someAtom AND
-   * anotherAtom" would be split).
-   */
-  public static final String SPACE_AS_DUMMY_TOKEN = " ";
-
   private static final Map<Class<?>, Map<String, TokenType<?>>> valueLookupMap = new HashMap<>();
 
   private static final Map<Class<TokenType<?>>, //
@@ -42,8 +34,8 @@ public class TokenTypeLookup {
   }
 
   /**
-   * Creates a map with token values as keys and the tokens as values.<br />
-   * This map can then be used for easier lookup of tokens via value.<br />
+   * Retrieves the map with token values as keys and the tokens as values.<br />
+   * This map can be used for easier lookup of tokens via value.<br />
    * The map is only created once for the given enum class and is retrieved from a cache for
    * subsequent lookups.
    * 
@@ -66,6 +58,29 @@ public class TokenTypeLookup {
       return lookupMap;
     }
 
+    Map<String, T> lookupMap = buildValueLookupMap(enumClass);
+
+    // Save to cast. Lookup happens above.
+    @SuppressWarnings("unchecked")
+    Map<String, TokenType<?>> lookupMapTmp = (Map<String, TokenType<?>>) lookupMap;
+
+    // Save to cast. Lookup happens above.
+    @SuppressWarnings("unchecked")
+    Class<TokenType<?>> enumClassTmp = (Class<TokenType<?>>) enumClass;
+
+    // Store as unmodifiable map because it should never change again.
+    valueLookupMap.put(enumClassTmp, Collections.unmodifiableMap(lookupMapTmp));
+    return lookupMap;
+  }
+
+  /**
+   * Creates the map for token lookups via value.
+   * 
+   * @param enumClass The {@link TokenType} enumeration class
+   * @return The map with the values and tokens of the given enumeration class
+   */
+  private static <T extends TokenType<?>> Map<String, T> buildValueLookupMap(Class<T> enumClass) {
+
     // Build lookup map
     Map<String, T> lookupMap = new HashMap<>();
     for (T enumConst : enumClass.getEnumConstants()) {
@@ -81,22 +96,12 @@ public class TokenTypeLookup {
       }
     }
 
-    // Save to cast. Lookup will happen within this method.
-    @SuppressWarnings("unchecked")
-    Map<String, TokenType<?>> lookupMapTmp = (Map<String, TokenType<?>>) lookupMap;
-
-    // Save to cast. Lookup will happen within this method.
-    @SuppressWarnings("unchecked")
-    Class<TokenType<?>> enumClassTmp = (Class<TokenType<?>>) enumClass;
-
-    // Store as unmodifiable map because it should never change again.
-    valueLookupMap.put(enumClassTmp, Collections.unmodifiableMap(lookupMapTmp));
     return lookupMap;
   }
 
   /**
-   * Creates a map with {@link CommonTokenType} as keys and the tokens as values.<br />
-   * This map can then be used for easier lookup of tokens via {@link CommonTokenType}.<br />
+   * Retrieves the map with {@link CommonTokenType} as keys and the tokens as values.<br />
+   * This map can be used for easier lookup of tokens via {@link CommonTokenType}.<br />
    * The map is only created once for the given enum class and is retrieved from a cache for
    * subsequent lookups.
    * 
@@ -123,6 +128,34 @@ public class TokenTypeLookup {
     }
 
     // Build lookup map
+    Map<CommonTokenType, T> lookupMap = buildCommonTypeLookupMap(enumClass);
+
+    // Check that all mandatory common types are used
+    validateCommonTypeLookupMap(enumClass, lookupMap);
+
+    // Save to cast. Lookup happens above.
+    @SuppressWarnings("unchecked")
+    Map<CommonTokenType, TokenType<?>> lookupMapTmp =
+        (Map<CommonTokenType, TokenType<?>>) lookupMap;
+
+    // Save to cast. Lookup happens above.
+    @SuppressWarnings("unchecked")
+    Class<TokenType<?>> enumClassTmp = (Class<TokenType<?>>) enumClass;
+
+    // Store as unmodifiable map because it should never change again.
+    commonTypeLookupMap.put(enumClassTmp, Collections.unmodifiableMap(lookupMapTmp));
+    return lookupMap;
+  }
+
+  /**
+   * Creates the map for token lookups via {@link CommonTokenType}.
+   * 
+   * @param enumClass The {@link TokenType} enumeration class
+   * @return The map with the values and tokens of the given enumeration class
+   */
+  private static <T extends TokenType<?>> Map<CommonTokenType, T> buildCommonTypeLookupMap(
+      Class<T> enumClass) {
+    // Build lookup map
     Map<CommonTokenType, T> lookupMap = new EnumMap<>(CommonTokenType.class);
     for (T enumConst : enumClass.getEnumConstants()) {
       Optional<CommonTokenType> commonType = enumConst.getCommonTokenType();
@@ -137,30 +170,33 @@ public class TokenTypeLookup {
       }
     }
 
-    // Check that all mandatory common types exist
-    for (CommonTokenType commonType : CommonTokenType.values()) {
-      if (commonType.isMandatory() && !lookupMap.containsKey(commonType)) {
-        throw new FarserException(
-            commonType.getClass().getName() + " is mandatory. No token found in "
-                + enumClass.getName() + " which is marked with this mandatory common type.");
-      }
-    }
-
-
-    // Save to cast. Lookup will happen within this method.
-    @SuppressWarnings("unchecked")
-    Map<CommonTokenType, TokenType<?>> lookupMapTmp =
-        (Map<CommonTokenType, TokenType<?>>) lookupMap;
-
-    // Save to cast. Lookup will happen within this method.
-    @SuppressWarnings("unchecked")
-    Class<TokenType<?>> enumClassTmp = (Class<TokenType<?>>) enumClass;
-
-    // Store as unmodifiable map because it should never change again.
-    commonTypeLookupMap.put(enumClassTmp, Collections.unmodifiableMap(lookupMapTmp));
     return lookupMap;
   }
 
+
+  /**
+   * Creates the map for token lookups via {@link CommonTokenType}.
+   * 
+   * @param enumClass The {@link TokenType} enumeration class for which the <code>lookupMap</code>
+   *        has been built
+   * @param lookupMap The lookup map to validate
+   * @return The map with the values and tokens of the given enumeration class
+   * @throws FarserException If the enum class or lookup map have invalid content like mandatory
+   *         common token types missing etc.
+   */
+  private static <T extends TokenType<?>> void validateCommonTypeLookupMap(Class<T> enumClass,
+      Map<CommonTokenType, T> lookupMap) {
+
+    // Check that all mandatory common types exist
+    for (CommonTokenType commonType : CommonTokenType.values()) {
+      if (commonType.isMandatory() && !lookupMap.containsKey(commonType)) {
+        throw new FarserException(commonType.getClass().getName() + "." + commonType.name()
+            + " is mandatory. No token found in " + enumClass.getName()
+            + " which is marked with this mandatory common type.");
+      }
+    }
+
+  }
 
   /**
    * Creates a RegEx OR pattern ("A|B|C...") based on all the token values in the provided
@@ -184,11 +220,32 @@ public class TokenTypeLookup {
       return patternLookupMap.get(enumClass);
     }
 
+    Pattern pattern = buildPattern(enumClass);
+
+    // Save to cast. Lookup happens above.
+    @SuppressWarnings("unchecked")
+    Class<TokenType<?>> enumClassTmp = (Class<TokenType<?>>) enumClass;
+
+    patternLookupMap.put(enumClassTmp, pattern);
+    return pattern;
+  }
+
+  /**
+   * Builds the pattern based off the given {@link TokenType} enumeration class.<br />
+   * The pattern is build based on all token values in the enumeration excluding ones marked with
+   * {@link CommonTokenType#ATOM} and {@link CommonTokenType#SPACE}.
+   * 
+   * @param enumClass The enumeration class
+   * @return The RegEx pattern
+   */
+  private static Pattern buildPattern(Class<? extends TokenType<?>> enumClass) {
+
     List<String> delimiters = new ArrayList<>();
     for (TokenType<?> enumConst : enumClass.getEnumConstants()) {
       Optional<CommonTokenType> commonType = enumConst.getCommonTokenType();
-      // Only the ones which are not ATOMs
-      if (!commonType.isPresent() || commonType.get() != CommonTokenType.ATOM) {
+      // Only the ones which are not ATOMs or SPACE
+      if (!commonType.isPresent() || (commonType.get() != CommonTokenType.ATOM
+          && commonType.get() != CommonTokenType.SPACE)) {
         Optional<String> value = enumConst.getValue();
         // Only all non-null values
         if (value.isPresent()) {
@@ -207,15 +264,12 @@ public class TokenTypeLookup {
     int symbolCount = 0;
     int charCount = 0;
 
-    for (String token : delimiters) {
-      if (token.equals(SPACE_AS_DUMMY_TOKEN)) {
-        // Avoid conflicts when space is used as defined token.
-        // Adding this exception here was the "easy way out". If space is really needed in a token
-        // enum it would have to be tracked in a lookup map like the other lookup implementations
-        // here.
-        throw new FarserException("A single space can not be used as token");
-      }
+    // Handle CommonTokenType.SPACE
+    // Set this as very first symbol token element.
+    sjSymbol.add(CommonTokenType.SPACE_PATTERN);
+    symbolCount++;
 
+    for (String token : delimiters) {
       if (containsWordChar(token)) {
         // A token with word characters
         sjCharacters.add(Pattern.quote(token));
@@ -227,9 +281,6 @@ public class TokenTypeLookup {
       }
     }
 
-    // Always use space as dummy token. It will not be used in the resulting tokens.
-    sjSymbol.add(SPACE_AS_DUMMY_TOKEN);
-
     StringJoiner sjPattern = new StringJoiner("|");
     if (symbolCount > 0) {
       sjPattern.add(sjSymbol.toString());
@@ -238,14 +289,7 @@ public class TokenTypeLookup {
       sjPattern.add(sjCharacters.toString());
     }
 
-    Pattern pattern = Pattern.compile(sjPattern.toString(), Pattern.CASE_INSENSITIVE);
-
-    // Save to cast. Lookup will happen within this method.
-    @SuppressWarnings("unchecked")
-    Class<TokenType<?>> enumClassTmp = (Class<TokenType<?>>) enumClass;
-
-    patternLookupMap.put(enumClassTmp, pattern);
-    return pattern;
+    return Pattern.compile(sjPattern.toString(), Pattern.CASE_INSENSITIVE);
   }
 
   /**

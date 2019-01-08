@@ -1,4 +1,4 @@
-package com.mmm.his.cer.utility.farser.lexer.drg;
+package com.mmm.his.cer.utility.farser.lexer.tokentype;
 
 import com.mmm.his.cer.utility.farser.lexer.CommonTokenType;
 import com.mmm.his.cer.utility.farser.lexer.LexerToken;
@@ -12,8 +12,8 @@ import java.util.Optional;
  * @author a30w4zz
  *
  */
-public enum DrgFormulaToken implements
-    TokenType<DrgFormulaToken> {
+public enum TestToken implements
+    TokenType<TestToken> {
 
   /**
    * Any substring which is not in a set of defined token characters here in {@link TokenType}. This
@@ -25,38 +25,12 @@ public enum DrgFormulaToken implements
       CommonTokenType.ATOM),
 
   /**
-   * A space in the formula string. Gets filtered out in {@link DrgFormulaTokenFactory}.
+   * 
    */
-  SPACE(" ",
+  SPACE("",
       CommonTokenType.SPACE),
 
-  /**
-   * Left parenthesis.
-   */
-  LPAREN("(",
-      CommonTokenType.LPAREN),
-
-  /**
-   * Right parenthesis.
-   */
-  RPAREN(")",
-      CommonTokenType.RPAREN),
-
-  /**
-   * Logical AND.
-   */
-  AND("&"),
-
-  /**
-   * Logical OR.
-   */
-  OR("|"),
-
-  /**
-   * Logical NOT.
-   */
-  NOT("~",
-      CommonTokenType.NOT);
+  SOME_TOKEN("x");
 
   private final Optional<String> value;
   private final Optional<CommonTokenType> commonType;
@@ -67,7 +41,7 @@ public enum DrgFormulaToken implements
    * @param value The token value, or <code>null</code> if not used
    * @param commonType The common token type, or <code>null</code> if not needed
    */
-  private DrgFormulaToken(String value, CommonTokenType commonType) {
+  private TestToken(String value, CommonTokenType commonType) {
     this.value = Optional.ofNullable(value);
     this.commonType = Optional.ofNullable(commonType);
 
@@ -78,7 +52,7 @@ public enum DrgFormulaToken implements
    * 
    * @param value The token value
    */
-  private DrgFormulaToken(String value) {
+  private TestToken(String value) {
     this(value, null);
 
   }
