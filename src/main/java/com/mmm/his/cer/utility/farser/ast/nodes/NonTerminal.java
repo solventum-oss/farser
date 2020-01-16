@@ -3,7 +3,7 @@ package com.mmm.his.cer.utility.farser.ast.nodes;
 /**
  * This class represents a non-terminal node in the AST. These types of nodes will have a left and
  * a right child.
- *
+ *<br/>
  * Uses a bus to communicate information outwards during evaluation.
  * @param <T> The type used in the terminal nodes.
  * @author Mike Funaro

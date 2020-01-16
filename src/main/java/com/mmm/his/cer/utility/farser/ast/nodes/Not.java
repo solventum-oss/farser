@@ -6,7 +6,7 @@ import java.util.Set;
 /**
  * Implementation of a non-terminal node for use in the AST. This type of node will only have a left
  * child and no right child. It's evaluation should negate the result of the left child.
- *
+ * <br/>
  * Nothing is reported back to the event bus about a negation, since in actuality, negation in our
  * formulas is a existence check.
  *

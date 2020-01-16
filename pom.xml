@@ -12,7 +12,7 @@
 
 	<groupId>com.mmm.his.cer.utility</groupId>
 	<artifactId>farser</artifactId>
-	<version>3.0-SNAPSHOT</version>
+	<version>3.1-SNAPSHOT</version>
 
 	<properties>
 		<java_version>1.8</java_version>
@@ -39,7 +39,7 @@
 	<distributionManagement>
 		<site>
 			<id>site</id>
-			<!-- Has to be defined in the project. See the master-pom.xml <site> section 
+			<!-- Has to be defined in the project. See the master-pom.xml <site> section
 				for explanation. -->
 			<!-- Properties defined in settings.xml -->
 			<url>${nexusSite}/${project.artifactId}/${project.version}</url>
