@@ -1,5 +1,6 @@
 package com.mmm.his.cer.utility.farser.ast.parser;
 
+import com.mmm.his.cer.utility.farser.ast.DrgSyntaxTree;
 import com.mmm.his.cer.utility.farser.ast.nodes.And;
 import com.mmm.his.cer.utility.farser.ast.nodes.BooleanExpression;
 import com.mmm.his.cer.utility.farser.ast.nodes.Not;
@@ -8,10 +9,7 @@ import com.mmm.his.cer.utility.farser.ast.nodes.Or;
 import com.mmm.his.cer.utility.farser.lexer.drg.DrgFormulaToken;
 import com.mmm.his.cer.utility.farser.lexer.drg.DrgLexerToken;
 
-import java.util.HashSet;
-import java.util.List;
 import java.util.ListIterator;
-import java.util.Set;
 import java.util.function.Function;
 
 /**
@@ -42,10 +40,20 @@ public class DescentParser<T> {
   }
 
   /**
+   * Set a new tokenIterator so that we can build another AST using the same setup parser. Uses the
+   * same terminalObjectSupplier that was set when the {@link DescentParser} was created.
+   */
+  public void setTokenIterator(ListIterator<DrgLexerToken> tokenIterator) {
+    this.tokenIterator = tokenIterator;
+    this.currentToken = tokenIterator.next();
+  }
+
+  /**
    * Build the abstract syntax tree.
    */
-  public void buildExpressionTree() {
+  public DrgSyntaxTree<T> buildExpressionTree() {
     expression();
+    return this.getAst();
   }
 
   /**
@@ -113,18 +121,11 @@ public class DescentParser<T> {
   }
 
   /**
-   * Public API method that should be called following building the Abstract syntax tree.
+   * Helper method that creates a new {@link DrgSyntaxTree} from the root.
    *
-   * @param operands the list of operand objects that we want to match against.
-   * @return {@link ExpressionResult}
-   *     ExpressionResult object which will have a the data about the outcome of the evaluation.
+   * @return new DrgSyntaxTree
    */
-  public ExpressionResult<T> evaluateExpression(List<T> operands) throws IllegalStateException {
-    if (root == null) {
-      throw new IllegalStateException("AST must be built first before it can be evaluated");
-    }
-    Set<T> matches = new HashSet<>();
-    boolean evaluate = this.root.evaluate(operands, matches);
-    return new ExpressionResult<>(evaluate, matches);
+  private DrgSyntaxTree<T> getAst() {
+    return new DrgSyntaxTree<>(this.root);
   }
 }

@@ -28,10 +28,10 @@ public class AstTest {
     DescentParser<String> parser = new DescentParser<>(lexerTokens.listIterator(),
         DrgLexerToken::getValue);
 
-    parser.buildExpressionTree();
+    DrgSyntaxTree<String> ast = parser.buildExpressionTree();
 
     List<String> mask = Arrays.asList("E", "A");
-    ExpressionResult<String> evaluation = parser.evaluateExpression(mask);
+    ExpressionResult<String> evaluation = ast.evaluateExpression(mask);
 
     assertThat(evaluation.isMatched(), is(true));
     assertThat(evaluation.getMatches().toArray(),
@@ -45,8 +45,8 @@ public class AstTest {
     DescentParser<String> parser = new DescentParser<>(lexerTokens.listIterator(),
         DrgLexerToken::getValue);
 
-    parser.buildExpressionTree();
-    ExpressionResult<String> evaluation = parser.evaluateExpression(Collections.singletonList("A"));
+    DrgSyntaxTree<String> ast = parser.buildExpressionTree();
+    ExpressionResult<String> evaluation = ast.evaluateExpression(Collections.singletonList("A"));
 
     assertThat(evaluation.isMatched(), is(false));
   }
@@ -58,9 +58,9 @@ public class AstTest {
     DescentParser<String> parser = new DescentParser<>(lexerTokens.listIterator(),
         DrgLexerToken::getValue);
 
-    parser.buildExpressionTree();
+    DrgSyntaxTree<String> ast = parser.buildExpressionTree();
     List<String> mask = Arrays.asList("B", "C", "F", "G");
-    ExpressionResult<String> evaluation = parser
+    ExpressionResult<String> evaluation = ast
         .evaluateExpression(mask);
 
     assertThat(evaluation.isMatched(), is(true));
@@ -75,8 +75,8 @@ public class AstTest {
     DescentParser<String> parser = new DescentParser<>(lexerTokens.listIterator(),
         DrgLexerToken::getValue);
 
-    parser.buildExpressionTree();
-    ExpressionResult<String> evaluation = parser.evaluateExpression(Arrays.asList("B", "C", "G"));
+    DrgSyntaxTree<String> ast = parser.buildExpressionTree();
+    ExpressionResult<String> evaluation = ast.evaluateExpression(Arrays.asList("B", "C", "G"));
 
     assertThat(evaluation.isMatched(), is(false));
   }
@@ -87,9 +87,9 @@ public class AstTest {
     DescentParser<String> parser = new DescentParser<>(lexerTokens.listIterator(),
         DrgLexerToken::getValue);
 
-    parser.buildExpressionTree();
+    DrgSyntaxTree<String> ast = parser.buildExpressionTree();
     List<String> mask = Arrays.asList("G", "F", "C", "B");
-    ExpressionResult<String> evaluation = parser
+    ExpressionResult<String> evaluation = ast
         .evaluateExpression(mask);
 
     assertThat(evaluation.isMatched(), is(true));
@@ -104,9 +104,9 @@ public class AstTest {
     DescentParser<String> parser = new DescentParser<>(lexerTokens.listIterator(),
         DrgLexerToken::getValue);
 
-    parser.buildExpressionTree();
+    DrgSyntaxTree<String> ast = parser.buildExpressionTree();
     List<String> mask = Collections.singletonList("A");
-    ExpressionResult<String> evaluation = parser.evaluateExpression(mask);
+    ExpressionResult<String> evaluation = ast.evaluateExpression(mask);
 
     assertThat(evaluation.isMatched(), is(true));
     assertThat(evaluation.getMatches().toArray(),
@@ -120,9 +120,9 @@ public class AstTest {
     DescentParser<String> parser = new DescentParser<>(lexerTokens.listIterator(),
         DrgLexerToken::getValue);
 
-    parser.buildExpressionTree();
+    DrgSyntaxTree<String> ast = parser.buildExpressionTree();
     List<String> mask = Arrays.asList("D", "G", "H");
-    ExpressionResult<String> evaluation = parser.evaluateExpression(mask);
+    ExpressionResult<String> evaluation = ast.evaluateExpression(mask);
 
     assertThat(evaluation.isMatched(), is(true));
     assertThat(evaluation.getMatches().toArray(),
@@ -136,8 +136,8 @@ public class AstTest {
     DescentParser<String> parser = new DescentParser<>(lexerTokens.listIterator(),
         DrgLexerToken::getValue);
 
-    parser.buildExpressionTree();
-    ExpressionResult<String> evaluation = parser.evaluateExpression(Arrays.asList("D", "H"));
+    DrgSyntaxTree<String> ast = parser.buildExpressionTree();
+    ExpressionResult<String> evaluation = ast.evaluateExpression(Arrays.asList("D", "H"));
 
     assertThat(evaluation.isMatched(), is(false));
   }
@@ -149,9 +149,9 @@ public class AstTest {
     DescentParser<String> parser = new DescentParser<>(lexerTokens.listIterator(),
         DrgLexerToken::getValue);
 
-    parser.buildExpressionTree();
+    DrgSyntaxTree<String> ast = parser.buildExpressionTree();
     List<String> mask = Collections.singletonList("A");
-    ExpressionResult<String> evaluation = parser.evaluateExpression(mask);
+    ExpressionResult<String> evaluation = ast.evaluateExpression(mask);
 
     assertThat(evaluation.isMatched(), is(true));
     assertThat(evaluation.getMatches().toArray(),
@@ -165,8 +165,9 @@ public class AstTest {
     DescentParser<String> parser = new DescentParser<>(lexerTokens.listIterator(),
         DrgLexerToken::getValue);
 
-    parser.buildExpressionTree();
-    ExpressionResult<String> evaluation = parser.evaluateExpression(Collections.singletonList("B"));
+    DrgSyntaxTree<String> ast = parser.buildExpressionTree();
+    List<String> mask = Collections.singletonList("B");
+    ExpressionResult<String> evaluation = ast.evaluateExpression(mask);
 
     assertThat(evaluation.isMatched(), is(false));
   }
@@ -179,9 +180,9 @@ public class AstTest {
     DescentParser<String> parser = new DescentParser<>(lexerTokens.listIterator(),
         DrgLexerToken::getValue);
 
-    parser.buildExpressionTree();
+    DrgSyntaxTree<String> ast = parser.buildExpressionTree();
     List<String> mask = Collections.singletonList("G");
-    ExpressionResult<String> evaluation = parser.evaluateExpression(mask);
+    ExpressionResult<String> evaluation = ast.evaluateExpression(mask);
 
     assertThat(evaluation.isMatched(), is(true));
     assertThat(evaluation.getMatches().toArray(),
@@ -195,11 +196,10 @@ public class AstTest {
         drgLexerToken -> new CustomTestOperand(drgLexerToken.getValue(),
             drgLexerToken.getPrefix().orElse("NOT_NEEDED")));
 
-    parser.buildExpressionTree();
+    DrgSyntaxTree<CustomTestOperand> ast = parser.buildExpressionTree();
     List<CustomTestOperand> mask = Collections
         .singletonList(new CustomTestOperand("A", "NOT_NEEDED"));
-    ExpressionResult<CustomTestOperand> evaluation = parser
-        .evaluateExpression(mask);
+    ExpressionResult<CustomTestOperand> evaluation = ast.evaluateExpression(mask);
 
     assertThat(evaluation.isMatched(), is(true));
     assertThat(evaluation.getMatches().toArray(),
@@ -213,11 +213,37 @@ public class AstTest {
         drgLexerToken -> new CustomTestOperand(drgLexerToken.getValue(),
             drgLexerToken.getPrefix().orElse("NOT_NEEDED")));
 
-    parser.buildExpressionTree();
-    ExpressionResult<CustomTestOperand> evaluation = parser
+    DrgSyntaxTree<CustomTestOperand> ast = parser.buildExpressionTree();
+    ExpressionResult<CustomTestOperand> evaluation = ast
         .evaluateExpression(Collections.singletonList(new CustomTestOperand("A", "NOT_NEEDED")));
 
     assertThat(evaluation.isMatched(), is(false));
+  }
+
+  @Test
+  public void testEvalOfAnotherAst() {
+    List<DrgLexerToken> lexerTokens = DrgFormulaLexer.lex("A | ~B");
+    DescentParser<String> parser = new DescentParser<>(lexerTokens.listIterator(),
+        DrgLexerToken::getValue);
+
+    DrgSyntaxTree<String> ast = parser.buildExpressionTree();
+
+    parser.setTokenIterator(DrgFormulaLexer.lex("A | (B & C").listIterator());
+
+    DrgSyntaxTree<String> ast2 = parser.buildExpressionTree();
+
+    List<String> mask = Collections.singletonList("A");
+    ExpressionResult<String> evaluation = ast.evaluateExpression(mask);
+
+    assertThat(evaluation.isMatched(), is(true));
+    assertThat(evaluation.getMatches().toArray(),
+        Matchers.arrayContainingInAnyOrder(mask.toArray()));
+
+    List<String> mask2 = Arrays.asList("B", "C");
+    ExpressionResult<String> evaluation2 = ast2.evaluateExpression(mask2);
+    assertThat(evaluation2.isMatched(), is(true));
+    assertThat(evaluation2.getMatches().toArray(),
+        Matchers.arrayContainingInAnyOrder(mask2.toArray()));
   }
 
 

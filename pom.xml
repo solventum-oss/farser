@@ -12,7 +12,7 @@
 
 	<groupId>com.mmm.his.cer.utility</groupId>
 	<artifactId>farser</artifactId>
-	<version>3.1-SNAPSHOT</version>
+	<version>3.2-SNAPSHOT</version>
 
 	<properties>
 		<java_version>1.8</java_version>
