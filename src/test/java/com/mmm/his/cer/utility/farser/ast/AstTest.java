@@ -246,6 +246,20 @@ public class AstTest {
         Matchers.arrayContainingInAnyOrder(mask2.toArray()));
   }
 
+  @Test
+  public void testSingleListEval() {
+    List<DrgLexerToken> lexerTokens = DrgFormulaLexer.lex("A");
+    DescentParser<String> parser = new DescentParser<>(lexerTokens.listIterator(),
+        DrgLexerToken::getValue);
+    DrgSyntaxTree<String> ast = parser.buildExpressionTree();
+    List<String> mask = Collections.singletonList("A");
+    ExpressionResult<String> evaluation = ast.evaluateExpression(mask);
+    assertThat(evaluation.isMatched(), is(true));
+    assertThat(evaluation.getMatches().toArray(),
+        Matchers.arrayContainingInAnyOrder(mask.toArray()));
+  }
+
+
 
   /**
    * Test implementation.
