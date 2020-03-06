@@ -259,6 +259,23 @@ public class AstTest {
         Matchers.arrayContainingInAnyOrder(mask.toArray()));
   }
 
+  @Test
+  public void testMatchesContainsOnlyOneSideOfOr() {
+
+    List<DrgLexerToken> lexerTokens = DrgFormulaLexer.lex("(A|B) & (C|D)");
+    DescentParser<String> parser = new DescentParser<>(lexerTokens.listIterator(),
+        DrgLexerToken::getValue);
+
+    DrgSyntaxTree<String> ast = parser.buildExpressionTree();
+    List<String> mask = Arrays.asList("A", "C", "B");
+    ExpressionResult<String> evaluation = ast.evaluateExpression(mask);
+
+    assertThat(evaluation.isMatched(), is(true));
+    assertThat(evaluation.getMatches().size(), is(2));
+    assertThat(evaluation.getMatches().toArray(),
+        Matchers.arrayContainingInAnyOrder(new String[]{"A", "C"}));
+  }
+
 
 
   /**

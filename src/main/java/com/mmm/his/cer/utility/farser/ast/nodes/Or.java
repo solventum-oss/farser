@@ -15,13 +15,19 @@ public class Or<T> extends NonTerminal<T> {
   @Override
   public boolean evaluate(List<T> operands, Set<T> accumulator) {
     boolean leftTrue = left.evaluate(operands, accumulator);
-    boolean rightTrue = right.evaluate(operands, accumulator);
+
+    // We are at a terminal and match, we can return
     if ((leftTrue) && left instanceof Terminal) {
       accumulator.add(((Terminal<T>) left).getOperandValue());
+      return true;
     }
+
+    boolean rightTrue = right.evaluate(operands, accumulator);
     if ((rightTrue) && right instanceof Terminal) {
       accumulator.add(((Terminal<T>) right).getOperandValue());
+      return true;
     }
+
     return leftTrue || rightTrue;
   }
 

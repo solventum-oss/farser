@@ -6,6 +6,7 @@ import com.mmm.his.cer.utility.farser.ast.nodes.BooleanExpression;
 import com.mmm.his.cer.utility.farser.ast.nodes.Not;
 import com.mmm.his.cer.utility.farser.ast.nodes.Operand;
 import com.mmm.his.cer.utility.farser.ast.nodes.Or;
+import com.mmm.his.cer.utility.farser.lexer.FarserException;
 import com.mmm.his.cer.utility.farser.lexer.drg.DrgFormulaToken;
 import com.mmm.his.cer.utility.farser.lexer.drg.DrgLexerToken;
 
@@ -105,7 +106,7 @@ public class DescentParser<T> {
       not.setChild(root);
       root = not;
     } else {
-      throw new RuntimeException("Expression Malformed");
+      throw new FarserException("Expression Malformed");
     }
   }
 

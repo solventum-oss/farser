@@ -30,7 +30,7 @@ public class DrgSyntaxTree<T> {
    *
    * @param operands the list of operand objects that we want to match against.
    * @return {@link ExpressionResult}
-   * ExpressionResult object which will have a the data about the outcome of the evaluation.
+   *     ExpressionResult object which will have a the data about the outcome of the evaluation.
    */
   public ExpressionResult<T> evaluateExpression(List<T> operands) {
     Set<T> matches = new HashSet<>();
