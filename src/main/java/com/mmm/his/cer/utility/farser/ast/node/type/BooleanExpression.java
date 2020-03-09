@@ -1,4 +1,4 @@
-package com.mmm.his.cer.utility.farser.ast.nodes;
+package com.mmm.his.cer.utility.farser.ast.node.type;
 
 import java.util.List;
 import java.util.Set;

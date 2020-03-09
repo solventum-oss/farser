@@ -1,17 +1,18 @@
 package com.mmm.his.cer.utility.farser.ast.parser;
 
 import com.mmm.his.cer.utility.farser.ast.DrgSyntaxTree;
-import com.mmm.his.cer.utility.farser.ast.nodes.And;
-import com.mmm.his.cer.utility.farser.ast.nodes.BooleanExpression;
-import com.mmm.his.cer.utility.farser.ast.nodes.Not;
-import com.mmm.his.cer.utility.farser.ast.nodes.Operand;
-import com.mmm.his.cer.utility.farser.ast.nodes.Or;
+import com.mmm.his.cer.utility.farser.ast.node.operator.And;
+import com.mmm.his.cer.utility.farser.ast.node.operator.Not;
+import com.mmm.his.cer.utility.farser.ast.node.operator.Or;
+import com.mmm.his.cer.utility.farser.ast.node.type.BooleanExpression;
+import com.mmm.his.cer.utility.farser.ast.node.type.NodeSupplier;
 import com.mmm.his.cer.utility.farser.lexer.FarserException;
 import com.mmm.his.cer.utility.farser.lexer.drg.DrgFormulaToken;
 import com.mmm.his.cer.utility.farser.lexer.drg.DrgLexerToken;
 
+import java.util.HashMap;
 import java.util.ListIterator;
-import java.util.function.Function;
+import java.util.Map;
 
 /**
  * Recursive descent parser that will buildExpressionTree an Abstract syntax tree from a grouper
@@ -24,20 +25,34 @@ public class DescentParser<T> {
   private BooleanExpression<T> root;
   private DrgLexerToken currentToken;
   private ListIterator<DrgLexerToken> tokenIterator;
-  private Function<DrgLexerToken, T> terminalObjectSupplier;
+  private NodeSupplier<DrgLexerToken, T> defaultSupplier;
+  private Map<String, NodeSupplier<DrgLexerToken, T>> suppliers;
 
   /**
    * Ctor.
    *
-   * @param tokenIterator          list of tokens to parse into the Abstract syntax tree.
-   * @param terminalObjectSupplier the object that will take the current token and return an object
-   *                               of the generic T defined for this class.
+   * @param tokenIterator   list of tokens to parse into the Abstract syntax tree.
+   * @param defaultSupplier the object that will take the current token and return an object
+   *                        of the generic T defined for this class.
    */
   public DescentParser(ListIterator<DrgLexerToken> tokenIterator,
-      Function<DrgLexerToken, T> terminalObjectSupplier) {
+      NodeSupplier<DrgLexerToken, T> defaultSupplier,
+      Map<String, NodeSupplier<DrgLexerToken, T>> suppliers) {
     this.tokenIterator = tokenIterator;
     this.currentToken = tokenIterator.next();
-    this.terminalObjectSupplier = terminalObjectSupplier;
+    if (defaultSupplier == null) {
+      throw new FarserException(
+          "Please provide at least a default supplier argument to DescentParser constructor");
+    }
+    this.defaultSupplier = defaultSupplier;
+
+    // If there is no map, instantiate new map to avoid NPEs. If nothing is in the map the
+    // defaultSupplier takes over.
+    if (suppliers == null) {
+      this.suppliers = new HashMap<>();
+    } else {
+      this.suppliers = suppliers;
+    }
   }
 
   /**
@@ -93,7 +108,9 @@ public class DescentParser<T> {
   private void factor() {
     if (currentToken.getType() == DrgFormulaToken.ATOM) {
 
-      root = new Operand<>(terminalObjectSupplier.apply(currentToken));
+      NodeSupplier<DrgLexerToken, T> nodeSupplier = suppliers.getOrDefault(
+          currentToken.value, defaultSupplier);
+      root = nodeSupplier.createNode(currentToken);
       this.eat(DrgFormulaToken.ATOM);
     } else if (currentToken.getType() == DrgFormulaToken.LPAREN) {
       this.eat(DrgFormulaToken.LPAREN);

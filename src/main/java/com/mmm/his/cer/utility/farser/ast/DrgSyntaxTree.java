@@ -1,10 +1,9 @@
 package com.mmm.his.cer.utility.farser.ast;
 
-import com.mmm.his.cer.utility.farser.ast.nodes.BooleanExpression;
-import com.mmm.his.cer.utility.farser.ast.nodes.Terminal;
+import com.mmm.his.cer.utility.farser.ast.node.type.BooleanExpression;
 import com.mmm.his.cer.utility.farser.ast.parser.ExpressionResult;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -33,13 +32,8 @@ public class DrgSyntaxTree<T> {
    *     ExpressionResult object which will have a the data about the outcome of the evaluation.
    */
   public ExpressionResult<T> evaluateExpression(List<T> operands) {
-    Set<T> matches = new HashSet<>();
+    Set<T> matches = new LinkedHashSet<>();
     boolean evaluate = this.ast.evaluate(operands, matches);
-    // Matches gets added to in non-terminal classes. If the root is a terminal and there is a match
-    // we need to add the root to the matches to correctly report outward what was matched.
-    if (evaluate && matches.isEmpty() && this.ast instanceof Terminal) {
-      matches.add(((Terminal<T>) this.ast).getOperandValue());
-    }
     return new ExpressionResult<>(evaluate, matches);
   }
 }

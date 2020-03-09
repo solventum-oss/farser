@@ -1,5 +1,6 @@
-package com.mmm.his.cer.utility.farser.ast.nodes;
+package com.mmm.his.cer.utility.farser.ast.node.operator;
 
+import com.mmm.his.cer.utility.farser.ast.node.type.NonTerminal;
 
 import java.util.List;
 import java.util.Set;
@@ -15,14 +16,7 @@ public class And<T> extends NonTerminal<T> {
 
   @Override
   public boolean evaluate(List<T> operands, Set<T> accumulator) {
-    boolean matched = left.evaluate(operands, accumulator) && right.evaluate(operands, accumulator);
-    if (matched && left instanceof Terminal) {
-      accumulator.add(((Terminal<T>) left).getOperandValue());
-    }
-    if (matched && right instanceof Terminal) {
-      accumulator.add(((Terminal<T>) right).getOperandValue());
-    }
-    return matched;
+    return left.evaluate(operands, accumulator) && right.evaluate(operands, accumulator);
   }
 
   @Override

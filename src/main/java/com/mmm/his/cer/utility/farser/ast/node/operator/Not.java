@@ -1,4 +1,7 @@
-package com.mmm.his.cer.utility.farser.ast.nodes;
+package com.mmm.his.cer.utility.farser.ast.node.operator;
+
+import com.mmm.his.cer.utility.farser.ast.node.type.BooleanExpression;
+import com.mmm.his.cer.utility.farser.ast.node.type.NonTerminal;
 
 import java.util.List;
 import java.util.Set;
@@ -14,7 +17,6 @@ import java.util.Set;
  * @author Mike Funaro
  */
 public class Not<T> extends NonTerminal<T> {
-
 
   /**
    * For a not node, we should only set one child. This method sets the left child only. And should

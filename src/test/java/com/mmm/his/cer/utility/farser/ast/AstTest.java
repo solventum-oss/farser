@@ -3,39 +3,56 @@ package com.mmm.his.cer.utility.farser.ast;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+import com.mmm.his.cer.utility.farser.ast.node.terminal.ContainsNode;
+import com.mmm.his.cer.utility.farser.ast.node.type.BooleanExpression;
+import com.mmm.his.cer.utility.farser.ast.node.type.NodeSupplier;
 import com.mmm.his.cer.utility.farser.ast.parser.DescentParser;
 import com.mmm.his.cer.utility.farser.ast.parser.ExpressionResult;
 import com.mmm.his.cer.utility.farser.lexer.DrgFormulaLexer;
 import com.mmm.his.cer.utility.farser.lexer.drg.DrgLexerToken;
 import org.hamcrest.Matchers;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * @author Mike Funaro
  */
 public class AstTest {
 
+  Map<String, NodeSupplier<DrgLexerToken, String>> suppliers = new HashMap<>();
+  Map<String, NodeSupplier<DrgLexerToken, CustomTestOperand>> customOperandSuppliers
+      = new HashMap<>();
+
+  @Before
+  public void setUp() throws Exception {
+    suppliers.put("BILATERAL", new MsdrgGrouperFunctionSupplier());
+  }
+
   @Test
   public void testTrueEval() {
 
-    List<DrgLexerToken> lexerTokens = DrgFormulaLexer.lex("(A|B) & (D|E)");
+    List<DrgLexerToken> lexerTokens = DrgFormulaLexer.lex("(BILATERAL) & (D|E)");
     DescentParser<String> parser = new DescentParser<>(lexerTokens.listIterator(),
-        DrgLexerToken::getValue);
+        new StringOperandSupplier(), suppliers);
 
     DrgSyntaxTree<String> ast = parser.buildExpressionTree();
 
-    List<String> mask = Arrays.asList("E", "A");
+    List<String> mask = Arrays.asList("E");
     ExpressionResult<String> evaluation = ast.evaluateExpression(mask);
 
     assertThat(evaluation.isMatched(), is(true));
     assertThat(evaluation.getMatches().toArray(),
-        Matchers.arrayContainingInAnyOrder(mask.toArray()));
+        Matchers.arrayContaining(new Object[]{"luck", "E"}));
   }
 
   @Test
@@ -43,7 +60,7 @@ public class AstTest {
 
     List<DrgLexerToken> lexerTokens = DrgFormulaLexer.lex("(A|B) & (D|E)");
     DescentParser<String> parser = new DescentParser<>(lexerTokens.listIterator(),
-        DrgLexerToken::getValue);
+        new StringOperandSupplier(), suppliers);
 
     DrgSyntaxTree<String> ast = parser.buildExpressionTree();
     ExpressionResult<String> evaluation = ast.evaluateExpression(Collections.singletonList("A"));
@@ -56,7 +73,7 @@ public class AstTest {
 
     List<DrgLexerToken> lexerTokens = DrgFormulaLexer.lex("A | ((B & C) & (D | E | (F & G)))");
     DescentParser<String> parser = new DescentParser<>(lexerTokens.listIterator(),
-        DrgLexerToken::getValue);
+        new StringOperandSupplier(), suppliers);
 
     DrgSyntaxTree<String> ast = parser.buildExpressionTree();
     List<String> mask = Arrays.asList("B", "C", "F", "G");
@@ -65,7 +82,7 @@ public class AstTest {
 
     assertThat(evaluation.isMatched(), is(true));
     assertThat(evaluation.getMatches().toArray(),
-        Matchers.arrayContainingInAnyOrder(mask.toArray()));
+        Matchers.arrayContaining(mask.toArray()));
   }
 
   @Test
@@ -73,7 +90,7 @@ public class AstTest {
 
     List<DrgLexerToken> lexerTokens = DrgFormulaLexer.lex("A | ((B & C) & (D | E | (F & G)))");
     DescentParser<String> parser = new DescentParser<>(lexerTokens.listIterator(),
-        DrgLexerToken::getValue);
+        new StringOperandSupplier(), suppliers);
 
     DrgSyntaxTree<String> ast = parser.buildExpressionTree();
     ExpressionResult<String> evaluation = ast.evaluateExpression(Arrays.asList("B", "C", "G"));
@@ -85,7 +102,7 @@ public class AstTest {
   public void testLeftSideComplexLeftSideEval() {
     List<DrgLexerToken> lexerTokens = DrgFormulaLexer.lex("((B & C) & (D | E | (F & G))) | A");
     DescentParser<String> parser = new DescentParser<>(lexerTokens.listIterator(),
-        DrgLexerToken::getValue);
+        new StringOperandSupplier(), suppliers);
 
     DrgSyntaxTree<String> ast = parser.buildExpressionTree();
     List<String> mask = Arrays.asList("G", "F", "C", "B");
@@ -94,7 +111,7 @@ public class AstTest {
 
     assertThat(evaluation.isMatched(), is(true));
     assertThat(evaluation.getMatches().toArray(),
-        Matchers.arrayContainingInAnyOrder(mask.toArray()));
+        Matchers.arrayContaining(new Object[]{"B", "C", "F", "G"}));
   }
 
   @Test
@@ -102,7 +119,7 @@ public class AstTest {
 
     List<DrgLexerToken> lexerTokens = DrgFormulaLexer.lex("((B & C) & (D | E | (F & G))) | A");
     DescentParser<String> parser = new DescentParser<>(lexerTokens.listIterator(),
-        DrgLexerToken::getValue);
+        new StringOperandSupplier(), suppliers);
 
     DrgSyntaxTree<String> ast = parser.buildExpressionTree();
     List<String> mask = Collections.singletonList("A");
@@ -110,7 +127,7 @@ public class AstTest {
 
     assertThat(evaluation.isMatched(), is(true));
     assertThat(evaluation.getMatches().toArray(),
-        Matchers.arrayContainingInAnyOrder(mask.toArray()));
+        Matchers.arrayContaining(mask.toArray()));
   }
 
   @Test
@@ -118,7 +135,7 @@ public class AstTest {
 
     List<DrgLexerToken> lexerTokens = DrgFormulaLexer.lex("(A | B| C| (D & (G & (F|H)))))");
     DescentParser<String> parser = new DescentParser<>(lexerTokens.listIterator(),
-        DrgLexerToken::getValue);
+        new StringOperandSupplier(), suppliers);
 
     DrgSyntaxTree<String> ast = parser.buildExpressionTree();
     List<String> mask = Arrays.asList("D", "G", "H");
@@ -126,7 +143,7 @@ public class AstTest {
 
     assertThat(evaluation.isMatched(), is(true));
     assertThat(evaluation.getMatches().toArray(),
-        Matchers.arrayContainingInAnyOrder(mask.toArray()));
+        Matchers.arrayContaining(mask.toArray()));
   }
 
   @Test
@@ -134,7 +151,7 @@ public class AstTest {
 
     List<DrgLexerToken> lexerTokens = DrgFormulaLexer.lex("(A | B| C| (D & (G & (F|H)))))");
     DescentParser<String> parser = new DescentParser<>(lexerTokens.listIterator(),
-        DrgLexerToken::getValue);
+        new StringOperandSupplier(), suppliers);
 
     DrgSyntaxTree<String> ast = parser.buildExpressionTree();
     ExpressionResult<String> evaluation = ast.evaluateExpression(Arrays.asList("D", "H"));
@@ -147,7 +164,7 @@ public class AstTest {
 
     List<DrgLexerToken> lexerTokens = DrgFormulaLexer.lex("A | ~B");
     DescentParser<String> parser = new DescentParser<>(lexerTokens.listIterator(),
-        DrgLexerToken::getValue);
+        new StringOperandSupplier(), suppliers);
 
     DrgSyntaxTree<String> ast = parser.buildExpressionTree();
     List<String> mask = Collections.singletonList("A");
@@ -155,7 +172,7 @@ public class AstTest {
 
     assertThat(evaluation.isMatched(), is(true));
     assertThat(evaluation.getMatches().toArray(),
-        Matchers.arrayContainingInAnyOrder(mask.toArray()));
+        Matchers.arrayContaining(mask.toArray()));
   }
 
   @Test
@@ -163,7 +180,7 @@ public class AstTest {
 
     List<DrgLexerToken> lexerTokens = DrgFormulaLexer.lex("A | ~B");
     DescentParser<String> parser = new DescentParser<>(lexerTokens.listIterator(),
-        DrgLexerToken::getValue);
+        new StringOperandSupplier(), suppliers);
 
     DrgSyntaxTree<String> ast = parser.buildExpressionTree();
     List<String> mask = Collections.singletonList("B");
@@ -178,7 +195,7 @@ public class AstTest {
 
     List<DrgLexerToken> lexerTokens = DrgFormulaLexer.lex("A | ~B");
     DescentParser<String> parser = new DescentParser<>(lexerTokens.listIterator(),
-        DrgLexerToken::getValue);
+        new StringOperandSupplier(), suppliers);
 
     DrgSyntaxTree<String> ast = parser.buildExpressionTree();
     List<String> mask = Collections.singletonList("G");
@@ -186,15 +203,14 @@ public class AstTest {
 
     assertThat(evaluation.isMatched(), is(true));
     assertThat(evaluation.getMatches().toArray(),
-        Matchers.arrayContainingInAnyOrder(mask.toArray()));
+        Matchers.arrayContaining(mask.toArray()));
   }
 
   @Test
   public void testCustomObjectOperandTrueEval() {
     List<DrgLexerToken> lexerTokens = DrgFormulaLexer.lex("A | C");
     DescentParser<CustomTestOperand> parser = new DescentParser<>(lexerTokens.listIterator(),
-        drgLexerToken -> new CustomTestOperand(drgLexerToken.getValue(),
-            drgLexerToken.getPrefix().orElse("NOT_NEEDED")));
+        new CustomOperandSupplier(), customOperandSuppliers);
 
     DrgSyntaxTree<CustomTestOperand> ast = parser.buildExpressionTree();
     List<CustomTestOperand> mask = Collections
@@ -203,16 +219,14 @@ public class AstTest {
 
     assertThat(evaluation.isMatched(), is(true));
     assertThat(evaluation.getMatches().toArray(),
-        Matchers.arrayContainingInAnyOrder(mask.toArray()));
+        Matchers.arrayContaining(mask.toArray()));
   }
 
   @Test
   public void testCustomObjectOperandFalseEval() {
     List<DrgLexerToken> lexerTokens = DrgFormulaLexer.lex("PDX:A | C");
     DescentParser<CustomTestOperand> parser = new DescentParser<>(lexerTokens.listIterator(),
-        drgLexerToken -> new CustomTestOperand(drgLexerToken.getValue(),
-            drgLexerToken.getPrefix().orElse("NOT_NEEDED")));
-
+        new CustomOperandSupplier(), customOperandSuppliers);
     DrgSyntaxTree<CustomTestOperand> ast = parser.buildExpressionTree();
     ExpressionResult<CustomTestOperand> evaluation = ast
         .evaluateExpression(Collections.singletonList(new CustomTestOperand("A", "NOT_NEEDED")));
@@ -224,7 +238,7 @@ public class AstTest {
   public void testEvalOfAnotherAst() {
     List<DrgLexerToken> lexerTokens = DrgFormulaLexer.lex("A | ~B");
     DescentParser<String> parser = new DescentParser<>(lexerTokens.listIterator(),
-        DrgLexerToken::getValue);
+        new StringOperandSupplier(), suppliers);
 
     DrgSyntaxTree<String> ast = parser.buildExpressionTree();
 
@@ -237,26 +251,26 @@ public class AstTest {
 
     assertThat(evaluation.isMatched(), is(true));
     assertThat(evaluation.getMatches().toArray(),
-        Matchers.arrayContainingInAnyOrder(mask.toArray()));
+        Matchers.arrayContaining(mask.toArray()));
 
     List<String> mask2 = Arrays.asList("B", "C");
     ExpressionResult<String> evaluation2 = ast2.evaluateExpression(mask2);
     assertThat(evaluation2.isMatched(), is(true));
     assertThat(evaluation2.getMatches().toArray(),
-        Matchers.arrayContainingInAnyOrder(mask2.toArray()));
+        Matchers.arrayContaining(mask2.toArray()));
   }
 
   @Test
   public void testSingleListEval() {
     List<DrgLexerToken> lexerTokens = DrgFormulaLexer.lex("A");
     DescentParser<String> parser = new DescentParser<>(lexerTokens.listIterator(),
-        DrgLexerToken::getValue);
+        new StringOperandSupplier(), suppliers);
     DrgSyntaxTree<String> ast = parser.buildExpressionTree();
     List<String> mask = Collections.singletonList("A");
     ExpressionResult<String> evaluation = ast.evaluateExpression(mask);
     assertThat(evaluation.isMatched(), is(true));
     assertThat(evaluation.getMatches().toArray(),
-        Matchers.arrayContainingInAnyOrder(mask.toArray()));
+        Matchers.arrayContaining(mask.toArray()));
   }
 
   @Test
@@ -264,7 +278,7 @@ public class AstTest {
 
     List<DrgLexerToken> lexerTokens = DrgFormulaLexer.lex("(A|B) & (C|D)");
     DescentParser<String> parser = new DescentParser<>(lexerTokens.listIterator(),
-        DrgLexerToken::getValue);
+        new StringOperandSupplier(), suppliers);
 
     DrgSyntaxTree<String> ast = parser.buildExpressionTree();
     List<String> mask = Arrays.asList("A", "C", "B");
@@ -273,9 +287,8 @@ public class AstTest {
     assertThat(evaluation.isMatched(), is(true));
     assertThat(evaluation.getMatches().size(), is(2));
     assertThat(evaluation.getMatches().toArray(),
-        Matchers.arrayContainingInAnyOrder(new String[]{"A", "C"}));
+        Matchers.arrayContaining(new Object[]{"A", "C"}));
   }
-
 
 
   /**
@@ -307,6 +320,59 @@ public class AstTest {
     @Override
     public int hashCode() {
       return Objects.hash(value, prefix);
+    }
+  }
+
+  private class StringOperandSupplier implements NodeSupplier<DrgLexerToken, String> {
+
+    @Override
+    public BooleanExpression<String> createNode(DrgLexerToken token) {
+      return new ContainsNode<>(token.value);
+    }
+  }
+
+  private class CustomOperandSupplier implements
+      NodeSupplier<DrgLexerToken, CustomTestOperand> {
+
+    @Override
+    public BooleanExpression<CustomTestOperand> createNode(DrgLexerToken token) {
+      return new ContainsNode<>(
+          new CustomTestOperand(token.getValue(), token.getPrefix().orElse("NOT_NEEDED")));
+    }
+  }
+
+  private class MsdrgGrouperFunctionSupplier implements
+      NodeSupplier<DrgLexerToken, String> {
+
+    private List<String> otherInformation;
+
+    public MsdrgGrouperFunctionSupplier() {
+      otherInformation = new ArrayList<>();
+      otherInformation.add("luck");
+    }
+
+    @Override
+    public BooleanExpression<String> createNode(DrgLexerToken token) {
+      return new GrouperFunctionNode(otherInformation);
+    }
+  }
+
+  private class GrouperFunctionNode implements
+      BooleanExpression<String> {
+
+    List<String> otherInformation;
+
+    GrouperFunctionNode(List<String> otherInformation) {
+      this.otherInformation = otherInformation;
+    }
+
+    @Override
+    public boolean evaluate(List<String> operands, Set<String> accumulator) {
+      if (otherInformation.contains("luck")) {
+        accumulator.add("luck");
+        return true;
+      }
+      return false;
     }
   }
 }

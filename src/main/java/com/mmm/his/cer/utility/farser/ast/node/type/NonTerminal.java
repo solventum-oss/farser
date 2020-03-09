@@ -1,4 +1,4 @@
-package com.mmm.his.cer.utility.farser.ast.nodes;
+package com.mmm.his.cer.utility.farser.ast.node.type;
 
 /**
  * This class represents a non-terminal node in the AST. These types of nodes will have a left and
