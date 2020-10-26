@@ -9,18 +9,18 @@ import java.util.regex.Pattern;
  * specific type of code.<br />
  * <br />
  * Example:
- * 
+ *
  * <pre>
  * public enum DrgFormulaToken implements
  *     TokenType&lt;DrgFormulaToken&gt; {
  *
  * ...
- * 
+ *
  * }
  * </pre>
- * 
+ *
  * @author a30w4zz
- * 
+ *
  * @param <T> The enumeration type which implements this interface.
  *
  */
@@ -28,7 +28,7 @@ public interface TokenType<T extends Enum<T>> {
 
   /**
    * The name of the enumeration element.
-   * 
+   *
    * @return The enumeration name
    */
   public String name();
@@ -36,21 +36,21 @@ public interface TokenType<T extends Enum<T>> {
   /**
    * The token value (e.g. the formula operator).<br />
    * Returns an empty optional for the ATOM token with the value {@link #ATOM_VALUE}.
-   * 
+   *
    * @return The token value.
    */
   public Optional<String> getValue();
 
   /**
    * The marker for {@link CommonTokenType}s. Not all tokens need such a common token type.
-   * 
+   *
    * @return The common token type, or an empty optional if there is none.
    */
   public Optional<CommonTokenType> getCommonTokenType();
 
   /**
    * Retrieves the token which is marked with the given {@link CommonTokenType}.
-   * 
+   *
    * @param tokenTypeClass The enumeration class with the tokens
    * @param commonType The {@link CommonTokenType} to look for
    * @return The token
@@ -69,10 +69,34 @@ public interface TokenType<T extends Enum<T>> {
     }
   }
 
+  /**
+   * Retrieves the token which is marked with the given {@link CommonTokenType}. Throws an exception
+   * if no such entry with that common token type exists.
+   *
+   * @param tokenTypeClass The enumeration class with the tokens
+   * @param commonType The {@link CommonTokenType} to look for
+   * @return The token
+   * @throws IllegalArgumentException If the token type class is not an enumeration, or if the token
+   *         type class does not contain the provided common token type entry.
+   */
+  public static <T extends TokenType<?>> T getForCommonTypeMandatory(Class<T> tokenTypeClass,
+      CommonTokenType commonType) {
+    Optional<T> tokenTypeTmp = getForCommonType(tokenTypeClass, commonType);
+    if (!tokenTypeTmp.isPresent()) {
+      // Having the provided token type is mandatory
+      throw new IllegalArgumentException("No implementation with "
+          + commonType.getClass().getSimpleName()
+          + "."
+          + commonType.name()
+          + " found in "
+          + tokenTypeClass.getClass().getSimpleName());
+    }
+    return tokenTypeTmp.get();
+  }
 
   /**
    * Retrieves the token which has the given value.
-   * 
+   *
    * @param tokenTypeClass The enumeration class with the tokens
    * @param value The value to look for
    * @return The token
@@ -93,7 +117,7 @@ public interface TokenType<T extends Enum<T>> {
 
   /**
    * Retrieves all token values from the enumeration class.
-   * 
+   *
    * @param tokenTypeClass The enumeration class
    * @return All tokens
    * @throws IllegalArgumentException If the token type class is not an enumeration
@@ -101,7 +125,8 @@ public interface TokenType<T extends Enum<T>> {
   public static <T extends TokenType<?>> T[] values(Class<T> tokenTypeClass) {
 
     if (!tokenTypeClass.isEnum()) {
-      throw new IllegalArgumentException(tokenTypeClass.getName() + " has to be an enumeration");
+      throw new IllegalArgumentException(tokenTypeClass.getName()
+          + " has to be an enumeration");
     }
 
     return tokenTypeClass.getEnumConstants();
@@ -112,7 +137,7 @@ public interface TokenType<T extends Enum<T>> {
    * Creates a RegEx OR pattern ("A|B|C...") based on all the token values in the provided
    * {@link TokenType} class.<br />
    * Tokens with no value are ignored.
-   * 
+   *
    * @param enumClass The token type enumeration class
    * @return The RegEx pattern
    * @throws IllegalArgumentException If the token type class is not an enumeration

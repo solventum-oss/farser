@@ -7,13 +7,12 @@ import com.mmm.his.cer.utility.farser.lexer.TokenType;
 import java.util.Optional;
 
 /**
- * All recognized types of tokens that we need to be concerned with when lexing a DRG formula.
- * 
- * @author a30w4zz
+ * A test token enum without the mandatory {@link CommonTokenType#SPACE} entry.
+ *
+ * @author Thomas Naeff
  *
  */
-public enum TestTokenWithoutMandatorySpace implements
-    TokenType<TestTokenWithoutMandatorySpace> {
+public enum TestTokenWithoutMandatorySpace implements TokenType<TestTokenWithoutMandatorySpace> {
 
   /**
    * Any substring which is not in a set of defined token characters here in {@link TokenType}. This
@@ -21,23 +20,25 @@ public enum TestTokenWithoutMandatorySpace implements
    * The atom token type here has no defined value. It will be available as {@link LexerToken} with
    * the value set as the non-token substring.
    */
-  ATOM(null,
+  ATOM(
+      null,
       CommonTokenType.ATOM),
 
   /**
-   * 
+   *
    */
   // SPACE("",
   // CommonTokenType.SPACE),
 
-  SOME_TOKEN("x");
+  SOME_TOKEN(
+      "x");
 
   private final Optional<String> value;
   private final Optional<CommonTokenType> commonType;
 
   /**
    * A new token type.
-   * 
+   *
    * @param value The token value, or <code>null</code> if not used
    * @param commonType The common token type, or <code>null</code> if not needed
    */
@@ -49,7 +50,7 @@ public enum TestTokenWithoutMandatorySpace implements
 
   /**
    * A new token type.
-   * 
+   *
    * @param value The token value
    */
   private TestTokenWithoutMandatorySpace(String value) {

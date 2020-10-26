@@ -20,24 +20,26 @@ public class Lexer {
 
   /**
    * Method to perform our Lexical analysis.
-   * 
+   *
    * @param tokenTypeEnumClass The enumeration class which defines all the tokens
    * @param input {@link String} to separate out into tokens.
    * @param factory The factory that creates the {@link LexerToken}s
    * @return List of {@link LexerToken} that were created from the input string.
    */
-  public static <L extends LexerToken<T>, T extends TokenType<?>> List<L> lex(
-      Class<T> tokenTypeEnumClass, String input, LexerTokenFactory<L, T> factory) {
+  public static <L extends LexerToken<T>, T extends TokenType<?>> List<L>
+      lex(Class<T> tokenTypeEnumClass, String input, LexerTokenFactory<L, T> factory) {
     List<L> result = new ArrayList<>();
     Pattern delimiterPattern = TokenType.createTokenPattern(tokenTypeEnumClass);
     Matcher delimiterMatcher = delimiterPattern.matcher(input);
 
-    Optional<T> atomTokenTypeTmp =
-        TokenType.getForCommonType(tokenTypeEnumClass, CommonTokenType.ATOM);
-    T atomTokenType = atomTokenTypeTmp.get();
-
-    Optional<T> spaceTokenTypeTmp =
-        TokenType.getForCommonType(tokenTypeEnumClass, CommonTokenType.SPACE);
+    // Handle optionals of the mandatory token types.
+    // These token types being mandatory is already checked when it creates the token lookup in
+    // TokenTypeLookup. However, that can not just be guaranteed here since that logic happens
+    // somewhere completely different.
+    T atomTokenType = TokenType.getForCommonTypeMandatory(tokenTypeEnumClass, CommonTokenType.ATOM);
+    T spaceTokenType =
+        TokenType.getForCommonTypeMandatory(tokenTypeEnumClass, CommonTokenType.SPACE);
+    Optional<T> spaceTokenTypeTmp = Optional.of(spaceTokenType);
 
     int pos = 0;
     while (delimiterMatcher.find()) {
@@ -73,7 +75,10 @@ public class Lexer {
       } else {
         // This should never happen. The regex should hit all tokens which exist in the token type
         // enum.
-        throw new FarserException("No match found for delimiter '" + delimiter + "'");
+        throw new FarserException("No match found for delimiter '"
+            + delimiter
+            + "'. No such token type seems to exist in "
+            + tokenTypeEnumClass.getClass().getSimpleName());
       }
 
       // Remember end of delimiter
@@ -101,12 +106,12 @@ public class Lexer {
   /**
    * Get only the values from a list of Tokens, this ignores all other types of tokens aside from
    * {@link TokenType#ATOM.}
-   * 
+   *
    * @param tokens the List of tokens to filter
    * @return List of strings that only contain values
    */
-  public static <L extends LexerToken<T>, T extends TokenType<?>> List<String> getTokens(
-      List<L> tokens, T forTokenType) {
+  public static <L extends LexerToken<T>, T extends TokenType<?>> List<String>
+      getTokens(List<L> tokens, T forTokenType) {
     return tokens.stream().filter(token -> token.getType() == forTokenType)
         .map(token -> token.getValue()).collect(Collectors.toList());
   }

@@ -41,4 +41,5 @@ fabric.properties
 .classpath
 .project
 .settings/
+.checkstyle
 

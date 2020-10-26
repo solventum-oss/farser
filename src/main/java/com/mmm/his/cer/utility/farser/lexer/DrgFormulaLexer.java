@@ -8,7 +8,7 @@ import java.util.List;
 
 /**
  * The lexer for DRG formulas.
- * 
+ *
  * @author a5rn0zz
  *
  */
@@ -22,7 +22,7 @@ public class DrgFormulaLexer {
 
   /**
    * Method to perform our Lexical analysis.
-   * 
+   *
    * @param input {@link String} to separate out into tokens.
    * @return List of {@link DrgLexerToken} that were created from the input string.
    */
@@ -31,9 +31,20 @@ public class DrgFormulaLexer {
   }
 
   /**
+   * Get only the specific tokens from a list of Tokens.
+   *
+   * @param tokens the List of tokens to filter
+   * @param tokenType The type of tokens to filter for
+   * @return List of strings that only contain values
+   */
+  public static List<String> getTokens(List<DrgLexerToken> tokens, DrgFormulaToken tokenType) {
+    return Lexer.getTokens(tokens, tokenType);
+  }
+
+  /**
    * Get only the list names from a list of Tokens, this ignores all other types of tokens aside
    * from {@link DrgFormulaToken#ATOM.}
-   * 
+   *
    * @param tokens the List of tokens to filter
    * @return List of strings that only contain values
    */

@@ -123,7 +123,7 @@ public class DescentParser<T> {
       not.setChild(root);
       root = not;
     } else {
-      throw new FarserException("Expression Malformed");
+      throw new FarserException("Expression Malformed on token " + currentToken);
     }
   }
 

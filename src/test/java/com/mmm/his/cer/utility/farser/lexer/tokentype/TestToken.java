@@ -8,12 +8,11 @@ import java.util.Optional;
 
 /**
  * All recognized types of tokens that we need to be concerned with when lexing a DRG formula.
- * 
+ *
  * @author a30w4zz
  *
  */
-public enum TestToken implements
-    TokenType<TestToken> {
+public enum TestToken implements TokenType<TestToken> {
 
   /**
    * Any substring which is not in a set of defined token characters here in {@link TokenType}. This
@@ -21,23 +20,51 @@ public enum TestToken implements
    * The atom token type here has no defined value. It will be available as {@link LexerToken} with
    * the value set as the non-token substring.
    */
-  ATOM(null,
+  ATOM(
+      null,
       CommonTokenType.ATOM),
 
   /**
-   * 
+   *
    */
-  SPACE("",
+  SPACE(
+      "",
       CommonTokenType.SPACE),
 
-  SOME_TOKEN("x");
+  SOME_TOKEN(
+      "x"),
+
+  /**
+   * Multiple characters in a token.
+   */
+  MULTI_CHARACTER_TOKEN(
+      "###"),
+
+  /**
+   * Multiple characters in a token, containing characters which also exists as
+   * {@link #SINGLE_IN_MULTI} and {@link #MULTI_IN_MULTI}.
+   */
+  MULTI_IN_SINGLE_TOKEN(
+      "*!!*"),
+
+  /**
+   * A single character which also exists in {@link #MULTI_CHARACTER_TOKEN}.
+   */
+  SINGLE_IN_MULTI(
+      "!"),
+
+  /**
+   * Multiple characters which also exists in {@link #MULTI_CHARACTER_TOKEN}.
+   */
+  MULTI_IN_MULTI(
+      "!!");
 
   private final Optional<String> value;
   private final Optional<CommonTokenType> commonType;
 
   /**
    * A new token type.
-   * 
+   *
    * @param value The token value, or <code>null</code> if not used
    * @param commonType The common token type, or <code>null</code> if not needed
    */
@@ -49,7 +76,7 @@ public enum TestToken implements
 
   /**
    * A new token type.
-   * 
+   *
    * @param value The token value
    */
   private TestToken(String value) {

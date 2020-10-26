@@ -1,35 +1,41 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <project name="Farser">
-  <bannerLeft>
-    <name>Farser</name>
-    <src>https://nexus.iw.aws.3mhis.net/content/sites/site/maven-site/0.0.2/images/3mlogo.jpg</src>
-    <title>Farser</title>
-  </bannerLeft>
+	<bannerLeft>
+		<name>Farser</name>
+		<src>https://nexus.iw.aws.3mhis.net/content/sites/site/maven-site/0.0.3/images/3mlogo.jpg
+		</src>
+		<title>Farser</title>
+	</bannerLeft>
 
-  <publishDate position="left"/>
-  <version position="left"/>
+	<publishDate position="left" />
+	<version position="left" />
 
-  <skin>
-    <groupId>org.apache.maven.skins</groupId>
-    <artifactId>maven-fluido-skin</artifactId>
-    <version>1.7</version>
-  </skin>
+	<skin>
+		<groupId>org.apache.maven.skins</groupId>
+		<artifactId>maven-fluido-skin</artifactId>
+		<version>1.8</version>
+	</skin>
 
-  <custom>
-    <fluidoSkin>
-      <topBarEnabled>true</topBarEnabled>
-      <navBarStyle>navbar-inverse</navBarStyle>
-      <sideBarEnabled>false</sideBarEnabled>
-    </fluidoSkin>
-  </custom>
+	<custom>
+		<fluidoSkin>
+			<topBarEnabled>true</topBarEnabled>
+			<navBarStyle>navbar-inverse</navBarStyle>
+			<sideBarEnabled>false</sideBarEnabled>
+			<sourceLineNumbersEnabled>true</sourceLineNumbersEnabled>
+		</fluidoSkin>
+	</custom>
 
-  <body>
-    <menu name="Overview">
-      <item name="Home" href="index.html"/>
-      <item name="Dependencies" href="dependencies.html"/>
-      <item name="Distribution" href="distribution-management.html"/>
-    </menu>
+	<body>
+		<menu name="Overview">
+			<item name="Home" href="index.html" />
+			<item name="Dependencies" href="dependencies.html" />
+			<item name="Distribution" href="distribution-management.html" />
+			<!-- Direct link to Javadoc report. -->
+			<item name="Javadocs" href="apidocs/index.html" />
+			<!-- Listing of required Maven POM/Gradle/etc. entries -->
+			<item name="Dependency Info" href="dependency-info.html" />
+		</menu>
 
 
-  </body>
+	</body>
 </project>

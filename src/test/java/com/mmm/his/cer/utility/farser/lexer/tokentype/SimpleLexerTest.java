@@ -28,8 +28,10 @@ public class SimpleLexerTest {
     List<TestLexerToken> lex = Lexer.lex(TestToken.class, input, new TestTokenFactory());
 
     System.out.println("");
-    System.out.println("Input: " + input);
-    System.out.println("Lexed: " + lex);
+    System.out.println("Input: "
+        + input);
+    System.out.println("Lexed: "
+        + lex);
 
     // Rather than checking equality on lists, make sure values from Lex are what we expect
 
@@ -61,18 +63,274 @@ public class SimpleLexerTest {
 
 
   @Test
-  public void testMandatoryCommonTokenTypes() throws Exception {
+  public void testMandatorySpaceCommonTokenType() throws Exception {
 
     exception.expect(FarserException.class);
     exception
         .expectMessage("com.mmm.his.cer.utility.farser.lexer.CommonTokenType.SPACE is mandatory. "
-            + "No token found in com.mmm.his.cer.utility.farser.lexer.tokentype.TestTokenWithoutMandatorySpace which is marked with this mandatory common type.");
+            + "No token found in com.mmm.his.cer.utility.farser.lexer.tokentype.TestTokenWithoutMandatorySpace "
+            + "which is marked with this mandatory common type.");
 
     // Run lexer without even providing an input or a factory. It should fail before that.
     Lexer.lex(TestTokenWithoutMandatorySpace.class, "", null);
 
   }
 
+  @Test
+  public void testMandatoryAtomCommonTokenType() throws Exception {
 
+    exception.expect(FarserException.class);
+    exception
+        .expectMessage("com.mmm.his.cer.utility.farser.lexer.CommonTokenType.ATOM is mandatory. "
+            + "No token found in com.mmm.his.cer.utility.farser.lexer.tokentype.TestTokenWithoutMandatoryAtom "
+            + "which is marked with this mandatory common type.");
+
+    // Run lexer without even providing an input or a factory. It should fail before that.
+    Lexer.lex(TestTokenWithoutMandatoryAtom.class, "", null);
+
+  }
+
+
+  @Test
+  public void testWithMultiCharacterToken() throws Exception {
+    String input = "anAtom ### anotherAtom###thirdAtom";
+    List<TestLexerToken> lex = Lexer.lex(TestToken.class, input, new TestTokenFactory());
+
+    System.out.println("");
+    System.out.println("Input: "
+        + input);
+    System.out.println("Lexed: "
+        + lex);
+
+    // Rather than checking equality on lists, make sure values from Lex are what we expect
+
+    int index = 0;
+
+    assertThat(lex.get(index).getType(), is(TestToken.ATOM));
+    assertThat(lex.get(index).getValue(), is("anAtom"));
+
+    index++;
+    assertThat(lex.get(index).getType(), is(TestToken.SPACE));
+    assertThat(lex.get(index).getValue(), is(" "));
+
+    index++;
+    assertThat(lex.get(index).getType(), is(TestToken.MULTI_CHARACTER_TOKEN));
+    assertThat(lex.get(index).getValue(), is(TestToken.MULTI_CHARACTER_TOKEN.getValue().get()));
+
+    index++;
+    assertThat(lex.get(index).getType(), is(TestToken.SPACE));
+    assertThat(lex.get(index).getValue(), is(" "));
+
+    index++;
+    assertThat(lex.get(index).getType(), is(TestToken.ATOM));
+    assertThat(lex.get(index).getValue(), is("anotherAtom"));
+
+    index++;
+    assertThat(lex.get(index).getType(), is(TestToken.MULTI_CHARACTER_TOKEN));
+    assertThat(lex.get(index).getValue(), is(TestToken.MULTI_CHARACTER_TOKEN.getValue().get()));
+
+    index++;
+    assertThat(lex.get(index).getType(), is(TestToken.ATOM));
+    assertThat(lex.get(index).getValue(), is("thirdAtom"));
+
+    assertThat(lex.size(), is(index + 1));
+  }
+
+
+  @Test
+  public void testWithMultiCharacterWhichContainsASingleCharacterToken() throws Exception {
+    String input = "anAtom *!!* anotherAtom*!!*thirdAtom";
+    List<TestLexerToken> lex = Lexer.lex(TestToken.class, input, new TestTokenFactory());
+
+    System.out.println("");
+    System.out.println("Input: "
+        + input);
+    System.out.println("Lexed: "
+        + lex);
+
+    // Rather than checking equality on lists, make sure values from Lex are what we expect
+
+    int index = 0;
+
+    assertThat(lex.get(index).getType(), is(TestToken.ATOM));
+    assertThat(lex.get(index).getValue(), is("anAtom"));
+
+    index++;
+    assertThat(lex.get(index).getType(), is(TestToken.SPACE));
+    assertThat(lex.get(index).getValue(), is(" "));
+
+    index++;
+    assertThat(lex.get(index).getType(), is(TestToken.MULTI_IN_SINGLE_TOKEN));
+    assertThat(lex.get(index).getValue(), is(TestToken.MULTI_IN_SINGLE_TOKEN.getValue().get()));
+
+    index++;
+    assertThat(lex.get(index).getType(), is(TestToken.SPACE));
+    assertThat(lex.get(index).getValue(), is(" "));
+
+    index++;
+    assertThat(lex.get(index).getType(), is(TestToken.ATOM));
+    assertThat(lex.get(index).getValue(), is("anotherAtom"));
+
+    index++;
+    assertThat(lex.get(index).getType(), is(TestToken.MULTI_IN_SINGLE_TOKEN));
+    assertThat(lex.get(index).getValue(), is(TestToken.MULTI_IN_SINGLE_TOKEN.getValue().get()));
+
+    index++;
+    assertThat(lex.get(index).getType(), is(TestToken.ATOM));
+    assertThat(lex.get(index).getValue(), is("thirdAtom"));
+
+    assertThat(lex.size(), is(index + 1));
+  }
+
+  @Test
+  public void testWithMultiCharacterInMultiCharacterToken() throws Exception {
+    String input = "anAtom !! anotherAtom!!thirdAtom";
+    List<TestLexerToken> lex = Lexer.lex(TestToken.class, input, new TestTokenFactory());
+
+    System.out.println("");
+    System.out.println("Input: "
+        + input);
+    System.out.println("Lexed: "
+        + lex);
+
+    // Rather than checking equality on lists, make sure values from Lex are what we expect
+
+    int index = 0;
+
+    assertThat(lex.get(index).getType(), is(TestToken.ATOM));
+    assertThat(lex.get(index).getValue(), is("anAtom"));
+
+    index++;
+    assertThat(lex.get(index).getType(), is(TestToken.SPACE));
+    assertThat(lex.get(index).getValue(), is(" "));
+
+    index++;
+    assertThat(lex.get(index).getType(), is(TestToken.MULTI_IN_MULTI));
+    assertThat(lex.get(index).getValue(), is(TestToken.MULTI_IN_MULTI.getValue().get()));
+
+    index++;
+    assertThat(lex.get(index).getType(), is(TestToken.SPACE));
+    assertThat(lex.get(index).getValue(), is(" "));
+
+    index++;
+    assertThat(lex.get(index).getType(), is(TestToken.ATOM));
+    assertThat(lex.get(index).getValue(), is("anotherAtom"));
+
+    index++;
+    assertThat(lex.get(index).getType(), is(TestToken.MULTI_IN_MULTI));
+    assertThat(lex.get(index).getValue(), is(TestToken.MULTI_IN_MULTI.getValue().get()));
+
+    index++;
+    assertThat(lex.get(index).getType(), is(TestToken.ATOM));
+    assertThat(lex.get(index).getValue(), is("thirdAtom"));
+
+    assertThat(lex.size(), is(index + 1));
+  }
+
+  @Test
+  public void testWithSingleCharacterInMultiCharacterToken() throws Exception {
+    String input = "anAtom ! anotherAtom!thirdAtom";
+    List<TestLexerToken> lex = Lexer.lex(TestToken.class, input, new TestTokenFactory());
+
+    System.out.println("");
+    System.out.println("Input: "
+        + input);
+    System.out.println("Lexed: "
+        + lex);
+
+    // Rather than checking equality on lists, make sure values from Lex are what we expect
+
+    int index = 0;
+
+    assertThat(lex.get(index).getType(), is(TestToken.ATOM));
+    assertThat(lex.get(index).getValue(), is("anAtom"));
+
+    index++;
+    assertThat(lex.get(index).getType(), is(TestToken.SPACE));
+    assertThat(lex.get(index).getValue(), is(" "));
+
+    index++;
+    assertThat(lex.get(index).getType(), is(TestToken.SINGLE_IN_MULTI));
+    assertThat(lex.get(index).getValue(), is(TestToken.SINGLE_IN_MULTI.getValue().get()));
+
+    index++;
+    assertThat(lex.get(index).getType(), is(TestToken.SPACE));
+    assertThat(lex.get(index).getValue(), is(" "));
+
+    index++;
+    assertThat(lex.get(index).getType(), is(TestToken.ATOM));
+    assertThat(lex.get(index).getValue(), is("anotherAtom"));
+
+    index++;
+    assertThat(lex.get(index).getType(), is(TestToken.SINGLE_IN_MULTI));
+    assertThat(lex.get(index).getValue(), is(TestToken.SINGLE_IN_MULTI.getValue().get()));
+
+    index++;
+    assertThat(lex.get(index).getType(), is(TestToken.ATOM));
+    assertThat(lex.get(index).getValue(), is("thirdAtom"));
+
+    assertThat(lex.size(), is(index + 1));
+  }
+
+  @Test
+  public void testWithMixedSingleMultiCharacterToken() throws Exception {
+    String input = "anAtom ! anotherAtom !! thirdAtom *!!*";
+    List<TestLexerToken> lex = Lexer.lex(TestToken.class, input, new TestTokenFactory());
+
+    System.out.println("");
+    System.out.println("Input: "
+        + input);
+    System.out.println("Lexed: "
+        + lex);
+
+    // Rather than checking equality on lists, make sure values from Lex are what we expect
+
+    int index = 0;
+
+    assertThat(lex.get(index).getType(), is(TestToken.ATOM));
+    assertThat(lex.get(index).getValue(), is("anAtom"));
+
+    index++;
+    assertThat(lex.get(index).getType(), is(TestToken.SPACE));
+    assertThat(lex.get(index).getValue(), is(" "));
+
+    index++;
+    assertThat(lex.get(index).getType(), is(TestToken.SINGLE_IN_MULTI));
+    assertThat(lex.get(index).getValue(), is(TestToken.SINGLE_IN_MULTI.getValue().get()));
+
+    index++;
+    assertThat(lex.get(index).getType(), is(TestToken.SPACE));
+    assertThat(lex.get(index).getValue(), is(" "));
+
+    index++;
+    assertThat(lex.get(index).getType(), is(TestToken.ATOM));
+    assertThat(lex.get(index).getValue(), is("anotherAtom"));
+
+    index++;
+    assertThat(lex.get(index).getType(), is(TestToken.SPACE));
+    assertThat(lex.get(index).getValue(), is(" "));
+
+    index++;
+    assertThat(lex.get(index).getType(), is(TestToken.MULTI_IN_MULTI));
+    assertThat(lex.get(index).getValue(), is(TestToken.MULTI_IN_MULTI.getValue().get()));
+
+    index++;
+    assertThat(lex.get(index).getType(), is(TestToken.SPACE));
+    assertThat(lex.get(index).getValue(), is(" "));
+
+    index++;
+    assertThat(lex.get(index).getType(), is(TestToken.ATOM));
+    assertThat(lex.get(index).getValue(), is("thirdAtom"));
+
+    index++;
+    assertThat(lex.get(index).getType(), is(TestToken.SPACE));
+    assertThat(lex.get(index).getValue(), is(" "));
+
+    index++;
+    assertThat(lex.get(index).getType(), is(TestToken.MULTI_IN_SINGLE_TOKEN));
+    assertThat(lex.get(index).getValue(), is(TestToken.MULTI_IN_SINGLE_TOKEN.getValue().get()));
+
+    assertThat(lex.size(), is(index + 1));
+  }
 
 }
