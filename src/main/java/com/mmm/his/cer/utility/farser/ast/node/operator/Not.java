@@ -2,16 +2,12 @@ package com.mmm.his.cer.utility.farser.ast.node.operator;
 
 import com.mmm.his.cer.utility.farser.ast.node.type.BooleanExpression;
 import com.mmm.his.cer.utility.farser.ast.node.type.NonTerminal;
-
 import java.util.List;
 import java.util.Set;
 
 /**
  * Implementation of a non-terminal node for use in the AST. This type of node will only have a left
  * child and no right child. It's evaluation should negate the result of the left child.
- * <br/>
- * Nothing is reported back to the event bus about a negation, since in actuality, negation in our
- * formulas is a existence check.
  *
  * @param <T> The type used in the terminal nodes.
  * @author Mike Funaro
@@ -29,7 +25,7 @@ public class Not<T> extends NonTerminal<T> {
   }
 
   @Override
-  public void setRight(BooleanExpression right) {
+  public void setRight(BooleanExpression<T> right) {
     // Not nodes will only have one child and that is the left child. Throw error.
     throw new UnsupportedOperationException();
   }
@@ -42,10 +38,6 @@ public class Not<T> extends NonTerminal<T> {
 
   @Override
   public String toString() {
-    final StringBuilder sb = new StringBuilder("Not{");
-    sb.append("left=").append(left);
-    sb.append(", right=").append(right);
-    sb.append('}');
-    return sb.toString();
+    return "Not{" + "left=" + left + ", right=" + right + '}';
   }
 }

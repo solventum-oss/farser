@@ -1,7 +1,6 @@
 package com.mmm.his.cer.utility.farser.ast.node.terminal;
 
 import com.mmm.his.cer.utility.farser.ast.node.type.BooleanExpression;
-
 import java.util.List;
 import java.util.Set;
 
@@ -14,7 +13,7 @@ import java.util.Set;
  */
 public class ContainsNode<T> implements BooleanExpression<T> {
 
-  private T value;
+  private final T value;
 
   public ContainsNode(T value) {
     this.value = value;
@@ -31,9 +30,6 @@ public class ContainsNode<T> implements BooleanExpression<T> {
 
   @Override
   public String toString() {
-    final StringBuilder sb = new StringBuilder("ContainsNode{");
-    sb.append("value='").append(value).append('\'');
-    sb.append('}');
-    return sb.toString();
+    return "ContainsNode{" + "value='" + value + '\'' + '}';
   }
 }

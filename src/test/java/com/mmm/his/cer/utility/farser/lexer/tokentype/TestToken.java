@@ -3,14 +3,12 @@ package com.mmm.his.cer.utility.farser.lexer.tokentype;
 import com.mmm.his.cer.utility.farser.lexer.CommonTokenType;
 import com.mmm.his.cer.utility.farser.lexer.LexerToken;
 import com.mmm.his.cer.utility.farser.lexer.TokenType;
-
 import java.util.Optional;
 
 /**
  * All recognized types of tokens that we need to be concerned with when lexing a DRG formula.
  *
  * @author a30w4zz
- *
  */
 public enum TestToken implements TokenType<TestToken> {
 
@@ -65,10 +63,10 @@ public enum TestToken implements TokenType<TestToken> {
   /**
    * A new token type.
    *
-   * @param value The token value, or <code>null</code> if not used
+   * @param value      The token value, or <code>null</code> if not used
    * @param commonType The common token type, or <code>null</code> if not needed
    */
-  private TestToken(String value, CommonTokenType commonType) {
+  TestToken(String value, CommonTokenType commonType) {
     this.value = Optional.ofNullable(value);
     this.commonType = Optional.ofNullable(commonType);
 
@@ -79,7 +77,7 @@ public enum TestToken implements TokenType<TestToken> {
    *
    * @param value The token value
    */
-  private TestToken(String value) {
+  TestToken(String value) {
     this(value, null);
 
   }

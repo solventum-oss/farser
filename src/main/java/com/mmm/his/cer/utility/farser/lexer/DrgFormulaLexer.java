@@ -3,14 +3,12 @@ package com.mmm.his.cer.utility.farser.lexer;
 import com.mmm.his.cer.utility.farser.lexer.drg.DrgFormulaToken;
 import com.mmm.his.cer.utility.farser.lexer.drg.DrgFormulaTokenFactory;
 import com.mmm.his.cer.utility.farser.lexer.drg.DrgLexerToken;
-
 import java.util.List;
 
 /**
  * The lexer for DRG formulas.
  *
- * @author a5rn0zz
- *
+ * @author Thomas Naeff
  */
 public class DrgFormulaLexer {
 
@@ -43,7 +41,7 @@ public class DrgFormulaLexer {
 
   /**
    * Get only the list names from a list of Tokens, this ignores all other types of tokens aside
-   * from {@link DrgFormulaToken#ATOM.}
+   * from {@link DrgFormulaToken#ATOM}.
    *
    * @param tokens the List of tokens to filter
    * @return List of strings that only contain values

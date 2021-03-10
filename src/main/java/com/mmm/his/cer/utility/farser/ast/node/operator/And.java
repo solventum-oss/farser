@@ -1,7 +1,6 @@
 package com.mmm.his.cer.utility.farser.ast.node.operator;
 
 import com.mmm.his.cer.utility.farser.ast.node.type.NonTerminal;
-
 import java.util.List;
 import java.util.Set;
 
@@ -21,10 +20,6 @@ public class And<T> extends NonTerminal<T> {
 
   @Override
   public String toString() {
-    final StringBuilder sb = new StringBuilder("And{");
-    sb.append("left=").append(left);
-    sb.append(", right=").append(right);
-    sb.append('}');
-    return sb.toString();
+    return "And{" + "left=" + left + ", right=" + right + '}';
   }
 }

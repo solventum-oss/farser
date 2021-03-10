@@ -2,15 +2,13 @@ package com.mmm.his.cer.utility.farser.lexer;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
-
 import com.mmm.his.cer.utility.farser.lexer.domain.DomainCodeLexerToken;
 import com.mmm.his.cer.utility.farser.lexer.domain.DomainCodeToken;
+import java.util.List;
 import org.hamcrest.collection.IsIterableContainingInOrder;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-
-import java.util.List;
 
 /**
  * farser
@@ -28,7 +26,7 @@ public class DomainCodeLexerTest {
     String input = "larynx or(not PDX:dxlarx and not otlarynx)";
     List<DomainCodeLexerToken> lex = DomainCodeLexer.lex(input);
 
-    System.out.println("");
+    System.out.println();
     System.out.println("Input: "
         + input);
     System.out.println("Lexed: "
@@ -43,15 +41,18 @@ public class DomainCodeLexerTest {
 
     index++;
     assertThat(lex.get(index).getType(), is(DomainCodeToken.OR));
-    assertThat(lex.get(index).getValue(), is(DomainCodeToken.OR.getValue().get()));
+    assertThat(lex.get(index).getValue(),
+        is(DomainCodeToken.OR.getValue().orElseThrow(Exception::new)));
 
     index++;
     assertThat(lex.get(index).getType(), is(DomainCodeToken.LPAREN));
-    assertThat(lex.get(index).getValue(), is(DomainCodeToken.LPAREN.getValue().get()));
+    assertThat(lex.get(index).getValue(),
+        is(DomainCodeToken.LPAREN.getValue().orElseThrow(Exception::new)));
 
     index++;
     assertThat(lex.get(index).getType(), is(DomainCodeToken.NOT));
-    assertThat(lex.get(index).getValue(), is(DomainCodeToken.NOT.getValue().get()));
+    assertThat(lex.get(index).getValue(),
+        is(DomainCodeToken.NOT.getValue().orElseThrow(Exception::new)));
 
     index++;
     assertThat(lex.get(index).getType(), is(DomainCodeToken.ATOM));
@@ -59,11 +60,13 @@ public class DomainCodeLexerTest {
 
     index++;
     assertThat(lex.get(index).getType(), is(DomainCodeToken.AND));
-    assertThat(lex.get(index).getValue(), is(DomainCodeToken.AND.getValue().get()));
+    assertThat(lex.get(index).getValue(),
+        is(DomainCodeToken.AND.getValue().orElseThrow(Exception::new)));
 
     index++;
     assertThat(lex.get(index).getType(), is(DomainCodeToken.NOT));
-    assertThat(lex.get(index).getValue(), is(DomainCodeToken.NOT.getValue().get()));
+    assertThat(lex.get(index).getValue(),
+        is(DomainCodeToken.NOT.getValue().orElseThrow(Exception::new)));
 
     index++;
     assertThat(lex.get(index).getType(), is(DomainCodeToken.ATOM));
@@ -71,7 +74,8 @@ public class DomainCodeLexerTest {
 
     index++;
     assertThat(lex.get(index).getType(), is(DomainCodeToken.RPAREN));
-    assertThat(lex.get(index).getValue(), is(DomainCodeToken.RPAREN.getValue().get()));
+    assertThat(lex.get(index).getValue(),
+        is(DomainCodeToken.RPAREN.getValue().orElseThrow(Exception::new)));
 
     assertThat(lex.size(), is(index + 1));
 
@@ -84,7 +88,7 @@ public class DomainCodeLexerTest {
     String input = " larynx or(not PDX:dxlarx   and not  otlarynx ) ";
     List<DomainCodeLexerToken> lex = DomainCodeLexer.lex(input);
 
-    System.out.println("");
+    System.out.println();
     System.out.println("Input: "
         + input);
     System.out.println("Lexed: "
@@ -99,15 +103,18 @@ public class DomainCodeLexerTest {
 
     index++;
     assertThat(lex.get(index).getType(), is(DomainCodeToken.OR));
-    assertThat(lex.get(index).getValue(), is(DomainCodeToken.OR.getValue().get()));
+    assertThat(lex.get(index).getValue(),
+        is(DomainCodeToken.OR.getValue().orElseThrow(Exception::new)));
 
     index++;
     assertThat(lex.get(index).getType(), is(DomainCodeToken.LPAREN));
-    assertThat(lex.get(index).getValue(), is(DomainCodeToken.LPAREN.getValue().get()));
+    assertThat(lex.get(index).getValue(),
+        is(DomainCodeToken.LPAREN.getValue().orElseThrow(Exception::new)));
 
     index++;
     assertThat(lex.get(index).getType(), is(DomainCodeToken.NOT));
-    assertThat(lex.get(index).getValue(), is(DomainCodeToken.NOT.getValue().get()));
+    assertThat(lex.get(index).getValue(),
+        is(DomainCodeToken.NOT.getValue().orElseThrow(Exception::new)));
 
     index++;
     assertThat(lex.get(index).getType(), is(DomainCodeToken.ATOM));
@@ -115,11 +122,13 @@ public class DomainCodeLexerTest {
 
     index++;
     assertThat(lex.get(index).getType(), is(DomainCodeToken.AND));
-    assertThat(lex.get(index).getValue(), is(DomainCodeToken.AND.getValue().get()));
+    assertThat(lex.get(index).getValue(),
+        is(DomainCodeToken.AND.getValue().orElseThrow(Exception::new)));
 
     index++;
     assertThat(lex.get(index).getType(), is(DomainCodeToken.NOT));
-    assertThat(lex.get(index).getValue(), is(DomainCodeToken.NOT.getValue().get()));
+    assertThat(lex.get(index).getValue(),
+        is(DomainCodeToken.NOT.getValue().orElseThrow(Exception::new)));
 
     index++;
     assertThat(lex.get(index).getType(), is(DomainCodeToken.ATOM));
@@ -127,7 +136,8 @@ public class DomainCodeLexerTest {
 
     index++;
     assertThat(lex.get(index).getType(), is(DomainCodeToken.RPAREN));
-    assertThat(lex.get(index).getValue(), is(DomainCodeToken.RPAREN.getValue().get()));
+    assertThat(lex.get(index).getValue(),
+        is(DomainCodeToken.RPAREN.getValue().orElseThrow(Exception::new)));
 
     assertThat(lex.size(), is(index + 1));
 
@@ -140,7 +150,7 @@ public class DomainCodeLexerTest {
     String input = " a = 1 or b := 2";
     List<DomainCodeLexerToken> lex = DomainCodeLexer.lex(input);
 
-    System.out.println("");
+    System.out.println();
     System.out.println("Input: "
         + input);
     System.out.println("Lexed: "
@@ -155,7 +165,8 @@ public class DomainCodeLexerTest {
 
     index++;
     assertThat(lex.get(index).getType(), is(DomainCodeToken.EQUAL));
-    assertThat(lex.get(index).getValue(), is(DomainCodeToken.EQUAL.getValue().get()));
+    assertThat(lex.get(index).getValue(),
+        is(DomainCodeToken.EQUAL.getValue().orElseThrow(Exception::new)));
 
     index++;
     assertThat(lex.get(index).getType(), is(DomainCodeToken.ATOM));
@@ -163,7 +174,8 @@ public class DomainCodeLexerTest {
 
     index++;
     assertThat(lex.get(index).getType(), is(DomainCodeToken.OR));
-    assertThat(lex.get(index).getValue(), is(DomainCodeToken.OR.getValue().get()));
+    assertThat(lex.get(index).getValue(),
+        is(DomainCodeToken.OR.getValue().orElseThrow(Exception::new)));
 
     index++;
     assertThat(lex.get(index).getType(), is(DomainCodeToken.ATOM));
@@ -171,7 +183,8 @@ public class DomainCodeLexerTest {
 
     index++;
     assertThat(lex.get(index).getType(), is(DomainCodeToken.ASSIGN));
-    assertThat(lex.get(index).getValue(), is(DomainCodeToken.ASSIGN.getValue().get()));
+    assertThat(lex.get(index).getValue(),
+        is(DomainCodeToken.ASSIGN.getValue().orElseThrow(Exception::new)));
 
     index++;
     assertThat(lex.get(index).getType(), is(DomainCodeToken.ATOM));
@@ -187,7 +200,7 @@ public class DomainCodeLexerTest {
     String input = " a >= 1 or b <= 2 or c > 3 or d < 4";
     List<DomainCodeLexerToken> lex = DomainCodeLexer.lex(input);
 
-    System.out.println("");
+    System.out.println();
     System.out.println("Input: "
         + input);
     System.out.println("Lexed: "
@@ -202,7 +215,8 @@ public class DomainCodeLexerTest {
 
     index++;
     assertThat(lex.get(index).getType(), is(DomainCodeToken.GT_EQUAL));
-    assertThat(lex.get(index).getValue(), is(DomainCodeToken.GT_EQUAL.getValue().get()));
+    assertThat(lex.get(index).getValue(),
+        is(DomainCodeToken.GT_EQUAL.getValue().orElseThrow(Exception::new)));
 
     index++;
     assertThat(lex.get(index).getType(), is(DomainCodeToken.ATOM));
@@ -210,7 +224,8 @@ public class DomainCodeLexerTest {
 
     index++;
     assertThat(lex.get(index).getType(), is(DomainCodeToken.OR));
-    assertThat(lex.get(index).getValue(), is(DomainCodeToken.OR.getValue().get()));
+    assertThat(lex.get(index).getValue(),
+        is(DomainCodeToken.OR.getValue().orElseThrow(Exception::new)));
 
     index++;
     assertThat(lex.get(index).getType(), is(DomainCodeToken.ATOM));
@@ -218,7 +233,8 @@ public class DomainCodeLexerTest {
 
     index++;
     assertThat(lex.get(index).getType(), is(DomainCodeToken.LT_EQUAL));
-    assertThat(lex.get(index).getValue(), is(DomainCodeToken.LT_EQUAL.getValue().get()));
+    assertThat(lex.get(index).getValue(),
+        is(DomainCodeToken.LT_EQUAL.getValue().orElseThrow(Exception::new)));
 
     index++;
     assertThat(lex.get(index).getType(), is(DomainCodeToken.ATOM));
@@ -226,7 +242,8 @@ public class DomainCodeLexerTest {
 
     index++;
     assertThat(lex.get(index).getType(), is(DomainCodeToken.OR));
-    assertThat(lex.get(index).getValue(), is(DomainCodeToken.OR.getValue().get()));
+    assertThat(lex.get(index).getValue(),
+        is(DomainCodeToken.OR.getValue().orElseThrow(Exception::new)));
 
     index++;
     assertThat(lex.get(index).getType(), is(DomainCodeToken.ATOM));
@@ -234,7 +251,8 @@ public class DomainCodeLexerTest {
 
     index++;
     assertThat(lex.get(index).getType(), is(DomainCodeToken.GREATER_THAN));
-    assertThat(lex.get(index).getValue(), is(DomainCodeToken.GREATER_THAN.getValue().get()));
+    assertThat(lex.get(index).getValue(),
+        is(DomainCodeToken.GREATER_THAN.getValue().orElseThrow(Exception::new)));
 
     index++;
     assertThat(lex.get(index).getType(), is(DomainCodeToken.ATOM));
@@ -242,7 +260,8 @@ public class DomainCodeLexerTest {
 
     index++;
     assertThat(lex.get(index).getType(), is(DomainCodeToken.OR));
-    assertThat(lex.get(index).getValue(), is(DomainCodeToken.OR.getValue().get()));
+    assertThat(lex.get(index).getValue(),
+        is(DomainCodeToken.OR.getValue().orElseThrow(Exception::new)));
 
     index++;
     assertThat(lex.get(index).getType(), is(DomainCodeToken.ATOM));
@@ -250,7 +269,8 @@ public class DomainCodeLexerTest {
 
     index++;
     assertThat(lex.get(index).getType(), is(DomainCodeToken.LESS_THAN));
-    assertThat(lex.get(index).getValue(), is(DomainCodeToken.LESS_THAN.getValue().get()));
+    assertThat(lex.get(index).getValue(),
+        is(DomainCodeToken.LESS_THAN.getValue().orElseThrow(Exception::new)));
 
     index++;
     assertThat(lex.get(index).getType(), is(DomainCodeToken.ATOM));
@@ -268,7 +288,7 @@ public class DomainCodeLexerTest {
     String input = " a >= 1 or c > 3";
     List<DomainCodeLexerToken> lex = DomainCodeLexer.lex(input);
 
-    System.out.println("");
+    System.out.println();
     System.out.println("Input: "
         + input);
     System.out.println("Lexed: "
@@ -283,7 +303,8 @@ public class DomainCodeLexerTest {
 
     index++;
     assertThat(lex.get(index).getType(), is(DomainCodeToken.GT_EQUAL));
-    assertThat(lex.get(index).getValue(), is(DomainCodeToken.GT_EQUAL.getValue().get()));
+    assertThat(lex.get(index).getValue(),
+        is(DomainCodeToken.GT_EQUAL.getValue().orElseThrow(Exception::new)));
 
     index++;
     assertThat(lex.get(index).getType(), is(DomainCodeToken.ATOM));
@@ -291,7 +312,8 @@ public class DomainCodeLexerTest {
 
     index++;
     assertThat(lex.get(index).getType(), is(DomainCodeToken.OR));
-    assertThat(lex.get(index).getValue(), is(DomainCodeToken.OR.getValue().get()));
+    assertThat(lex.get(index).getValue(),
+        is(DomainCodeToken.OR.getValue().orElseThrow(Exception::new)));
 
     index++;
     assertThat(lex.get(index).getType(), is(DomainCodeToken.ATOM));
@@ -299,7 +321,8 @@ public class DomainCodeLexerTest {
 
     index++;
     assertThat(lex.get(index).getType(), is(DomainCodeToken.GREATER_THAN));
-    assertThat(lex.get(index).getValue(), is(DomainCodeToken.GREATER_THAN.getValue().get()));
+    assertThat(lex.get(index).getValue(),
+        is(DomainCodeToken.GREATER_THAN.getValue().orElseThrow(Exception::new)));
 
     index++;
     assertThat(lex.get(index).getType(), is(DomainCodeToken.ATOM));
@@ -310,11 +333,11 @@ public class DomainCodeLexerTest {
   }
 
   @Test
-  public void testNoTokenBetweenAtoms() throws Exception {
+  public void testNoTokenBetweenAtoms() {
     String input = " a b";
     List<DomainCodeLexerToken> lex = DomainCodeLexer.lex(input);
 
-    System.out.println("");
+    System.out.println();
     System.out.println("Input: "
         + input);
     System.out.println("Lexed: "
@@ -340,7 +363,7 @@ public class DomainCodeLexerTest {
     String input = "A or B and someFunction ( 1, 2,3) and C";
     List<DomainCodeLexerToken> lex = DomainCodeLexer.lex(input);
 
-    System.out.println("");
+    System.out.println();
     System.out.println("Input: "
         + input);
     System.out.println("Lexed: "
@@ -353,7 +376,8 @@ public class DomainCodeLexerTest {
 
     index++;
     assertThat(lex.get(index).getType(), is(DomainCodeToken.OR));
-    assertThat(lex.get(index).getValue(), is(DomainCodeToken.OR.getValue().get()));
+    assertThat(lex.get(index).getValue(),
+        is(DomainCodeToken.OR.getValue().orElseThrow(Exception::new)));
 
     index++;
     assertThat(lex.get(index).getType(), is(DomainCodeToken.ATOM));
@@ -361,7 +385,8 @@ public class DomainCodeLexerTest {
 
     index++;
     assertThat(lex.get(index).getType(), is(DomainCodeToken.AND));
-    assertThat(lex.get(index).getValue(), is(DomainCodeToken.AND.getValue().get()));
+    assertThat(lex.get(index).getValue(),
+        is(DomainCodeToken.AND.getValue().orElseThrow(Exception::new)));
 
     index++;
     assertThat(lex.get(index).getType(), is(DomainCodeToken.ATOM));
@@ -369,7 +394,8 @@ public class DomainCodeLexerTest {
 
     index++;
     assertThat(lex.get(index).getType(), is(DomainCodeToken.LPAREN));
-    assertThat(lex.get(index).getValue(), is(DomainCodeToken.LPAREN.getValue().get()));
+    assertThat(lex.get(index).getValue(),
+        is(DomainCodeToken.LPAREN.getValue().orElseThrow(Exception::new)));
 
     index++;
     assertThat(lex.get(index).getType(), is(DomainCodeToken.ATOM));
@@ -377,7 +403,8 @@ public class DomainCodeLexerTest {
 
     index++;
     assertThat(lex.get(index).getType(), is(DomainCodeToken.COMMA));
-    assertThat(lex.get(index).getValue(), is(DomainCodeToken.COMMA.getValue().get()));
+    assertThat(lex.get(index).getValue(),
+        is(DomainCodeToken.COMMA.getValue().orElseThrow(Exception::new)));
 
     index++;
     assertThat(lex.get(index).getType(), is(DomainCodeToken.ATOM));
@@ -385,7 +412,8 @@ public class DomainCodeLexerTest {
 
     index++;
     assertThat(lex.get(index).getType(), is(DomainCodeToken.COMMA));
-    assertThat(lex.get(index).getValue(), is(DomainCodeToken.COMMA.getValue().get()));
+    assertThat(lex.get(index).getValue(),
+        is(DomainCodeToken.COMMA.getValue().orElseThrow(Exception::new)));
 
     index++;
     assertThat(lex.get(index).getType(), is(DomainCodeToken.ATOM));
@@ -393,11 +421,13 @@ public class DomainCodeLexerTest {
 
     index++;
     assertThat(lex.get(index).getType(), is(DomainCodeToken.RPAREN));
-    assertThat(lex.get(index).getValue(), is(DomainCodeToken.RPAREN.getValue().get()));
+    assertThat(lex.get(index).getValue(),
+        is(DomainCodeToken.RPAREN.getValue().orElseThrow(Exception::new)));
 
     index++;
     assertThat(lex.get(index).getType(), is(DomainCodeToken.AND));
-    assertThat(lex.get(index).getValue(), is(DomainCodeToken.AND.getValue().get()));
+    assertThat(lex.get(index).getValue(),
+        is(DomainCodeToken.AND.getValue().orElseThrow(Exception::new)));
 
     index++;
     assertThat(lex.get(index).getType(), is(DomainCodeToken.ATOM));
@@ -416,7 +446,7 @@ public class DomainCodeLexerTest {
         + "and not    somethingNegated and>invalidAndGreaterThanButLexingDoesNotCare a:=b";
     List<DomainCodeLexerToken> lex = DomainCodeLexer.lex(input);
 
-    System.out.println("");
+    System.out.println();
     System.out.println("Input: "
         + input);
     System.out.println("Lexed: "
@@ -431,7 +461,8 @@ public class DomainCodeLexerTest {
 
     index++;
     assertThat(lex.get(index).getType(), is(DomainCodeToken.AND));
-    assertThat(lex.get(index).getValue(), is(DomainCodeToken.AND.getValue().get()));
+    assertThat(lex.get(index).getValue(),
+        is(DomainCodeToken.AND.getValue().orElseThrow(Exception::new)));
 
     index++;
     assertThat(lex.get(index).getType(), is(DomainCodeToken.ATOM));
@@ -439,7 +470,8 @@ public class DomainCodeLexerTest {
 
     index++;
     assertThat(lex.get(index).getType(), is(DomainCodeToken.OR));
-    assertThat(lex.get(index).getValue(), is(DomainCodeToken.OR.getValue().get()));
+    assertThat(lex.get(index).getValue(),
+        is(DomainCodeToken.OR.getValue().orElseThrow(Exception::new)));
 
     index++;
     assertThat(lex.get(index).getType(), is(DomainCodeToken.ATOM));
@@ -447,17 +479,17 @@ public class DomainCodeLexerTest {
 
     index++;
     assertThat(lex.get(index).getType(), is(DomainCodeToken.AND));
-    assertThat(lex.get(index).getValue(), is(DomainCodeToken.AND.getValue().get()));
+    assertThat(lex.get(index).getValue(),
+        is(DomainCodeToken.AND.getValue().orElseThrow(Exception::new)));
 
     index++;
     assertThat(lex.get(index).getType(), is(DomainCodeToken.ATOM));
     assertThat(lex.get(index).getValue(), is("anAtomWith_andandand"));
 
-
     index++;
     assertThat(lex.get(index).getType(), is(DomainCodeToken.AND));
-    assertThat(lex.get(index).getValue(), is(DomainCodeToken.AND.getValue().get()));
-
+    assertThat(lex.get(index).getValue(),
+        is(DomainCodeToken.AND.getValue().orElseThrow(Exception::new)));
 
     index++;
     assertThat(lex.get(index).getType(), is(DomainCodeToken.ATOM));
@@ -465,7 +497,8 @@ public class DomainCodeLexerTest {
 
     index++;
     assertThat(lex.get(index).getType(), is(DomainCodeToken.EQUAL));
-    assertThat(lex.get(index).getValue(), is(DomainCodeToken.EQUAL.getValue().get()));
+    assertThat(lex.get(index).getValue(),
+        is(DomainCodeToken.EQUAL.getValue().orElseThrow(Exception::new)));
 
     index++;
     assertThat(lex.get(index).getType(), is(DomainCodeToken.ATOM));
@@ -473,15 +506,18 @@ public class DomainCodeLexerTest {
 
     index++;
     assertThat(lex.get(index).getType(), is(DomainCodeToken.OR));
-    assertThat(lex.get(index).getValue(), is(DomainCodeToken.OR.getValue().get()));
+    assertThat(lex.get(index).getValue(),
+        is(DomainCodeToken.OR.getValue().orElseThrow(Exception::new)));
 
     index++;
     assertThat(lex.get(index).getType(), is(DomainCodeToken.LPAREN));
-    assertThat(lex.get(index).getValue(), is(DomainCodeToken.LPAREN.getValue().get()));
+    assertThat(lex.get(index).getValue(),
+        is(DomainCodeToken.LPAREN.getValue().orElseThrow(Exception::new)));
 
     index++;
     assertThat(lex.get(index).getType(), is(DomainCodeToken.NOT));
-    assertThat(lex.get(index).getValue(), is(DomainCodeToken.NOT.getValue().get()));
+    assertThat(lex.get(index).getValue(),
+        is(DomainCodeToken.NOT.getValue().orElseThrow(Exception::new)));
 
     index++;
     assertThat(lex.get(index).getType(), is(DomainCodeToken.ATOM));
@@ -489,11 +525,13 @@ public class DomainCodeLexerTest {
 
     index++;
     assertThat(lex.get(index).getType(), is(DomainCodeToken.RPAREN));
-    assertThat(lex.get(index).getValue(), is(DomainCodeToken.RPAREN.getValue().get()));
+    assertThat(lex.get(index).getValue(),
+        is(DomainCodeToken.RPAREN.getValue().orElseThrow(Exception::new)));
 
     index++;
     assertThat(lex.get(index).getType(), is(DomainCodeToken.AND));
-    assertThat(lex.get(index).getValue(), is(DomainCodeToken.AND.getValue().get()));
+    assertThat(lex.get(index).getValue(),
+        is(DomainCodeToken.AND.getValue().orElseThrow(Exception::new)));
 
     index++;
     assertThat(lex.get(index).getType(), is(DomainCodeToken.ATOM));
@@ -501,11 +539,13 @@ public class DomainCodeLexerTest {
 
     index++;
     assertThat(lex.get(index).getType(), is(DomainCodeToken.AND));
-    assertThat(lex.get(index).getValue(), is(DomainCodeToken.AND.getValue().get()));
+    assertThat(lex.get(index).getValue(),
+        is(DomainCodeToken.AND.getValue().orElseThrow(Exception::new)));
 
     index++;
     assertThat(lex.get(index).getType(), is(DomainCodeToken.NOT));
-    assertThat(lex.get(index).getValue(), is(DomainCodeToken.NOT.getValue().get()));
+    assertThat(lex.get(index).getValue(),
+        is(DomainCodeToken.NOT.getValue().orElseThrow(Exception::new)));
 
     index++;
     assertThat(lex.get(index).getType(), is(DomainCodeToken.ATOM));
@@ -513,11 +553,13 @@ public class DomainCodeLexerTest {
 
     index++;
     assertThat(lex.get(index).getType(), is(DomainCodeToken.AND));
-    assertThat(lex.get(index).getValue(), is(DomainCodeToken.AND.getValue().get()));
+    assertThat(lex.get(index).getValue(),
+        is(DomainCodeToken.AND.getValue().orElseThrow(Exception::new)));
 
     index++;
     assertThat(lex.get(index).getType(), is(DomainCodeToken.GREATER_THAN));
-    assertThat(lex.get(index).getValue(), is(DomainCodeToken.GREATER_THAN.getValue().get()));
+    assertThat(lex.get(index).getValue(),
+        is(DomainCodeToken.GREATER_THAN.getValue().orElseThrow(Exception::new)));
 
     index++;
     assertThat(lex.get(index).getType(), is(DomainCodeToken.ATOM));
@@ -529,13 +571,12 @@ public class DomainCodeLexerTest {
 
     index++;
     assertThat(lex.get(index).getType(), is(DomainCodeToken.ASSIGN));
-    assertThat(lex.get(index).getValue(), is(DomainCodeToken.ASSIGN.getValue().get()));
-
+    assertThat(lex.get(index).getValue(),
+        is(DomainCodeToken.ASSIGN.getValue().orElseThrow(Exception::new)));
 
     index++;
     assertThat(lex.get(index).getType(), is(DomainCodeToken.ATOM));
     assertThat(lex.get(index).getValue(), is("b"));
-
 
     assertThat(lex.size(), is(index + 1));
 
@@ -543,12 +584,12 @@ public class DomainCodeLexerTest {
 
 
   @Test
-  public void testGetValues1() throws Exception {
+  public void testGetValues1() {
     String input = "larynx or(PDX:dxlarx and not otlarynx)";
     List<DomainCodeLexerToken> lex = DomainCodeLexer.lex(input);
-    String[] expected = new String[] {"larynx", "PDX:dxlarx", "otlarynx"};
+    String[] expected = new String[]{"larynx", "PDX:dxlarx", "otlarynx"};
 
-    System.out.println("");
+    System.out.println();
     System.out.println("Input: "
         + input);
     System.out.println("Lexed: "
@@ -560,12 +601,12 @@ public class DomainCodeLexerTest {
 
 
   @Test
-  public void testGetValues2() throws Exception {
+  public void testGetValues2() {
     String input = " larynx or ( PDX:dxlarx and not otlarynx ) ";
     List<DomainCodeLexerToken> lex = DomainCodeLexer.lex(input);
-    String[] expected = new String[] {"larynx", "PDX:dxlarx", "otlarynx"};
+    String[] expected = new String[]{"larynx", "PDX:dxlarx", "otlarynx"};
 
-    System.out.println("");
+    System.out.println();
     System.out.println("Input: "
         + input);
     System.out.println("Lexed: "
@@ -577,13 +618,13 @@ public class DomainCodeLexerTest {
 
 
   @Test
-  public void testMalformedFormula1() throws Exception {
+  public void testMalformedFormula1() {
     // Even a malformed formula should just get lexed fine - the lexer does not care about proper
     // formatting
     String input = "(a (b)";
     List<DomainCodeLexerToken> lex = DomainCodeLexer.lex(input);
 
-    System.out.println("");
+    System.out.println();
     System.out.println("Input: "
         + input);
     System.out.println("Lexed: "
@@ -617,13 +658,13 @@ public class DomainCodeLexerTest {
   }
 
   @Test
-  public void testMalformedFormula2() throws Exception {
+  public void testMalformedFormula2() {
     // Even a malformed formula should just get lexed fine - the lexer does not care about proper
     // formatting
     String input = ":= a <-> b)";
     List<DomainCodeLexerToken> lex = DomainCodeLexer.lex(input);
 
-    System.out.println("");
+    System.out.println();
     System.out.println("Input: "
         + input);
     System.out.println("Lexed: "

@@ -5,9 +5,8 @@ package com.mmm.his.cer.utility.farser.lexer;
  * These common token types can be used to mark tokens in your own {@link TokenType} implementation.
  * Some of them are mandatory and have to exist in your own {@link TokenType} implementation, others
  * are not mandatory.
- * 
- * @author a5rn0zz
  *
+ * @author Thomas Naeff
  */
 public enum CommonTokenType {
 
@@ -58,7 +57,7 @@ public enum CommonTokenType {
 
   private final boolean mandatory;
 
-  private CommonTokenType(boolean mandatory) {
+  CommonTokenType(boolean mandatory) {
     this.mandatory = mandatory;
   }
 

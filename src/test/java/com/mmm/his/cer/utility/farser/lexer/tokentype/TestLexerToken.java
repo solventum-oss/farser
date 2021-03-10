@@ -6,9 +6,8 @@ import com.mmm.his.cer.utility.farser.lexer.TokenType;
 
 /**
  * Token class that can be used to represent the pieces of a lexed string.
- * 
- * @author a30w4zz
  *
+ * @author a30w4zz
  */
 public class TestLexerToken implements LexerToken<TestToken> {
 
@@ -17,7 +16,7 @@ public class TestLexerToken implements LexerToken<TestToken> {
 
   /**
    * A new token with the value from the {@link TokenType}.
-   * 
+   *
    * @param type The token type
    */
   public TestLexerToken(TestToken type) {
@@ -28,8 +27,8 @@ public class TestLexerToken implements LexerToken<TestToken> {
 
   /**
    * A new token with a provided value.
-   * 
-   * @param type The token type
+   *
+   * @param type  The token type
    * @param value The token value
    */
   public TestLexerToken(TestToken type, String value) {

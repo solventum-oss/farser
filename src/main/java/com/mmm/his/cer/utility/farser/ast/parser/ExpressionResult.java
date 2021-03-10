@@ -10,8 +10,8 @@ import java.util.Set;
  */
 public class ExpressionResult<T> {
 
-  private boolean matched;
-  private Set<T> matches;
+  private final boolean matched;
+  private final Set<T> matches;
 
   /**
    * Ctor.

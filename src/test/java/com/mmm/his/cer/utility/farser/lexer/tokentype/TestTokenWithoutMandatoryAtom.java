@@ -41,7 +41,7 @@ public enum TestTokenWithoutMandatoryAtom implements TokenType<TestTokenWithoutM
    * @param value The token value, or <code>null</code> if not used
    * @param commonType The common token type, or <code>null</code> if not needed
    */
-  private TestTokenWithoutMandatoryAtom(String value, CommonTokenType commonType) {
+  TestTokenWithoutMandatoryAtom(String value, CommonTokenType commonType) {
     this.value = Optional.ofNullable(value);
     this.commonType = Optional.ofNullable(commonType);
 
@@ -52,7 +52,7 @@ public enum TestTokenWithoutMandatoryAtom implements TokenType<TestTokenWithoutM
    *
    * @param value The token value
    */
-  private TestTokenWithoutMandatoryAtom(String value) {
+  TestTokenWithoutMandatoryAtom(String value) {
     this(value, null);
 
   }

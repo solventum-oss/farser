@@ -13,9 +13,8 @@ import java.util.regex.Pattern;
 
 /**
  * A helper class which provides lookup maps for {@link TokenType}s.
- * 
- * @author a5rn0zz
  *
+ * @author Thomas Naeff
  */
 public class TokenTypeLookup {
 
@@ -38,11 +37,11 @@ public class TokenTypeLookup {
    * This map can be used for easier lookup of tokens via value.<br />
    * The map is only created once for the given enum class and is retrieved from a cache for
    * subsequent lookups.
-   * 
+   *
    * @param enumClass The token enumeration class
    * @return An unmodifiable map with all the lookup entries
    * @throws IllegalArgumentException If the token type class is not an enumeration
-   * @throws FarserException If there are duplicate keys based on the token values
+   * @throws FarserException          If there are duplicate keys based on the token values
    */
   protected static <T extends TokenType<?>> Map<String, T> getValueLookupMap(Class<T> enumClass) {
 
@@ -75,7 +74,7 @@ public class TokenTypeLookup {
 
   /**
    * Creates the map for token lookups via value.
-   * 
+   *
    * @param enumClass The {@link TokenType} enumeration class
    * @return The map with the values and tokens of the given enumeration class
    */
@@ -104,12 +103,13 @@ public class TokenTypeLookup {
    * This map can be used for easier lookup of tokens via {@link CommonTokenType}.<br />
    * The map is only created once for the given enum class and is retrieved from a cache for
    * subsequent lookups.
-   * 
+   *
    * @param enumClass The token enumeration class
    * @return An unmodifiable map with all the lookup entries
    * @throws IllegalArgumentException If the token type class is not an enumeration
-   * @throws FarserException If there are duplicate keys based on the {@link CommonTokenType}s or if
-   *         mandatory {@link CommonTokenType} do not exist.
+   * @throws FarserException          If there are duplicate keys based on the {@link
+   *                                  CommonTokenType}s or if
+   *                                  mandatory {@link CommonTokenType} do not exist.
    */
   protected static <T extends TokenType<?>> Map<CommonTokenType, T> getCommonTypeLookupMap(
       Class<T> enumClass) {
@@ -149,7 +149,7 @@ public class TokenTypeLookup {
 
   /**
    * Creates the map for token lookups via {@link CommonTokenType}.
-   * 
+   *
    * @param enumClass The {@link TokenType} enumeration class
    * @return The map with the values and tokens of the given enumeration class
    */
@@ -176,13 +176,12 @@ public class TokenTypeLookup {
 
   /**
    * Creates the map for token lookups via {@link CommonTokenType}.
-   * 
+   *
    * @param enumClass The {@link TokenType} enumeration class for which the <code>lookupMap</code>
-   *        has been built
+   *                  has been built
    * @param lookupMap The lookup map to validate
-   * @return The map with the values and tokens of the given enumeration class
    * @throws FarserException If the enum class or lookup map have invalid content like mandatory
-   *         common token types missing etc.
+   *                         common token types missing etc.
    */
   private static <T extends TokenType<?>> void validateCommonTypeLookupMap(Class<T> enumClass,
       Map<CommonTokenType, T> lookupMap) {
@@ -204,7 +203,7 @@ public class TokenTypeLookup {
    * Tokens with no value are ignored.<br />
    * The pattern is only created once for the given enum class and is retrieved from a cache for
    * subsequent lookups.
-   * 
+   *
    * @param enumClass The token type enumeration class
    * @return The RegEx pattern
    * @throws IllegalArgumentException If the token type class is not an enumeration
@@ -234,7 +233,7 @@ public class TokenTypeLookup {
    * Builds the pattern based off the given {@link TokenType} enumeration class.<br />
    * The pattern is build based on all token values in the enumeration excluding ones marked with
    * {@link CommonTokenType#ATOM} and {@link CommonTokenType#SPACE}.
-   * 
+   *
    * @param enumClass The enumeration class
    * @return The RegEx pattern
    */
@@ -248,14 +247,12 @@ public class TokenTypeLookup {
           && commonType.get() != CommonTokenType.SPACE)) {
         Optional<String> value = enumConst.getValue();
         // Only all non-null values
-        if (value.isPresent()) {
-          delimiters.add(value.get());
-        }
+        value.ifPresent(delimiters::add);
       }
     }
 
     // Sort by longest delimiter first, shortest last.
-    Collections.sort(delimiters, (o1, o2) -> -o1.compareTo(o2));
+    delimiters.sort((o1, o2) -> -o1.compareTo(o2));
 
     // Joiner for all tokens which are symbols
     StringJoiner sjSymbol = new StringJoiner("|", "(", ")");
@@ -294,7 +291,7 @@ public class TokenTypeLookup {
 
   /**
    * Checks if the given string contains word characters.
-   * 
+   *
    * @param str The string to check
    * @return Whether or not the string contains word characters
    */

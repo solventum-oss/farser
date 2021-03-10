@@ -1,15 +1,13 @@
 package com.mmm.his.cer.utility.farser.lexer.drg;
 
 import com.mmm.his.cer.utility.farser.lexer.LexerTokenFactory;
-
 import java.security.InvalidParameterException;
 import java.util.Optional;
 
 /**
  * The factory which creates a {@link DrgLexerToken}.
- * 
- * @author a5rn0zz
  *
+ * @author Thomas Naeff
  */
 public class DrgFormulaTokenFactory implements LexerTokenFactory<DrgLexerToken, DrgFormulaToken> {
 
@@ -26,11 +24,10 @@ public class DrgFormulaTokenFactory implements LexerTokenFactory<DrgLexerToken, 
   }
 
 
-
   /**
    * Splits an atom string into its prefix and value if both are present, or just creates a token
    * with the value if no prefix is present.
-   * 
+   *
    * @param atom the atom string
    * @return The token with value and with or without prefix
    */

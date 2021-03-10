@@ -2,14 +2,12 @@ package com.mmm.his.cer.utility.farser.lexer.tokentype;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
-
 import com.mmm.his.cer.utility.farser.lexer.FarserException;
 import com.mmm.his.cer.utility.farser.lexer.Lexer;
+import java.util.List;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-
-import java.util.List;
 
 /**
  * farser
@@ -27,11 +25,9 @@ public class SimpleLexerTest {
     String input = "anAtom x  afterTwoSpaces";
     List<TestLexerToken> lex = Lexer.lex(TestToken.class, input, new TestTokenFactory());
 
-    System.out.println("");
-    System.out.println("Input: "
-        + input);
-    System.out.println("Lexed: "
-        + lex);
+    System.out.println();
+    System.out.println("Input: " + input);
+    System.out.println("Lexed: " + lex);
 
     // Rather than checking equality on lists, make sure values from Lex are what we expect
 
@@ -46,7 +42,8 @@ public class SimpleLexerTest {
 
     index++;
     assertThat(lex.get(index).getType(), is(TestToken.SOME_TOKEN));
-    assertThat(lex.get(index).getValue(), is(TestToken.SOME_TOKEN.getValue().get()));
+    assertThat(lex.get(index).getValue(),
+        is(TestToken.SOME_TOKEN.getValue().orElseThrow(Exception::new)));
 
     index++;
     assertThat(lex.get(index).getType(), is(TestToken.SPACE));
@@ -61,14 +58,14 @@ public class SimpleLexerTest {
   }
 
 
-
   @Test
-  public void testMandatorySpaceCommonTokenType() throws Exception {
+  public void testMandatorySpaceCommonTokenType() {
 
     exception.expect(FarserException.class);
     exception
         .expectMessage("com.mmm.his.cer.utility.farser.lexer.CommonTokenType.SPACE is mandatory. "
-            + "No token found in com.mmm.his.cer.utility.farser.lexer.tokentype.TestTokenWithoutMandatorySpace "
+            + "No token found in com.mmm.his.cer.utility.farser.lexer.tokentype"
+            + ".TestTokenWithoutMandatorySpace "
             + "which is marked with this mandatory common type.");
 
     // Run lexer without even providing an input or a factory. It should fail before that.
@@ -77,12 +74,13 @@ public class SimpleLexerTest {
   }
 
   @Test
-  public void testMandatoryAtomCommonTokenType() throws Exception {
+  public void testMandatoryAtomCommonTokenType() {
 
     exception.expect(FarserException.class);
     exception
         .expectMessage("com.mmm.his.cer.utility.farser.lexer.CommonTokenType.ATOM is mandatory. "
-            + "No token found in com.mmm.his.cer.utility.farser.lexer.tokentype.TestTokenWithoutMandatoryAtom "
+            + "No token found in com.mmm.his.cer.utility.farser.lexer.tokentype"
+            + ".TestTokenWithoutMandatoryAtom "
             + "which is marked with this mandatory common type.");
 
     // Run lexer without even providing an input or a factory. It should fail before that.
@@ -96,14 +94,11 @@ public class SimpleLexerTest {
     String input = "anAtom ### anotherAtom###thirdAtom";
     List<TestLexerToken> lex = Lexer.lex(TestToken.class, input, new TestTokenFactory());
 
-    System.out.println("");
-    System.out.println("Input: "
-        + input);
-    System.out.println("Lexed: "
-        + lex);
+    System.out.println();
+    System.out.println("Input: " + input);
+    System.out.println("Lexed: " + lex);
 
     // Rather than checking equality on lists, make sure values from Lex are what we expect
-
     int index = 0;
 
     assertThat(lex.get(index).getType(), is(TestToken.ATOM));
@@ -115,7 +110,8 @@ public class SimpleLexerTest {
 
     index++;
     assertThat(lex.get(index).getType(), is(TestToken.MULTI_CHARACTER_TOKEN));
-    assertThat(lex.get(index).getValue(), is(TestToken.MULTI_CHARACTER_TOKEN.getValue().get()));
+    assertThat(lex.get(index).getValue(),
+        is(TestToken.MULTI_CHARACTER_TOKEN.getValue().orElseThrow(Exception::new)));
 
     index++;
     assertThat(lex.get(index).getType(), is(TestToken.SPACE));
@@ -127,7 +123,8 @@ public class SimpleLexerTest {
 
     index++;
     assertThat(lex.get(index).getType(), is(TestToken.MULTI_CHARACTER_TOKEN));
-    assertThat(lex.get(index).getValue(), is(TestToken.MULTI_CHARACTER_TOKEN.getValue().get()));
+    assertThat(lex.get(index).getValue(),
+        is(TestToken.MULTI_CHARACTER_TOKEN.getValue().orElseThrow(Exception::new)));
 
     index++;
     assertThat(lex.get(index).getType(), is(TestToken.ATOM));
@@ -142,7 +139,7 @@ public class SimpleLexerTest {
     String input = "anAtom *!!* anotherAtom*!!*thirdAtom";
     List<TestLexerToken> lex = Lexer.lex(TestToken.class, input, new TestTokenFactory());
 
-    System.out.println("");
+    System.out.println();
     System.out.println("Input: "
         + input);
     System.out.println("Lexed: "
@@ -161,7 +158,8 @@ public class SimpleLexerTest {
 
     index++;
     assertThat(lex.get(index).getType(), is(TestToken.MULTI_IN_SINGLE_TOKEN));
-    assertThat(lex.get(index).getValue(), is(TestToken.MULTI_IN_SINGLE_TOKEN.getValue().get()));
+    assertThat(lex.get(index).getValue(),
+        is(TestToken.MULTI_IN_SINGLE_TOKEN.getValue().orElseThrow(Exception::new)));
 
     index++;
     assertThat(lex.get(index).getType(), is(TestToken.SPACE));
@@ -173,7 +171,8 @@ public class SimpleLexerTest {
 
     index++;
     assertThat(lex.get(index).getType(), is(TestToken.MULTI_IN_SINGLE_TOKEN));
-    assertThat(lex.get(index).getValue(), is(TestToken.MULTI_IN_SINGLE_TOKEN.getValue().get()));
+    assertThat(lex.get(index).getValue(),
+        is(TestToken.MULTI_IN_SINGLE_TOKEN.getValue().orElseThrow(Exception::new)));
 
     index++;
     assertThat(lex.get(index).getType(), is(TestToken.ATOM));
@@ -187,7 +186,7 @@ public class SimpleLexerTest {
     String input = "anAtom !! anotherAtom!!thirdAtom";
     List<TestLexerToken> lex = Lexer.lex(TestToken.class, input, new TestTokenFactory());
 
-    System.out.println("");
+    System.out.println();
     System.out.println("Input: "
         + input);
     System.out.println("Lexed: "
@@ -206,7 +205,8 @@ public class SimpleLexerTest {
 
     index++;
     assertThat(lex.get(index).getType(), is(TestToken.MULTI_IN_MULTI));
-    assertThat(lex.get(index).getValue(), is(TestToken.MULTI_IN_MULTI.getValue().get()));
+    assertThat(lex.get(index).getValue(),
+        is(TestToken.MULTI_IN_MULTI.getValue().orElseThrow(Exception::new)));
 
     index++;
     assertThat(lex.get(index).getType(), is(TestToken.SPACE));
@@ -218,7 +218,8 @@ public class SimpleLexerTest {
 
     index++;
     assertThat(lex.get(index).getType(), is(TestToken.MULTI_IN_MULTI));
-    assertThat(lex.get(index).getValue(), is(TestToken.MULTI_IN_MULTI.getValue().get()));
+    assertThat(lex.get(index).getValue(),
+        is(TestToken.MULTI_IN_MULTI.getValue().orElseThrow(Exception::new)));
 
     index++;
     assertThat(lex.get(index).getType(), is(TestToken.ATOM));
@@ -232,7 +233,7 @@ public class SimpleLexerTest {
     String input = "anAtom ! anotherAtom!thirdAtom";
     List<TestLexerToken> lex = Lexer.lex(TestToken.class, input, new TestTokenFactory());
 
-    System.out.println("");
+    System.out.println();
     System.out.println("Input: "
         + input);
     System.out.println("Lexed: "
@@ -251,7 +252,8 @@ public class SimpleLexerTest {
 
     index++;
     assertThat(lex.get(index).getType(), is(TestToken.SINGLE_IN_MULTI));
-    assertThat(lex.get(index).getValue(), is(TestToken.SINGLE_IN_MULTI.getValue().get()));
+    assertThat(lex.get(index).getValue(),
+        is(TestToken.SINGLE_IN_MULTI.getValue().orElseThrow(Exception::new)));
 
     index++;
     assertThat(lex.get(index).getType(), is(TestToken.SPACE));
@@ -263,7 +265,8 @@ public class SimpleLexerTest {
 
     index++;
     assertThat(lex.get(index).getType(), is(TestToken.SINGLE_IN_MULTI));
-    assertThat(lex.get(index).getValue(), is(TestToken.SINGLE_IN_MULTI.getValue().get()));
+    assertThat(lex.get(index).getValue(),
+        is(TestToken.SINGLE_IN_MULTI.getValue().orElseThrow(Exception::new)));
 
     index++;
     assertThat(lex.get(index).getType(), is(TestToken.ATOM));
@@ -277,7 +280,7 @@ public class SimpleLexerTest {
     String input = "anAtom ! anotherAtom !! thirdAtom *!!*";
     List<TestLexerToken> lex = Lexer.lex(TestToken.class, input, new TestTokenFactory());
 
-    System.out.println("");
+    System.out.println();
     System.out.println("Input: "
         + input);
     System.out.println("Lexed: "
@@ -296,7 +299,8 @@ public class SimpleLexerTest {
 
     index++;
     assertThat(lex.get(index).getType(), is(TestToken.SINGLE_IN_MULTI));
-    assertThat(lex.get(index).getValue(), is(TestToken.SINGLE_IN_MULTI.getValue().get()));
+    assertThat(lex.get(index).getValue(),
+        is(TestToken.SINGLE_IN_MULTI.getValue().orElseThrow(Exception::new)));
 
     index++;
     assertThat(lex.get(index).getType(), is(TestToken.SPACE));
@@ -312,7 +316,8 @@ public class SimpleLexerTest {
 
     index++;
     assertThat(lex.get(index).getType(), is(TestToken.MULTI_IN_MULTI));
-    assertThat(lex.get(index).getValue(), is(TestToken.MULTI_IN_MULTI.getValue().get()));
+    assertThat(lex.get(index).getValue(),
+        is(TestToken.MULTI_IN_MULTI.getValue().orElseThrow(Exception::new)));
 
     index++;
     assertThat(lex.get(index).getType(), is(TestToken.SPACE));
@@ -328,7 +333,8 @@ public class SimpleLexerTest {
 
     index++;
     assertThat(lex.get(index).getType(), is(TestToken.MULTI_IN_SINGLE_TOKEN));
-    assertThat(lex.get(index).getValue(), is(TestToken.MULTI_IN_SINGLE_TOKEN.getValue().get()));
+    assertThat(lex.get(index).getValue(),
+        is(TestToken.MULTI_IN_SINGLE_TOKEN.getValue().orElseThrow(Exception::new)));
 
     assertThat(lex.size(), is(index + 1));
   }

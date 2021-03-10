@@ -3,16 +3,14 @@ package com.mmm.his.cer.utility.farser.lexer;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
-
 import com.mmm.his.cer.utility.farser.lexer.drg.DrgFormulaToken;
 import com.mmm.his.cer.utility.farser.lexer.drg.DrgLexerToken;
+import java.security.InvalidParameterException;
+import java.util.List;
 import org.hamcrest.collection.IsIterableContainingInOrder;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-
-import java.security.InvalidParameterException;
-import java.util.List;
 
 /**
  * farser
@@ -30,11 +28,9 @@ public class DrgFormulaLexerTest {
     String input = "larynx |(~PDX:dxlarx & ~otlarynx)";
     List<DrgLexerToken> lex = DrgFormulaLexer.lex(input);
 
-    System.out.println("");
-    System.out.println("Input: "
-        + input);
-    System.out.println("Lexed: "
-        + lex);
+    System.out.println();
+    System.out.println("Input: " + input);
+    System.out.println("Lexed: " + lex);
 
     // Rather than checking equality on lists, make sure values from Lex are what we expect
 
@@ -46,32 +42,37 @@ public class DrgFormulaLexerTest {
 
     index++;
     assertThat(lex.get(index).getType(), is(DrgFormulaToken.OR));
-    assertThat(lex.get(index).getValue(), is(DrgFormulaToken.OR.getValue().get()));
+    assertThat(lex.get(index).getValue(),
+        is(DrgFormulaToken.OR.getValue().orElseThrow(Exception::new)));
     assertFalse(lex.get(index).prefix.isPresent());
 
     index++;
     assertThat(lex.get(index).getType(), is(DrgFormulaToken.LPAREN));
-    assertThat(lex.get(index).getValue(), is(DrgFormulaToken.LPAREN.getValue().get()));
+    assertThat(lex.get(index).getValue(),
+        is(DrgFormulaToken.LPAREN.getValue().orElseThrow(Exception::new)));
     assertFalse(lex.get(index).prefix.isPresent());
 
     index++;
     assertThat(lex.get(index).getType(), is(DrgFormulaToken.NOT));
-    assertThat(lex.get(index).getValue(), is(DrgFormulaToken.NOT.getValue().get()));
+    assertThat(lex.get(index).getValue(),
+        is(DrgFormulaToken.NOT.getValue().orElseThrow(Exception::new)));
     assertFalse(lex.get(index).prefix.isPresent());
 
     index++;
     assertThat(lex.get(index).getType(), is(DrgFormulaToken.ATOM));
     assertThat(lex.get(index).getValue(), is("dxlarx"));
-    assertThat(lex.get(index).prefix.get(), is("PDX"));
+    assertThat(lex.get(index).prefix.orElseThrow(Exception::new), is("PDX"));
 
     index++;
     assertThat(lex.get(index).getType(), is(DrgFormulaToken.AND));
-    assertThat(lex.get(index).getValue(), is(DrgFormulaToken.AND.getValue().get()));
+    assertThat(lex.get(index).getValue(),
+        is(DrgFormulaToken.AND.getValue().orElseThrow(Exception::new)));
     assertFalse(lex.get(index).prefix.isPresent());
 
     index++;
     assertThat(lex.get(index).getType(), is(DrgFormulaToken.NOT));
-    assertThat(lex.get(index).getValue(), is(DrgFormulaToken.NOT.getValue().get()));
+    assertThat(lex.get(index).getValue(),
+        is(DrgFormulaToken.NOT.getValue().orElseThrow(Exception::new)));
     assertFalse(lex.get(index).prefix.isPresent());
 
     index++;
@@ -81,7 +82,8 @@ public class DrgFormulaLexerTest {
 
     index++;
     assertThat(lex.get(index).getType(), is(DrgFormulaToken.RPAREN));
-    assertThat(lex.get(index).getValue(), is(DrgFormulaToken.RPAREN.getValue().get()));
+    assertThat(lex.get(index).getValue(),
+        is(DrgFormulaToken.RPAREN.getValue().orElseThrow(Exception::new)));
     assertFalse(lex.get(index).prefix.isPresent());
 
     assertThat(lex.size(), is(index + 1));
@@ -95,11 +97,9 @@ public class DrgFormulaLexerTest {
     String input = " larynx|(~ PDX:dxlarx&~otlarynx ) ";
     List<DrgLexerToken> lex = DrgFormulaLexer.lex(input);
 
-    System.out.println("");
-    System.out.println("Input: "
-        + input);
-    System.out.println("Lexed: "
-        + lex);
+    System.out.println();
+    System.out.println("Input: " + input);
+    System.out.println("Lexed: " + lex);
 
     // Rather than checking equality on lists, make sure values from Lex are what we expect
 
@@ -111,32 +111,37 @@ public class DrgFormulaLexerTest {
 
     index++;
     assertThat(lex.get(index).getType(), is(DrgFormulaToken.OR));
-    assertThat(lex.get(index).getValue(), is(DrgFormulaToken.OR.getValue().get()));
+    assertThat(lex.get(index).getValue(),
+        is(DrgFormulaToken.OR.getValue().orElseThrow(Exception::new)));
     assertFalse(lex.get(index).prefix.isPresent());
 
     index++;
     assertThat(lex.get(index).getType(), is(DrgFormulaToken.LPAREN));
-    assertThat(lex.get(index).getValue(), is(DrgFormulaToken.LPAREN.getValue().get()));
+    assertThat(lex.get(index).getValue(),
+        is(DrgFormulaToken.LPAREN.getValue().orElseThrow(Exception::new)));
     assertFalse(lex.get(index).prefix.isPresent());
 
     index++;
     assertThat(lex.get(index).getType(), is(DrgFormulaToken.NOT));
-    assertThat(lex.get(index).getValue(), is(DrgFormulaToken.NOT.getValue().get()));
+    assertThat(lex.get(index).getValue(),
+        is(DrgFormulaToken.NOT.getValue().orElseThrow(Exception::new)));
     assertFalse(lex.get(index).prefix.isPresent());
 
     index++;
     assertThat(lex.get(index).getType(), is(DrgFormulaToken.ATOM));
     assertThat(lex.get(index).getValue(), is("dxlarx"));
-    assertThat(lex.get(index).prefix.get(), is("PDX"));
+    assertThat(lex.get(index).prefix.orElseThrow(Exception::new), is("PDX"));
 
     index++;
     assertThat(lex.get(index).getType(), is(DrgFormulaToken.AND));
-    assertThat(lex.get(index).getValue(), is(DrgFormulaToken.AND.getValue().get()));
+    assertThat(lex.get(index).getValue(),
+        is(DrgFormulaToken.AND.getValue().orElseThrow(Exception::new)));
     assertFalse(lex.get(index).prefix.isPresent());
 
     index++;
     assertThat(lex.get(index).getType(), is(DrgFormulaToken.NOT));
-    assertThat(lex.get(index).getValue(), is(DrgFormulaToken.NOT.getValue().get()));
+    assertThat(lex.get(index).getValue(),
+        is(DrgFormulaToken.NOT.getValue().orElseThrow(Exception::new)));
     assertFalse(lex.get(index).prefix.isPresent());
 
     index++;
@@ -146,7 +151,8 @@ public class DrgFormulaLexerTest {
 
     index++;
     assertThat(lex.get(index).getType(), is(DrgFormulaToken.RPAREN));
-    assertThat(lex.get(index).getValue(), is(DrgFormulaToken.RPAREN.getValue().get()));
+    assertThat(lex.get(index).getValue(),
+        is(DrgFormulaToken.RPAREN.getValue().orElseThrow(Exception::new)));
     assertFalse(lex.get(index).prefix.isPresent());
 
     assertThat(lex.size(), is(index + 1));
@@ -154,11 +160,11 @@ public class DrgFormulaLexerTest {
   }
 
   @Test
-  public void testNoTokenBetweenAtoms() throws Exception {
+  public void testNoTokenBetweenAtoms() {
     String input = " a b";
     List<DrgLexerToken> lex = DrgFormulaLexer.lex(input);
 
-    System.out.println("");
+    System.out.println();
     System.out.println("Input: "
         + input);
     System.out.println("Lexed: "
@@ -188,7 +194,7 @@ public class DrgFormulaLexerTest {
         + "& ~    somethingNegated & invalidAndGreaterThanButLexingDoesNotCare a b";
     List<DrgLexerToken> lex = DrgFormulaLexer.lex(input);
 
-    System.out.println("");
+    System.out.println();
     System.out.println("Input: "
         + input);
     System.out.println("Lexed: "
@@ -203,7 +209,8 @@ public class DrgFormulaLexerTest {
 
     index++;
     assertThat(lex.get(index).getType(), is(DrgFormulaToken.AND));
-    assertThat(lex.get(index).getValue(), is(DrgFormulaToken.AND.getValue().get()));
+    assertThat(lex.get(index).getValue(),
+        is(DrgFormulaToken.AND.getValue().orElseThrow(Exception::new)));
 
     index++;
     assertThat(lex.get(index).getType(), is(DrgFormulaToken.ATOM));
@@ -211,7 +218,8 @@ public class DrgFormulaLexerTest {
 
     index++;
     assertThat(lex.get(index).getType(), is(DrgFormulaToken.OR));
-    assertThat(lex.get(index).getValue(), is(DrgFormulaToken.OR.getValue().get()));
+    assertThat(lex.get(index).getValue(),
+        is(DrgFormulaToken.OR.getValue().orElseThrow(Exception::new)));
 
     index++;
     assertThat(lex.get(index).getType(), is(DrgFormulaToken.ATOM));
@@ -219,17 +227,17 @@ public class DrgFormulaLexerTest {
 
     index++;
     assertThat(lex.get(index).getType(), is(DrgFormulaToken.AND));
-    assertThat(lex.get(index).getValue(), is(DrgFormulaToken.AND.getValue().get()));
+    assertThat(lex.get(index).getValue(),
+        is(DrgFormulaToken.AND.getValue().orElseThrow(Exception::new)));
 
     index++;
     assertThat(lex.get(index).getType(), is(DrgFormulaToken.ATOM));
     assertThat(lex.get(index).getValue(), is("anAtomWith_andandand"));
 
-
     index++;
     assertThat(lex.get(index).getType(), is(DrgFormulaToken.AND));
-    assertThat(lex.get(index).getValue(), is(DrgFormulaToken.AND.getValue().get()));
-
+    assertThat(lex.get(index).getValue(),
+        is(DrgFormulaToken.AND.getValue().orElseThrow(Exception::new)));
 
     index++;
     assertThat(lex.get(index).getType(), is(DrgFormulaToken.ATOM));
@@ -241,15 +249,18 @@ public class DrgFormulaLexerTest {
 
     index++;
     assertThat(lex.get(index).getType(), is(DrgFormulaToken.OR));
-    assertThat(lex.get(index).getValue(), is(DrgFormulaToken.OR.getValue().get()));
+    assertThat(lex.get(index).getValue(),
+        is(DrgFormulaToken.OR.getValue().orElseThrow(Exception::new)));
 
     index++;
     assertThat(lex.get(index).getType(), is(DrgFormulaToken.LPAREN));
-    assertThat(lex.get(index).getValue(), is(DrgFormulaToken.LPAREN.getValue().get()));
+    assertThat(lex.get(index).getValue(),
+        is(DrgFormulaToken.LPAREN.getValue().orElseThrow(Exception::new)));
 
     index++;
     assertThat(lex.get(index).getType(), is(DrgFormulaToken.NOT));
-    assertThat(lex.get(index).getValue(), is(DrgFormulaToken.NOT.getValue().get()));
+    assertThat(lex.get(index).getValue(),
+        is(DrgFormulaToken.NOT.getValue().orElseThrow(Exception::new)));
 
     index++;
     assertThat(lex.get(index).getType(), is(DrgFormulaToken.ATOM));
@@ -257,11 +268,13 @@ public class DrgFormulaLexerTest {
 
     index++;
     assertThat(lex.get(index).getType(), is(DrgFormulaToken.RPAREN));
-    assertThat(lex.get(index).getValue(), is(DrgFormulaToken.RPAREN.getValue().get()));
+    assertThat(lex.get(index).getValue(),
+        is(DrgFormulaToken.RPAREN.getValue().orElseThrow(Exception::new)));
 
     index++;
     assertThat(lex.get(index).getType(), is(DrgFormulaToken.AND));
-    assertThat(lex.get(index).getValue(), is(DrgFormulaToken.AND.getValue().get()));
+    assertThat(lex.get(index).getValue(),
+        is(DrgFormulaToken.AND.getValue().orElseThrow(Exception::new)));
 
     index++;
     assertThat(lex.get(index).getType(), is(DrgFormulaToken.ATOM));
@@ -269,11 +282,13 @@ public class DrgFormulaLexerTest {
 
     index++;
     assertThat(lex.get(index).getType(), is(DrgFormulaToken.AND));
-    assertThat(lex.get(index).getValue(), is(DrgFormulaToken.AND.getValue().get()));
+    assertThat(lex.get(index).getValue(),
+        is(DrgFormulaToken.AND.getValue().orElseThrow(Exception::new)));
 
     index++;
     assertThat(lex.get(index).getType(), is(DrgFormulaToken.NOT));
-    assertThat(lex.get(index).getValue(), is(DrgFormulaToken.NOT.getValue().get()));
+    assertThat(lex.get(index).getValue(),
+        is(DrgFormulaToken.NOT.getValue().orElseThrow(Exception::new)));
 
     index++;
     assertThat(lex.get(index).getType(), is(DrgFormulaToken.ATOM));
@@ -281,7 +296,8 @@ public class DrgFormulaLexerTest {
 
     index++;
     assertThat(lex.get(index).getType(), is(DrgFormulaToken.AND));
-    assertThat(lex.get(index).getValue(), is(DrgFormulaToken.AND.getValue().get()));
+    assertThat(lex.get(index).getValue(),
+        is(DrgFormulaToken.AND.getValue().orElseThrow(Exception::new)));
 
     index++;
     assertThat(lex.get(index).getType(), is(DrgFormulaToken.ATOM));
@@ -295,19 +311,18 @@ public class DrgFormulaLexerTest {
     assertThat(lex.get(index).getType(), is(DrgFormulaToken.ATOM));
     assertThat(lex.get(index).getValue(), is("b"));
 
-
     assertThat(lex.size(), is(index + 1));
 
   }
 
 
   @Test
-  public void testGetValues1() throws Exception {
+  public void testGetValues1() {
     String input = "larynx |(PDX:dxlarx & ~otlarynx)";
     List<DrgLexerToken> lex = DrgFormulaLexer.lex(input);
-    String[] expected = new String[] {"larynx", "dxlarx", "otlarynx"};
+    String[] expected = new String[]{"larynx", "dxlarx", "otlarynx"};
 
-    System.out.println("");
+    System.out.println();
     System.out.println("Input: "
         + input);
     System.out.println("Lexed: "
@@ -319,12 +334,12 @@ public class DrgFormulaLexerTest {
 
 
   @Test
-  public void testGetValues2() throws Exception {
+  public void testGetValues2() {
     String input = " larynx|( PDX:dxlarx&~otlarynx ) ";
     List<DrgLexerToken> lex = DrgFormulaLexer.lex(input);
-    String[] expected = new String[] {"larynx", "dxlarx", "otlarynx"};
+    String[] expected = new String[]{"larynx", "dxlarx", "otlarynx"};
 
-    System.out.println("");
+    System.out.println();
     System.out.println("Input: "
         + input);
     System.out.println("Lexed: "
@@ -335,7 +350,7 @@ public class DrgFormulaLexerTest {
   }
 
   @Test
-  public void testInvalidDrgFormulaPrefix() throws Exception {
+  public void testInvalidDrgFormulaPrefix() {
     // Prefix has to be with no spaces in combination with value
     String input = "PDX : dxlarx";
 
@@ -346,13 +361,13 @@ public class DrgFormulaLexerTest {
 
 
   @Test
-  public void testMalformedFormula1() throws Exception {
+  public void testMalformedFormula1() {
     // Even a malformed formula should just get lexed fine - the lexer does not care about proper
     // formatting
     String input = "(a (b)";
     List<DrgLexerToken> lex = DrgFormulaLexer.lex(input);
 
-    System.out.println("");
+    System.out.println();
     System.out.println("Input: "
         + input);
     System.out.println("Lexed: "

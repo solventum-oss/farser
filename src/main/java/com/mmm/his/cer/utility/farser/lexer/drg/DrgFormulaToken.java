@@ -3,14 +3,12 @@ package com.mmm.his.cer.utility.farser.lexer.drg;
 import com.mmm.his.cer.utility.farser.lexer.CommonTokenType;
 import com.mmm.his.cer.utility.farser.lexer.LexerToken;
 import com.mmm.his.cer.utility.farser.lexer.TokenType;
-
 import java.util.Optional;
 
 /**
  * All recognized types of tokens that we need to be concerned with when lexing a DRG formula.
- * 
- * @author a30w4zz
  *
+ * @author Mike Funaro
  */
 public enum DrgFormulaToken implements
     TokenType<DrgFormulaToken> {
@@ -63,11 +61,11 @@ public enum DrgFormulaToken implements
 
   /**
    * A new token type.
-   * 
-   * @param value The token value, or <code>null</code> if not used
+   *
+   * @param value      The token value, or <code>null</code> if not used
    * @param commonType The common token type, or <code>null</code> if not needed
    */
-  private DrgFormulaToken(String value, CommonTokenType commonType) {
+  DrgFormulaToken(String value, CommonTokenType commonType) {
     this.value = Optional.ofNullable(value);
     this.commonType = Optional.ofNullable(commonType);
 
@@ -75,10 +73,10 @@ public enum DrgFormulaToken implements
 
   /**
    * A new token type.
-   * 
+   *
    * @param value The token value
    */
-  private DrgFormulaToken(String value) {
+  DrgFormulaToken(String value) {
     this(value, null);
 
   }

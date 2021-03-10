@@ -4,9 +4,8 @@ import com.mmm.his.cer.utility.farser.lexer.LexerTokenFactory;
 
 /**
  * The factory which creates a {@link DomainCodeLexerToken}.
- * 
- * @author a5rn0zz
  *
+ * @author Thomas Naeff
  */
 public class DomainCodeTokenFactory
     implements LexerTokenFactory<DomainCodeLexerToken, DomainCodeToken> {

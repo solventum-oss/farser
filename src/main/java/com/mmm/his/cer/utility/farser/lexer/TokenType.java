@@ -19,10 +19,9 @@ import java.util.regex.Pattern;
  * }
  * </pre>
  *
- * @author a30w4zz
- *
+
  * @param <T> The enumeration type which implements this interface.
- *
+ * @author Mike Funaro
  */
 public interface TokenType<T extends Enum<T>> {
 
@@ -31,32 +30,32 @@ public interface TokenType<T extends Enum<T>> {
    *
    * @return The enumeration name
    */
-  public String name();
+  String name();
 
   /**
    * The token value (e.g. the formula operator).<br />
-   * Returns an empty optional for the ATOM token with the value {@link #ATOM_VALUE}.
+   * Returns an empty optional for the ATOM token with the value.
    *
    * @return The token value.
    */
-  public Optional<String> getValue();
+  Optional<String> getValue();
 
   /**
    * The marker for {@link CommonTokenType}s. Not all tokens need such a common token type.
    *
    * @return The common token type, or an empty optional if there is none.
    */
-  public Optional<CommonTokenType> getCommonTokenType();
+  Optional<CommonTokenType> getCommonTokenType();
 
   /**
    * Retrieves the token which is marked with the given {@link CommonTokenType}.
    *
    * @param tokenTypeClass The enumeration class with the tokens
-   * @param commonType The {@link CommonTokenType} to look for
+   * @param commonType     The {@link CommonTokenType} to look for
    * @return The token
    * @throws IllegalArgumentException If the token type class is not an enumeration
    */
-  public static <T extends TokenType<?>> Optional<T> getForCommonType(Class<T> tokenTypeClass,
+  static <T extends TokenType<?>> Optional<T> getForCommonType(Class<T> tokenTypeClass,
       CommonTokenType commonType) {
 
     // Build lookup map or retrieve cached lookup map
@@ -79,7 +78,7 @@ public interface TokenType<T extends Enum<T>> {
    * @throws IllegalArgumentException If the token type class is not an enumeration, or if the token
    *         type class does not contain the provided common token type entry.
    */
-  public static <T extends TokenType<?>> T getForCommonTypeMandatory(Class<T> tokenTypeClass,
+  static <T extends TokenType<?>> T getForCommonTypeMandatory(Class<T> tokenTypeClass,
       CommonTokenType commonType) {
     Optional<T> tokenTypeTmp = getForCommonType(tokenTypeClass, commonType);
     if (!tokenTypeTmp.isPresent()) {
@@ -89,7 +88,7 @@ public interface TokenType<T extends Enum<T>> {
           + "."
           + commonType.name()
           + " found in "
-          + tokenTypeClass.getClass().getSimpleName());
+          + tokenTypeClass.getSimpleName());
     }
     return tokenTypeTmp.get();
   }
@@ -98,11 +97,11 @@ public interface TokenType<T extends Enum<T>> {
    * Retrieves the token which has the given value.
    *
    * @param tokenTypeClass The enumeration class with the tokens
-   * @param value The value to look for
+   * @param value          The value to look for
    * @return The token
    * @throws IllegalArgumentException If the token type class is not an enumeration
    */
-  public static <T extends TokenType<?>> Optional<T> getForValue(Class<T> tokenTypeClass,
+  static <T extends TokenType<?>> Optional<T> getForValue(Class<T> tokenTypeClass,
       String value) {
 
     // Build lookup map or retrieve cached lookup map
@@ -122,7 +121,7 @@ public interface TokenType<T extends Enum<T>> {
    * @return All tokens
    * @throws IllegalArgumentException If the token type class is not an enumeration
    */
-  public static <T extends TokenType<?>> T[] values(Class<T> tokenTypeClass) {
+  static <T extends TokenType<?>> T[] values(Class<T> tokenTypeClass) {
 
     if (!tokenTypeClass.isEnum()) {
       throw new IllegalArgumentException(tokenTypeClass.getName()
@@ -142,7 +141,7 @@ public interface TokenType<T extends Enum<T>> {
    * @return The RegEx pattern
    * @throws IllegalArgumentException If the token type class is not an enumeration
    */
-  public static Pattern createTokenPattern(Class<? extends TokenType<?>> enumClass) {
+  static Pattern createTokenPattern(Class<? extends TokenType<?>> enumClass) {
     // Build pattern or retrieve cached pattern
     return TokenTypeLookup.getPattern(enumClass);
   }

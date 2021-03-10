@@ -6,7 +6,6 @@ package com.mmm.his.cer.utility.farser.ast.node.type;
  *
  * @param <T> the token type that will be used to create the node
  * @param <R> the parametric type on {@link BooleanExpression}
- *
  * @author Mike Funaro
  */
 public interface NodeSupplier<T, R> {

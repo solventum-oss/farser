@@ -3,14 +3,12 @@ package com.mmm.his.cer.utility.farser.lexer.tokentype;
 import com.mmm.his.cer.utility.farser.lexer.CommonTokenType;
 import com.mmm.his.cer.utility.farser.lexer.LexerToken;
 import com.mmm.his.cer.utility.farser.lexer.TokenType;
-
 import java.util.Optional;
 
 /**
  * A test token enum without the mandatory {@link CommonTokenType#SPACE} entry.
  *
  * @author Thomas Naeff
- *
  */
 public enum TestTokenWithoutMandatorySpace implements TokenType<TestTokenWithoutMandatorySpace> {
 
@@ -24,12 +22,6 @@ public enum TestTokenWithoutMandatorySpace implements TokenType<TestTokenWithout
       null,
       CommonTokenType.ATOM),
 
-  /**
-   *
-   */
-  // SPACE("",
-  // CommonTokenType.SPACE),
-
   SOME_TOKEN(
       "x");
 
@@ -39,10 +31,10 @@ public enum TestTokenWithoutMandatorySpace implements TokenType<TestTokenWithout
   /**
    * A new token type.
    *
-   * @param value The token value, or <code>null</code> if not used
+   * @param value      The token value, or <code>null</code> if not used
    * @param commonType The common token type, or <code>null</code> if not needed
    */
-  private TestTokenWithoutMandatorySpace(String value, CommonTokenType commonType) {
+  TestTokenWithoutMandatorySpace(String value, CommonTokenType commonType) {
     this.value = Optional.ofNullable(value);
     this.commonType = Optional.ofNullable(commonType);
 
@@ -53,7 +45,7 @@ public enum TestTokenWithoutMandatorySpace implements TokenType<TestTokenWithout
    *
    * @param value The token value
    */
-  private TestTokenWithoutMandatorySpace(String value) {
+  TestTokenWithoutMandatorySpace(String value) {
     this(value, null);
 
   }

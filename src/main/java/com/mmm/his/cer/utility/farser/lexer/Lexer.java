@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 /**
  * Parses a code string into {@link LexerToken}s.
  *
- * @author a30w4zz
+ * @author Mike Funaro
  */
 public class Lexer {
 
@@ -22,8 +22,8 @@ public class Lexer {
    * Method to perform our Lexical analysis.
    *
    * @param tokenTypeEnumClass The enumeration class which defines all the tokens
-   * @param input {@link String} to separate out into tokens.
-   * @param factory The factory that creates the {@link LexerToken}s
+   * @param input              {@link String} to separate out into tokens.
+   * @param factory            The factory that creates the {@link LexerToken}s
    * @return List of {@link LexerToken} that were created from the input string.
    */
   public static <L extends LexerToken<T>, T extends TokenType<?>> List<L>
@@ -58,7 +58,7 @@ public class Lexer {
       }
 
       String delimiter = delimiterMatcher.group();
-      Optional<T> delimiterTokenType = null;
+      Optional<T> delimiterTokenType;
 
       if (delimiter.trim().isEmpty()) {
         // Handle special SPACE token
@@ -78,7 +78,7 @@ public class Lexer {
         throw new FarserException("No match found for delimiter '"
             + delimiter
             + "'. No such token type seems to exist in "
-            + tokenTypeEnumClass.getClass().getSimpleName());
+            + tokenTypeEnumClass.getSimpleName());
       }
 
       // Remember end of delimiter
@@ -102,10 +102,8 @@ public class Lexer {
   }
 
 
-
   /**
-   * Get only the values from a list of Tokens, this ignores all other types of tokens aside from
-   * {@link TokenType#ATOM.}
+   * Get only the values from a list of Tokens.
    *
    * @param tokens the List of tokens to filter
    * @return List of strings that only contain values
@@ -113,7 +111,7 @@ public class Lexer {
   public static <L extends LexerToken<T>, T extends TokenType<?>> List<String>
       getTokens(List<L> tokens, T forTokenType) {
     return tokens.stream().filter(token -> token.getType() == forTokenType)
-        .map(token -> token.getValue()).collect(Collectors.toList());
+        .map(LexerToken::getValue).collect(Collectors.toList());
   }
 
 }

@@ -6,9 +6,8 @@ import com.mmm.his.cer.utility.farser.lexer.TokenType;
 
 /**
  * Token class that can be used to represent the pieces of a lexed string.
- * 
- * @author a30w4zz
  *
+ * @author Mike Funaro
  */
 public class DomainCodeLexerToken implements LexerToken<DomainCodeToken> {
 
@@ -17,7 +16,7 @@ public class DomainCodeLexerToken implements LexerToken<DomainCodeToken> {
 
   /**
    * A new token with the value from the {@link TokenType}.
-   * 
+   *
    * @param type The token type
    */
   public DomainCodeLexerToken(DomainCodeToken type) {
@@ -27,8 +26,8 @@ public class DomainCodeLexerToken implements LexerToken<DomainCodeToken> {
 
   /**
    * A new token with a provided value.
-   * 
-   * @param type The token type
+   *
+   * @param type  The token type
    * @param value The token value
    */
   public DomainCodeLexerToken(DomainCodeToken type, String value) {

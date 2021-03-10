@@ -4,9 +4,8 @@ import com.mmm.his.cer.utility.farser.lexer.LexerTokenFactory;
 
 /**
  * The factory which creates a {@link TestLexerToken}.
- * 
- * @author a5rn0zz
  *
+ * @author a5rn0zz
  */
 public class TestTokenFactory implements LexerTokenFactory<TestLexerToken, TestToken> {
 

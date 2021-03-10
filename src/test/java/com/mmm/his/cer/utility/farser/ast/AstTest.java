@@ -2,7 +2,6 @@ package com.mmm.his.cer.utility.farser.ast;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-
 import com.mmm.his.cer.utility.farser.ast.node.terminal.ContainsNode;
 import com.mmm.his.cer.utility.farser.ast.node.type.BooleanExpression;
 import com.mmm.his.cer.utility.farser.ast.node.type.NodeSupplier;
@@ -10,11 +9,6 @@ import com.mmm.his.cer.utility.farser.ast.parser.DescentParser;
 import com.mmm.his.cer.utility.farser.ast.parser.ExpressionResult;
 import com.mmm.his.cer.utility.farser.lexer.DrgFormulaLexer;
 import com.mmm.his.cer.utility.farser.lexer.drg.DrgLexerToken;
-import org.hamcrest.Matchers;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -23,18 +17,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import org.hamcrest.Matchers;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * @author Mike Funaro
  */
 public class AstTest {
 
-  Map<String, NodeSupplier<DrgLexerToken, String>> suppliers = new HashMap<>();
-  Map<String, NodeSupplier<DrgLexerToken, CustomTestOperand>> customOperandSuppliers
+  final Map<String, NodeSupplier<DrgLexerToken, String>> suppliers = new HashMap<>();
+  final Map<String, NodeSupplier<DrgLexerToken, CustomTestOperand>> customOperandSuppliers
       = new HashMap<>();
 
   @Before
-  public void setUp() throws Exception {
+  public void setUp() {
     suppliers.put("BILATERAL", new MsdrgGrouperFunctionSupplier());
   }
 
@@ -47,7 +44,7 @@ public class AstTest {
 
     DrgSyntaxTree<String> ast = parser.buildExpressionTree();
 
-    List<String> mask = Arrays.asList("E");
+    List<String> mask = Collections.singletonList("E");
     ExpressionResult<String> evaluation = ast.evaluateExpression(mask);
 
     assertThat(evaluation.isMatched(), is(true));
@@ -190,7 +187,6 @@ public class AstTest {
   }
 
   @Test
-  @Ignore("Not sure this is a valid test")
   public void testNegationOtherThanTrue() {
 
     List<DrgLexerToken> lexerTokens = DrgFormulaLexer.lex("A | ~B");
@@ -202,8 +198,9 @@ public class AstTest {
     ExpressionResult<String> evaluation = ast.evaluateExpression(mask);
 
     assertThat(evaluation.isMatched(), is(true));
-    assertThat(evaluation.getMatches().toArray(),
-        Matchers.arrayContaining(mask.toArray()));
+
+    // empty matches means that we satisfied the ~B part of the formula.
+    assertThat(evaluation.getMatches().isEmpty(), is(true));
   }
 
   @Test
@@ -294,10 +291,10 @@ public class AstTest {
   /**
    * Test implementation.
    */
-  private class CustomTestOperand {
+  private static class CustomTestOperand {
 
-    private String value;
-    private String prefix;
+    private final String value;
+    private final String prefix;
 
     public CustomTestOperand(String value, String prefix) {
       this.value = value;
@@ -323,7 +320,7 @@ public class AstTest {
     }
   }
 
-  private class StringOperandSupplier implements NodeSupplier<DrgLexerToken, String> {
+  private static class StringOperandSupplier implements NodeSupplier<DrgLexerToken, String> {
 
     @Override
     public BooleanExpression<String> createNode(DrgLexerToken token) {
@@ -331,7 +328,7 @@ public class AstTest {
     }
   }
 
-  private class CustomOperandSupplier implements
+  private static class CustomOperandSupplier implements
       NodeSupplier<DrgLexerToken, CustomTestOperand> {
 
     @Override
@@ -341,10 +338,10 @@ public class AstTest {
     }
   }
 
-  private class MsdrgGrouperFunctionSupplier implements
+  private static class MsdrgGrouperFunctionSupplier implements
       NodeSupplier<DrgLexerToken, String> {
 
-    private List<String> otherInformation;
+    private final List<String> otherInformation;
 
     public MsdrgGrouperFunctionSupplier() {
       otherInformation = new ArrayList<>();
@@ -357,10 +354,9 @@ public class AstTest {
     }
   }
 
-  private class GrouperFunctionNode implements
-      BooleanExpression<String> {
+  private static class GrouperFunctionNode implements BooleanExpression<String> {
 
-    List<String> otherInformation;
+    final List<String> otherInformation;
 
     GrouperFunctionNode(List<String> otherInformation) {
       this.otherInformation = otherInformation;

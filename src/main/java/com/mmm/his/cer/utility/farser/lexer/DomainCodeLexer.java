@@ -4,14 +4,12 @@ import com.mmm.his.cer.utility.farser.lexer.domain.DomainCodeLexerToken;
 import com.mmm.his.cer.utility.farser.lexer.domain.DomainCodeToken;
 import com.mmm.his.cer.utility.farser.lexer.domain.DomainCodeTokenFactory;
 import com.mmm.his.cer.utility.farser.lexer.drg.DrgLexerToken;
-
 import java.util.List;
 
 /**
  * The lexer for 3M domain code.
  *
- * @author a5rn0zz
- *
+ * @author Thomas Naeff
  */
 public class DomainCodeLexer {
 
@@ -34,7 +32,7 @@ public class DomainCodeLexer {
   /**
    * Get only the specific tokens from a list of Tokens.
    *
-   * @param tokens the List of tokens to filter
+   * @param tokens    the List of tokens to filter
    * @param tokenType The type of tokens to filter for
    * @return List of strings that only contain values
    */
