@@ -3,6 +3,7 @@ package com.mmm.his.cer.utility.farser.lexer.drg;
 import com.mmm.his.cer.utility.farser.lexer.CommonTokenType;
 import com.mmm.his.cer.utility.farser.lexer.LexerToken;
 import com.mmm.his.cer.utility.farser.lexer.TokenType;
+
 import java.util.Optional;
 
 /**
@@ -10,8 +11,7 @@ import java.util.Optional;
  *
  * @author Mike Funaro
  */
-public enum DrgFormulaToken implements
-    TokenType<DrgFormulaToken> {
+public enum DrgFormulaToken implements TokenType<DrgFormulaToken> {
 
   /**
    * Any substring which is not in a set of defined token characters here in {@link TokenType}. This
@@ -19,26 +19,22 @@ public enum DrgFormulaToken implements
    * The atom token type here has no defined value. It will be available as {@link LexerToken} with
    * the value set as the non-token substring.
    */
-  ATOM(null,
-      CommonTokenType.ATOM),
+  ATOM(null, CommonTokenType.ATOM),
 
   /**
    * A space in the formula string. Gets filtered out in {@link DrgFormulaTokenFactory}.
    */
-  SPACE(" ",
-      CommonTokenType.SPACE),
+  SPACE(" ", CommonTokenType.SPACE),
 
   /**
    * Left parenthesis.
    */
-  LPAREN("(",
-      CommonTokenType.LPAREN),
+  LPAREN("(", CommonTokenType.LPAREN),
 
   /**
    * Right parenthesis.
    */
-  RPAREN(")",
-      CommonTokenType.RPAREN),
+  RPAREN(")", CommonTokenType.RPAREN),
 
   /**
    * Logical AND.
@@ -53,11 +49,10 @@ public enum DrgFormulaToken implements
   /**
    * Logical NOT.
    */
-  NOT("~",
-      CommonTokenType.NOT);
+  NOT("~", CommonTokenType.NOT);
 
-  private final Optional<String> value;
-  private final Optional<CommonTokenType> commonType;
+  private final String value;
+  private final CommonTokenType commonType;
 
   /**
    * A new token type.
@@ -66,8 +61,8 @@ public enum DrgFormulaToken implements
    * @param commonType The common token type, or <code>null</code> if not needed
    */
   DrgFormulaToken(String value, CommonTokenType commonType) {
-    this.value = Optional.ofNullable(value);
-    this.commonType = Optional.ofNullable(commonType);
+    this.value = value;
+    this.commonType = commonType;
 
   }
 
@@ -83,12 +78,12 @@ public enum DrgFormulaToken implements
 
   @Override
   public Optional<String> getValue() {
-    return value;
+    return Optional.ofNullable(value);
   }
 
   @Override
   public Optional<CommonTokenType> getCommonTokenType() {
-    return commonType;
+    return Optional.ofNullable(commonType);
   }
 
 
