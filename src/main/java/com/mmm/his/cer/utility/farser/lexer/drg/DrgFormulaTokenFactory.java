@@ -1,8 +1,8 @@
 package com.mmm.his.cer.utility.farser.lexer.drg;
 
 import com.mmm.his.cer.utility.farser.lexer.LexerTokenFactory;
+
 import java.security.InvalidParameterException;
-import java.util.Optional;
 
 /**
  * The factory which creates a {@link DrgLexerToken}.
@@ -35,14 +35,18 @@ public class DrgFormulaTokenFactory implements LexerTokenFactory<DrgLexerToken, 
     String[] split = DrgLexerToken.PREFIX_SEPARATOR_PATTERN.split(atom);
     if (split.length == 2) {
       // Prefix and value
-      return new DrgLexerToken(DrgFormulaToken.ATOM, split[1].trim(), Optional.of(split[0].trim()));
+      return new DrgLexerToken(DrgFormulaToken.ATOM, split[1].trim(), split[0].trim());
     } else if (split.length == 1) {
       // Only value
       return new DrgLexerToken(DrgFormulaToken.ATOM, split[0].trim());
     } else {
-      throw new InvalidParameterException(
-          "Invalid " + DrgFormulaToken.ATOM.name() + " '" + atom + "'. Only 'prefix"
-              + DrgLexerToken.PREFIX_SEPARATOR_STRING + "value' or 'value' are allowed.");
+      throw new InvalidParameterException("Invalid "
+          + DrgFormulaToken.ATOM.name()
+          + " '"
+          + atom
+          + "'. Only 'prefix"
+          + DrgLexerToken.PREFIX_SEPARATOR_STRING
+          + "value' or 'value' are allowed.");
     }
   }
 

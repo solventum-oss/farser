@@ -3,6 +3,7 @@ package com.mmm.his.cer.utility.farser.lexer.drg;
 
 import com.mmm.his.cer.utility.farser.lexer.LexerToken;
 import com.mmm.his.cer.utility.farser.lexer.TokenType;
+
 import java.util.Optional;
 import java.util.regex.Pattern;
 
@@ -21,7 +22,7 @@ public class DrgLexerToken implements LexerToken<DrgFormulaToken> {
       Pattern.compile(DrgLexerToken.PREFIX_SEPARATOR_STRING);
   public final DrgFormulaToken type;
   public final String value;
-  public final Optional<String> prefix;
+  public final String prefix;
 
   /**
    * A new token with the value from the {@link TokenType}.
@@ -31,7 +32,7 @@ public class DrgLexerToken implements LexerToken<DrgFormulaToken> {
   public DrgLexerToken(DrgFormulaToken type) {
     this.type = type;
     this.value = type.getValue().orElse(null);
-    this.prefix = Optional.empty();
+    this.prefix = null;
   }
 
   /**
@@ -43,7 +44,7 @@ public class DrgLexerToken implements LexerToken<DrgFormulaToken> {
   public DrgLexerToken(DrgFormulaToken type, String value) {
     this.type = type;
     this.value = value;
-    this.prefix = Optional.empty();
+    this.prefix = null;
   }
 
   /**
@@ -53,7 +54,7 @@ public class DrgLexerToken implements LexerToken<DrgFormulaToken> {
    * @param value  The token value
    * @param prefix The prefix (if there is one)
    */
-  public DrgLexerToken(DrgFormulaToken type, String value, Optional<String> prefix) {
+  public DrgLexerToken(DrgFormulaToken type, String value, String prefix) {
     this.type = type;
     this.value = value;
     this.prefix = prefix;
@@ -71,15 +72,18 @@ public class DrgLexerToken implements LexerToken<DrgFormulaToken> {
   }
 
   public Optional<String> getPrefix() {
-    return prefix;
+    return Optional.ofNullable(prefix);
   }
 
 
   @Override
   public String toString() {
     if (type == DrgFormulaToken.ATOM) {
-      return type.name() + "<" + value + ">"
-          + (prefix.map(s -> " with prefix " + s).orElse(""));
+      String prefixString = "";
+      if (prefix != null && !prefix.equals("")) {
+        prefixString = " with prefix " + prefix;
+      }
+      return type.name() + "<" + value + ">" + prefixString;
     }
     return type.toString();
   }
