@@ -1,4 +1,4 @@
-##Farser
+## Farser
 
 Farser is a parsing library centered around DRG formulas created by 3M HIS Clinical and Economic 
 Research. A DRG formula can be thought of as a simple set of boolean logic that is applied to a 
@@ -70,7 +70,9 @@ Lex with `DrgFormulaLexer.lex`.
 In addition to splitting a DRG formula into tokens, `DrgLexerToken` also supports a prefix for any ATOM tokens.
 If it finds a string separated by a colon ":" it splits this into a value, and a
 prefix (e.g. "PFX:val" is split into prefix "PFX" and value "val").
+
 ---
+
 ### The Descent Parser
 
 The Descent Parser can take a `ListIterator` of type `DrgFormulaToken`s and build an Abstract 
@@ -180,7 +182,7 @@ private class CustomOperandSupplier implements NodeSupplier<DrgLexerToken, Custo
     ExpressionResult<CustomTestOperand> evaluation = ast.evaluateExpression(mask);
 ```
 
-####Descent Parser ExpressionResult
+#### Descent Parser ExpressionResult
 
 The return type from `DrgSyntaxTree#evaluateExpression` is an `ExpressionResult`. This class has 
 two methods
@@ -193,7 +195,7 @@ two methods
 Users can query the expression result after the AST has been evaluated.
 
 
-####Farser Maintainers
+#### Farser Maintainers
 
 Creator: Mike Funaro </br> 
 Core Contributors: Mike Funaro & Thomas Naeff
