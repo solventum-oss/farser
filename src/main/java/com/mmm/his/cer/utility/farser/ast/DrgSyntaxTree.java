@@ -54,14 +54,13 @@ public class DrgSyntaxTree<T> {
     StringBuilder sb = new StringBuilder();
 
     sb.append(printNode(this.ast, context));
-    sb.append(System.lineSeparator());
 
     ExpressionIterator<C> iter = this.ast.iterator();
     while (iter.hasNext()) {
+      sb.append(System.lineSeparator());
       BooleanExpression<C> node = iter.next();
       sb.append(prefix(iter.getCurrentDepth()));
       sb.append(printNode(node, context));
-      sb.append(System.lineSeparator());
     }
 
     return sb.toString();

@@ -502,10 +502,12 @@ public class AstTest {
 
     private List<T> mask;
     private Set<T> accumulator;
+    private List<T> evaluatedValuesInOrderOfEvaluation;
 
     public TestContext(List<T> mask) {
       this.mask = mask;
       this.accumulator = new HashSet<>();
+      this.evaluatedValuesInOrderOfEvaluation = new ArrayList<>();
     }
 
     @Override
@@ -534,6 +536,16 @@ public class AstTest {
     public Set<T> getMatches() {
       return accumulator;
     }
+
+    @Override
+    public void evaluating(T value) {
+      this.evaluatedValuesInOrderOfEvaluation.add(value);
+    }
+
+    public List<T> getEvaluatedValuesInOrderOfEvaluation() {
+      return evaluatedValuesInOrderOfEvaluation;
+    }
+
   }
 
   public static class ContainsNodeForContext<T> implements BooleanExpression<MaskedContext<T>> {
@@ -546,6 +558,7 @@ public class AstTest {
 
     @Override
     public boolean evaluate(MaskedContext<T> context) {
+      context.evaluating(value);
       if (context.getMask().contains(value)) {
         context.accumulate(value);
         return true;
@@ -575,6 +588,8 @@ public class AstTest {
     List<T> getMask();
 
     void accumulate(T value);
+
+    void evaluating(T value);
 
     Set<T> getMatches();
   }
