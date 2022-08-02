@@ -4,6 +4,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import com.mmm.his.cer.utility.farser.ast.node.type.BooleanExpression;
+import com.mmm.his.cer.utility.farser.ast.node.type.ExpressionIterator;
 import com.mmm.his.cer.utility.farser.ast.node.type.NodeSupplier;
 import com.mmm.his.cer.utility.farser.ast.parser.DescentParser;
 import com.mmm.his.cer.utility.farser.ast.parser.ExpressionResult;
@@ -19,6 +20,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import org.hamcrest.Matchers;
+import org.junit.Before;
+import org.junit.Test;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
@@ -476,6 +480,104 @@ public class AstTest {
       }
       return false;
     }
+
+    @Override
+    public ExpressionIterator<MaskedContext<String>> iterator() {
+      return new ExpressionIterator<>();
+    }
+
+    @Override
+    public Object print() {
+      return otherInformation;
+    }
+
+    @Override
+    public String toString() {
+      return "GrouperFunctionNode{" + "otherInformation='" + otherInformation + '\'' + '}';
+    }
+
   }
+
+  public static class TestContext<T> implements MaskedContext<T> {
+
+    private List<T> mask;
+    private Set<T> accumulator;
+
+    public TestContext(List<T> mask) {
+      this.mask = mask;
+      this.accumulator = new HashSet<>();
+    }
+
+    @Override
+    public List<T> getMask() {
+      return mask;
+    }
+
+    public void setMask(List<T> mask) {
+      this.mask = mask;
+    }
+
+    public Set<T> getAccumulator() {
+      return accumulator;
+    }
+
+    public void setAccumulator(Set<T> accumulator) {
+      this.accumulator = accumulator;
+    }
+
+    @Override
+    public void accumulate(T value) {
+      this.accumulator.add(value);
+    }
+
+    @Override
+    public Set<T> getMatches() {
+      return accumulator;
+    }
+  }
+
+  public static class ContainsNodeForContext<T> implements BooleanExpression<MaskedContext<T>> {
+
+    private T value;
+
+    public ContainsNodeForContext(T value) {
+      this.value = value;
+    }
+
+    @Override
+    public boolean evaluate(MaskedContext<T> context) {
+      if (context.getMask().contains(value)) {
+        context.accumulate(value);
+        return true;
+      }
+      return false;
+    }
+
+    @Override
+    public ExpressionIterator<MaskedContext<T>> iterator() {
+      return new ExpressionIterator<>();
+    }
+
+    @Override
+    public Object print() {
+      return value;
+    }
+
+    @Override
+    public String toString() {
+      return "ContainsNodeForContext{" + "value='" + value + '\'' + '}';
+    }
+
+  }
+
+  public interface MaskedContext<T> {
+
+    List<T> getMask();
+
+    void accumulate(T value);
+
+    Set<T> getMatches();
+  }
+}
 
 }

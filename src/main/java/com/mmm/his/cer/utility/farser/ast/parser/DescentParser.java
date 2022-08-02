@@ -46,7 +46,6 @@ public class DescentParser<C> {
       Map<String, NodeSupplier<DrgLexerToken, T>> suppliers) {
     this.tokenIterator = tokenIterator;
     this.currentToken = tokenIterator != null ? tokenIterator.next() : null;
-    System.out.println("First token: " + currentToken);
     if (defaultSupplier == null) {
       throw new FarserException(
           "Please provide at least a default supplier argument to DescentParser constructor");
@@ -178,7 +177,6 @@ public class DescentParser<C> {
   private void eat(TokenType<?> type) {
     if (currentToken.getType() == type && this.tokenIterator.hasNext()) {
       currentToken = this.tokenIterator.next();
-      System.out.println("Next/current token: " + currentToken);
     }
   }
 
