@@ -6,7 +6,9 @@ import com.mmm.his.cer.utility.farser.ast.node.operator.Not;
 import com.mmm.his.cer.utility.farser.ast.node.operator.Or;
 import com.mmm.his.cer.utility.farser.ast.node.type.BooleanExpression;
 import com.mmm.his.cer.utility.farser.ast.node.type.NodeSupplier;
+import com.mmm.his.cer.utility.farser.lexer.CommonTokenType;
 import com.mmm.his.cer.utility.farser.lexer.FarserException;
+import com.mmm.his.cer.utility.farser.lexer.TokenType;
 import com.mmm.his.cer.utility.farser.lexer.drg.DrgFormulaToken;
 import com.mmm.his.cer.utility.farser.lexer.drg.DrgLexerToken;
 import java.util.HashMap;
@@ -22,9 +24,8 @@ import java.util.Map;
  *
  * @param <T> The type of the context used when evaluating the AST
  */
-public class DescentParser<T> {
+public class DescentParser<C> {
 
-  private BooleanExpression<T> root;
   private DrgLexerToken currentToken;
   private Iterator<DrgLexerToken> tokenIterator;
   private final NodeSupplier<DrgLexerToken, T> defaultSupplier;
@@ -44,7 +45,8 @@ public class DescentParser<T> {
       NodeSupplier<DrgLexerToken, T> defaultSupplier,
       Map<String, NodeSupplier<DrgLexerToken, T>> suppliers) {
     this.tokenIterator = tokenIterator;
-    this.currentToken = tokenIterator.next();
+    this.currentToken = tokenIterator != null ? tokenIterator.next() : null;
+    System.out.println("First token: " + currentToken);
     if (defaultSupplier == null) {
       throw new FarserException(
           "Please provide at least a default supplier argument to DescentParser constructor");
@@ -61,6 +63,20 @@ public class DescentParser<T> {
   }
 
   /**
+   * Ctor.
+   *
+   * @param defaultSupplier a factory which creates nodes for the tree. This supplier is used by
+   *                        default when <code>suppliers</code> does not contain a node specific
+   *                        supplier
+   * @param suppliers       A map with node suppliers specific to certain tokens (token value as map
+   *                        key)
+   */
+  public DescentParser(NodeSupplier<DrgLexerToken, C> defaultSupplier,
+      Map<String, NodeSupplier<DrgLexerToken, C>> suppliers) {
+    this(null, defaultSupplier, suppliers);
+  }
+
+  /**
    * Set a new tokenIterator so that we can build another AST using the same setup parser. Uses the
    * same {@link NodeSupplier}s which were set when the {@link DescentParser} was created.
    */
@@ -72,64 +88,86 @@ public class DescentParser<T> {
   /**
    * Build the abstract syntax tree.
    */
-  public DrgSyntaxTree<T> buildExpressionTree() {
-    expression();
-    return this.getAst();
+  public DrgSyntaxTree<C> buildExpressionTree() {
+    BooleanExpression<C> root = expression(null);
+    return new DrgSyntaxTree<>(root);
+  }
+
+  /**
+   * Build the abstract syntax tree from the provided formula/tokens.
+   *
+   * @param tokenIterator list of tokens to parse into the Abstract syntax tree.
+   */
+  public DrgSyntaxTree<C> buildExpressionTree(ListIterator<DrgLexerToken> tokenIterator) {
+    setTokenIterator(tokenIterator);
+    BooleanExpression<C> root = expression(null);
+    return new DrgSyntaxTree<>(root);
   }
 
   /**
    * Expression method which will build the OR after parsing a term.
    */
-  private void expression() {
-    term();
-    while (currentToken.getType() == DrgFormulaToken.OR) {
-      this.eat(DrgFormulaToken.OR);
-      Or<T> or = new Or<>();
+  private BooleanExpression<C> expression(BooleanExpression<C> root) {
+    root = term(root);
+    TokenType<?> tokenType;
+    while ((tokenType = currentToken.getType()) == DrgFormulaToken.OR) {
+      this.eat(tokenType); // Move iterator if 'OR'
+      Or<C> or = new Or<>();
       or.setLeft(root);
-      term();
+      root = term(root);
       or.setRight(root);
       root = or;
     }
+    return root;
   }
 
   /**
    * Term method which will build the AND after parsing the factors or operands.
    */
-  private void term() {
-    factor();
-    while (currentToken.getType() == DrgFormulaToken.AND) {
-      this.eat(DrgFormulaToken.AND);
-      And<T> and = new And<>();
+  private BooleanExpression<C> term(BooleanExpression<C> root) {
+    root = factor(root);
+    TokenType<?> tokenType;
+    while ((tokenType = currentToken.getType()) == DrgFormulaToken.AND) {
+      this.eat(tokenType); // Move iterator if 'AND'
+      And<C> and = new And<>();
       and.setLeft(root);
-      factor();
+      root = factor(root);
       and.setRight(root);
       root = and;
     }
+    return root;
   }
 
   /**
    * Factor out a single the operands.
    */
-  private void factor() {
-    if (currentToken.getType() == DrgFormulaToken.ATOM) {
-
-      NodeSupplier<DrgLexerToken, T> nodeSupplier = suppliers.getOrDefault(
+  private BooleanExpression<C> factor(BooleanExpression<C> root) {
+    TokenType<?> tokenType = currentToken.getType();
+    // Get common type for generic checking. Ok to return 'null', only used in NPE safe logic.
+    CommonTokenType commonType = tokenType.getCommonTokenType().orElse(null);
+    if (commonType == CommonTokenType.ATOM) {
+      NodeSupplier<DrgLexerToken, C> nodeSupplier = suppliers.getOrDefault(
           currentToken.value, defaultSupplier);
       root = nodeSupplier.createNode(currentToken);
-      this.eat(DrgFormulaToken.ATOM);
-    } else if (currentToken.getType() == DrgFormulaToken.LPAREN) {
-      this.eat(DrgFormulaToken.LPAREN);
-      this.expression();
-      this.eat(DrgFormulaToken.RPAREN);
-    } else if (currentToken.getType() == DrgFormulaToken.NOT) {
-      this.eat(DrgFormulaToken.NOT);
-      Not<T> not = new Not<>();
-      factor();
+      this.eat(tokenType); // Move iterator if 'ATOM'
+    } else if (commonType == CommonTokenType.LPAREN) {
+      this.eat(tokenType); // Move iterator if 'LPAREN'
+      root = this.expression(root);
+      TokenType<?> rightParen =
+          TokenType.getForCommonTypeMandatory(tokenType.getClass(), CommonTokenType.RPAREN);
+      this.eat(rightParen); // Move iterator if 'RPAREN'
+    } else if (commonType == CommonTokenType.NOT) {
+      this.eat(tokenType); // Move iterator if 'NOT'
+      Not<C> not = new Not<>();
+      root = factor(root);
       not.setChild(root);
       root = not;
     } else {
-      throw new FarserException("Expression malformed on token " + currentToken);
+      throw new FarserException("Expression malformed on token "
+          + currentToken);
     }
+
+    return root;
   }
 
   /**
@@ -137,18 +175,11 @@ public class DescentParser<T> {
    *
    * @param type the type of the token to eat.
    */
-  private void eat(DrgFormulaToken type) {
+  private void eat(TokenType<?> type) {
     if (currentToken.getType() == type && this.tokenIterator.hasNext()) {
       currentToken = this.tokenIterator.next();
+      System.out.println("Next/current token: " + currentToken);
     }
   }
 
-  /**
-   * Helper method that creates a new {@link DrgSyntaxTree} from the root.
-   *
-   * @return new DrgSyntaxTree
-   */
-  private DrgSyntaxTree<T> getAst() {
-    return new DrgSyntaxTree<>(this.root);
-  }
 }
