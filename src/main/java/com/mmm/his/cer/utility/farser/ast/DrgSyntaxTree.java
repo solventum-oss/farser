@@ -1,7 +1,7 @@
 package com.mmm.his.cer.utility.farser.ast;
 
 import com.mmm.his.cer.utility.farser.ast.node.type.BooleanExpression;
-import com.mmm.his.cer.utility.farser.ast.node.type.ExpressionIterator;
+import com.mmm.his.cer.utility.farser.ast.node.type.LtrExpressionIterator;
 import com.mmm.his.cer.utility.farser.ast.parser.ExpressionResult;
 
 /**
@@ -55,7 +55,7 @@ public class DrgSyntaxTree<T> {
 
     sb.append(printNode(this.ast, context));
 
-    ExpressionIterator<C> iter = this.ast.iterator();
+    LtrExpressionIterator<C> iter = this.ast.iterator();
     while (iter.hasNext()) {
       sb.append(System.lineSeparator());
       BooleanExpression<C> node = iter.next();

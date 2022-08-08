@@ -21,8 +21,8 @@ public abstract class NonTerminal<C> implements BooleanExpression<C> {
   }
 
   @Override
-  public ExpressionIterator<C> iterator() {
-    return new ExpressionIterator<>(left, right);
+  public LtrExpressionIterator<C> iterator() {
+    return new LtrExpressionIterator<>(left, right);
   }
 
   @Override

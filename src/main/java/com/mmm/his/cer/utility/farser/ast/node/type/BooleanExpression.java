@@ -25,8 +25,8 @@ public interface BooleanExpression<T> extends Iterable<BooleanExpression<T>> {
    * returned (<code>return new ExpressionIterator<>(this)</code> - this default implementation).
    */
   @Override
-  default ExpressionIterator<C> iterator() {
-    return new ExpressionIterator<>();
+  default LtrExpressionIterator<C> iterator() {
+    return new LtrExpressionIterator<>();
   }
 
   /**

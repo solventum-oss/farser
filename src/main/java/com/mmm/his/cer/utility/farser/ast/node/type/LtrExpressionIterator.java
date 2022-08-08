@@ -5,7 +5,7 @@ import java.util.Iterator;
 
 /**
  * An iterator which iterates over the complete expression, top down (starting at the root node) and
- * from "left to right" (in the order of the formula evaluation). The order of the elements it
+ * from "left to right" (LTR - in the order of the formula evaluation). The order of the elements it
  * iterates over produces a "Polish/prefix notation" of the formula when printed out in this
  * iteration order.
  *
@@ -13,23 +13,23 @@ import java.util.Iterator;
  *
  * @param <C> The expression context data type
  */
-public class ExpressionIterator<C> implements Iterator<BooleanExpression<C>> {
+public class LtrExpressionIterator<C> implements Iterator<BooleanExpression<C>> {
 
   private final Iterator<BooleanExpression<C>> nodes;
-  private ExpressionIterator<C> currentIterator;
+  private LtrExpressionIterator<C> currentIterator;
   private final int currentDepth;
 
-  private ExpressionIterator(int depth, Iterator<BooleanExpression<C>> nodes) {
+  private LtrExpressionIterator(int depth, Iterator<BooleanExpression<C>> nodes) {
     this.currentDepth = depth;
     this.nodes = nodes;
   }
 
-  private ExpressionIterator(int depth, ExpressionIterator<C> copy) {
+  private LtrExpressionIterator(int depth, LtrExpressionIterator<C> copy) {
     this(depth, copy.nodes);
   }
 
   @SafeVarargs
-  public ExpressionIterator(BooleanExpression<C>... nodes) {
+  public LtrExpressionIterator(BooleanExpression<C>... nodes) {
     this(0, Arrays.asList(nodes).iterator());
   }
 
@@ -64,7 +64,7 @@ public class ExpressionIterator<C> implements Iterator<BooleanExpression<C>> {
 
     BooleanExpression<C> current = nodes.next();
     // Keep node iterator for later to iterate down the tree.
-    currentIterator = new ExpressionIterator<>(currentDepth + 1, current.iterator());
+    currentIterator = new LtrExpressionIterator<>(currentDepth + 1, current.iterator());
 
     return current;
   }

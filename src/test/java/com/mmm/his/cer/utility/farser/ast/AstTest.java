@@ -4,7 +4,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import com.mmm.his.cer.utility.farser.ast.node.type.BooleanExpression;
-import com.mmm.his.cer.utility.farser.ast.node.type.ExpressionIterator;
+import com.mmm.his.cer.utility.farser.ast.node.type.LtrExpressionIterator;
 import com.mmm.his.cer.utility.farser.ast.node.type.NodeSupplier;
 import com.mmm.his.cer.utility.farser.ast.parser.DescentParser;
 import com.mmm.his.cer.utility.farser.ast.parser.ExpressionResult;
@@ -482,8 +482,8 @@ public class AstTest {
     }
 
     @Override
-    public ExpressionIterator<MaskedContext<String>> iterator() {
-      return new ExpressionIterator<>();
+    public LtrExpressionIterator<MaskedContext<String>> iterator() {
+      return new LtrExpressionIterator<>();
     }
 
     @Override
@@ -567,8 +567,8 @@ public class AstTest {
     }
 
     @Override
-    public ExpressionIterator<MaskedContext<T>> iterator() {
-      return new ExpressionIterator<>();
+    public LtrExpressionIterator<MaskedContext<T>> iterator() {
+      return new LtrExpressionIterator<>();
     }
 
     @Override
