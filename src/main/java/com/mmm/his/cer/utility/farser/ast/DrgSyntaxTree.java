@@ -50,15 +50,15 @@ public class DrgSyntaxTree<T> {
    *                to only print the nodes and not print the evaluation result of each)
    * @return The tree representation as string
    */
-  public String printTree(C context) {
+  public String printTree(T context) {
     StringBuilder sb = new StringBuilder();
 
     sb.append(printNode(this.ast, context));
 
-    LtrExpressionIterator<C> iter = this.ast.iterator();
+    LtrExpressionIterator<T> iter = this.ast.iterator();
     while (iter.hasNext()) {
       sb.append(System.lineSeparator());
-      BooleanExpression<C> node = iter.next();
+      BooleanExpression<T> node = iter.next();
       sb.append(prefix(iter.getCurrentDepth()));
       sb.append(printNode(node, context));
     }
@@ -73,7 +73,7 @@ public class DrgSyntaxTree<T> {
    * @param context The context for node evaluation. May be <code>null</code> to skip evaluation
    * @return The node output
    */
-  private static <C> StringBuilder printNode(BooleanExpression<C> node, C context) {
+  private static <T> StringBuilder printNode(BooleanExpression<T> node, T context) {
     StringBuilder sb = new StringBuilder();
     sb.append(String.valueOf(node.print()));
     if (context != null) {

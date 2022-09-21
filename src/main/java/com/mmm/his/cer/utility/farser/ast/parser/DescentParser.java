@@ -24,7 +24,7 @@ import java.util.Map;
  *
  * @param <T> The type of the context used when evaluating the AST
  */
-public class DescentParser<C> {
+public class DescentParser<T> {
 
   private DrgLexerToken currentToken;
   private Iterator<DrgLexerToken> tokenIterator;
@@ -70,8 +70,8 @@ public class DescentParser<C> {
    * @param suppliers       A map with node suppliers specific to certain tokens (token value as map
    *                        key)
    */
-  public DescentParser(NodeSupplier<DrgLexerToken, C> defaultSupplier,
-      Map<String, NodeSupplier<DrgLexerToken, C>> suppliers) {
+  public DescentParser(NodeSupplier<DrgLexerToken, T> defaultSupplier,
+      Map<String, NodeSupplier<DrgLexerToken, T>> suppliers) {
     this(null, defaultSupplier, suppliers);
   }
 
@@ -87,8 +87,8 @@ public class DescentParser<C> {
   /**
    * Build the abstract syntax tree.
    */
-  public DrgSyntaxTree<C> buildExpressionTree() {
-    BooleanExpression<C> root = expression(null);
+  public DrgSyntaxTree<T> buildExpressionTree() {
+    BooleanExpression<T> root = expression(null);
     return new DrgSyntaxTree<>(root);
   }
 
@@ -97,21 +97,21 @@ public class DescentParser<C> {
    *
    * @param tokenIterator list of tokens to parse into the Abstract syntax tree.
    */
-  public DrgSyntaxTree<C> buildExpressionTree(ListIterator<DrgLexerToken> tokenIterator) {
+  public DrgSyntaxTree<T> buildExpressionTree(ListIterator<DrgLexerToken> tokenIterator) {
     setTokenIterator(tokenIterator);
-    BooleanExpression<C> root = expression(null);
+    BooleanExpression<T> root = expression(null);
     return new DrgSyntaxTree<>(root);
   }
 
   /**
    * Expression method which will build the OR after parsing a term.
    */
-  private BooleanExpression<C> expression(BooleanExpression<C> root) {
+  private BooleanExpression<T> expression(BooleanExpression<T> root) {
     root = term(root);
     TokenType<?> tokenType;
     while ((tokenType = currentToken.getType()) == DrgFormulaToken.OR) {
       this.eat(tokenType); // Move iterator if 'OR'
-      Or<C> or = new Or<>();
+      Or<T> or = new Or<>();
       or.setLeft(root);
       root = term(root);
       or.setRight(root);
@@ -123,12 +123,12 @@ public class DescentParser<C> {
   /**
    * Term method which will build the AND after parsing the factors or operands.
    */
-  private BooleanExpression<C> term(BooleanExpression<C> root) {
+  private BooleanExpression<T> term(BooleanExpression<T> root) {
     root = factor(root);
     TokenType<?> tokenType;
     while ((tokenType = currentToken.getType()) == DrgFormulaToken.AND) {
       this.eat(tokenType); // Move iterator if 'AND'
-      And<C> and = new And<>();
+      And<T> and = new And<>();
       and.setLeft(root);
       root = factor(root);
       and.setRight(root);
@@ -140,12 +140,12 @@ public class DescentParser<C> {
   /**
    * Factor out a single the operands.
    */
-  private BooleanExpression<C> factor(BooleanExpression<C> root) {
+  private BooleanExpression<T> factor(BooleanExpression<T> root) {
     TokenType<?> tokenType = currentToken.getType();
     // Get common type for generic checking. Ok to return 'null', only used in NPE safe logic.
     CommonTokenType commonType = tokenType.getCommonTokenType().orElse(null);
     if (commonType == CommonTokenType.ATOM) {
-      NodeSupplier<DrgLexerToken, C> nodeSupplier = suppliers.getOrDefault(
+      NodeSupplier<DrgLexerToken, T> nodeSupplier = suppliers.getOrDefault(
           currentToken.value, defaultSupplier);
       root = nodeSupplier.createNode(currentToken);
       this.eat(tokenType); // Move iterator if 'ATOM'
@@ -157,7 +157,7 @@ public class DescentParser<C> {
       this.eat(rightParen); // Move iterator if 'RPAREN'
     } else if (commonType == CommonTokenType.NOT) {
       this.eat(tokenType); // Move iterator if 'NOT'
-      Not<C> not = new Not<>();
+      Not<T> not = new Not<>();
       root = factor(root);
       not.setChild(root);
       root = not;

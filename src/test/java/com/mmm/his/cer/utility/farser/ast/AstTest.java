@@ -8,21 +8,17 @@ import com.mmm.his.cer.utility.farser.ast.node.type.LtrExpressionIterator;
 import com.mmm.his.cer.utility.farser.ast.node.type.NodeSupplier;
 import com.mmm.his.cer.utility.farser.ast.parser.DescentParser;
 import com.mmm.his.cer.utility.farser.ast.parser.ExpressionResult;
-import com.mmm.his.cer.utility.farser.ast.setup.ContainsNodeForContext;
-import com.mmm.his.cer.utility.farser.ast.setup.MaskedContext;
-import com.mmm.his.cer.utility.farser.ast.setup.TestContext;
 import com.mmm.his.cer.utility.farser.lexer.DrgFormulaLexer;
 import com.mmm.his.cer.utility.farser.lexer.drg.DrgLexerToken;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import org.hamcrest.Matchers;
-import org.junit.Before;
-import org.junit.Test;
+import java.util.Set;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
@@ -593,6 +589,5 @@ public class AstTest {
 
     Set<T> getMatches();
   }
-}
 
 }
