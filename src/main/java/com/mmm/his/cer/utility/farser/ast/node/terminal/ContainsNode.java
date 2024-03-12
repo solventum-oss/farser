@@ -7,7 +7,7 @@ import java.util.Collection;
  * A terminal node that represents an evaluation that centers around the list#contains. This node
  * will check the incoming values to see if the field value is contained with in it.
  *
- * @param <C> The type used in the terminal nodes.
+ * @param <C> The node context type this node.
  * @author Mike Funaro
  */
 public class ContainsNode<C extends Collection<A>, A> implements BooleanExpression<C> {

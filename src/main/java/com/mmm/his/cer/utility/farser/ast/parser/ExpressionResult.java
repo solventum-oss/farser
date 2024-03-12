@@ -3,13 +3,13 @@ package com.mmm.his.cer.utility.farser.ast.parser;
 /**
  * Class that contains all information about a expression match from {@link DescentParser}.
  *
- * @param <T> the type of context
+ * @param <C> the type of context which was used for the terminal nodes to evaluate the AST
  * @author Mike Funaro
  */
-public class ExpressionResult<T> {
+public class ExpressionResult<C> {
 
   private final boolean matched;
-  private final T context;
+  private final C context;
 
   /**
    * Ctor.
@@ -19,7 +19,7 @@ public class ExpressionResult<T> {
    *                terminal objects that were matched.
    * @param context the context used in evaluation.
    */
-  public ExpressionResult(boolean matched, T context) {
+  public ExpressionResult(boolean matched, C context) {
     this.matched = matched;
     this.context = context;
   }
@@ -28,7 +28,7 @@ public class ExpressionResult<T> {
     return matched;
   }
 
-  public T getContext() {
+  public C getContext() {
     return context;
   }
 }

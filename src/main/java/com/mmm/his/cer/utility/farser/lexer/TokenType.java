@@ -48,6 +48,16 @@ public interface TokenType<T extends Enum<T>> {
   Optional<CommonTokenType> getCommonTokenType();
 
   /**
+   * A simple equals-check against the {@link CommonTokenType} (if there is one set for this token).
+   *
+   * @param commonTokenType The common token type to check against. May be <code>null</code>.
+   * @return Whether or not the common types are equal
+   */
+  default boolean isEqual(CommonTokenType commonTokenType) {
+    return getCommonTokenType().orElse(null) == commonTokenType;
+  }
+
+  /**
    * Retrieves the token which is marked with the given {@link CommonTokenType}.
    *
    * @param tokenTypeClass The enumeration class with the tokens

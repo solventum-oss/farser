@@ -46,7 +46,17 @@ public enum CommonTokenType {
   /**
    * A negation/not.
    */
-  NOT(false);
+  NOT(false),
+
+  /**
+   * An <code>AND</code> operator.
+   */
+  AND(false),
+
+  /**
+   * An <code>OR</code> operator.
+   */
+  OR(false);
 
   /**
    * One or more spaces in a non-capturing group. <br />
