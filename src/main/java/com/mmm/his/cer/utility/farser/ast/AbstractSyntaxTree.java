@@ -1,5 +1,6 @@
 package com.mmm.his.cer.utility.farser.ast;
 
+import com.mmm.his.cer.utility.farser.ast.node.LtrExpressionIterator;
 import com.mmm.his.cer.utility.farser.ast.node.type.BooleanExpression;
 import com.mmm.his.cer.utility.farser.ast.node.type.NonTerminal;
 import com.mmm.his.cer.utility.farser.ast.parser.ExpressionResult;
@@ -26,6 +27,16 @@ public class AbstractSyntaxTree<C> extends NonTerminal<C> {
   @Override
   public boolean evaluate(C context) {
     return this.ast.evaluate(context);
+  }
+
+  @Override
+  public LtrExpressionIterator<C> iterator() {
+    return new LtrExpressionIterator<>(ast);
+  }
+
+  @Override
+  public String print() {
+    return this.ast.print();
   }
 
   /**

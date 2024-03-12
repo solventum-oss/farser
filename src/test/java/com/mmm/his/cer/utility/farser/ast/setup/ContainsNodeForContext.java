@@ -19,4 +19,9 @@ public class ContainsNodeForContext<T> implements BooleanExpression<MaskedContex
     }
     return false;
   }
+
+  @Override
+  public String print() {
+    return String.valueOf(value);
+  }
 }

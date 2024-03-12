@@ -244,6 +244,43 @@ vary. The used context can get accessed with `ExpressionResult#getContext()`. Th
 updated during the evaluation to provide further information about the evaluation.
 
 
+#### Abstract Syntax Tree Iteration
+
+The `AbstractSyntaxTree` (and `DrgSyntaxTree`, plus any of the AST nodes) implement `Iterable`, 
+which means that walking through the tree can be achieved by retrieving an iterator and calling 
+`next` on it. The iteration follows the LTR (left-to-right) approach, the same as the 
+evaluation of the formulas where the left-side nodes are visited/evaluated first. When each node 
+is printed as text in iteration order, it produces a "Polish/prefix notation" form of the formula.
+
+The used `LtrExpressionIterator` also implements "peeking" functionality to look at the next 
+element with the `peek()` method without advancing the regular iteration. Additionally, the 
+`LtrExpressionIterator` provides methods which return the current and peeked node "depth".
+
+The formula `A & B | C` is iterated as `"OR" -> "AND"-> "A"-> "B"-> "C"`, which could be 
+organized as a tree structure like this:
+
+```text
+OR
+ |-AND
+ |  |-A
+ |  \-B
+ \-C
+```
+
+Related code example:
+
+```java
+DescentParser<MaskedContext<String>> parser = ...;
+AbstractSyntaxTree<MaskedContext<String>> ast = parser.buildTree();
+
+LtrExpressionIterator<MaskedContext<String>> iter = ast.iterator();
+while (iter.hasNext()) {
+  String print = iter.next().print();
+  System.out.println(print);
+}
+```
+
+
 #### Abstract Syntax Tree Examples
 
 The following diagrams are a visual representation of the AST after it was parsed by the descent parser.

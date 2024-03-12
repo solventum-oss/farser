@@ -13,6 +13,7 @@ public class And<C> extends NonTerminal<C> {
 
   @Override
   public boolean evaluate(C context) {
+    // Evaluate left-side first, then right-side
     return left.evaluate(context) && right.evaluate(context);
   }
 

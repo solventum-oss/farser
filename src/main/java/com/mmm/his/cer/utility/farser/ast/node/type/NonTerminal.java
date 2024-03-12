@@ -1,5 +1,7 @@
 package com.mmm.his.cer.utility.farser.ast.node.type;
 
+import com.mmm.his.cer.utility.farser.ast.node.LtrExpressionIterator;
+
 /**
  * This class represents a non-terminal node in the AST. These types of nodes will have a left and a
  * right child.
@@ -18,6 +20,17 @@ public abstract class NonTerminal<C> implements BooleanExpression<C> {
 
   public void setRight(BooleanExpression<C> right) {
     this.right = right;
+  }
+
+  @Override
+  public LtrExpressionIterator<C> iterator() {
+    return new LtrExpressionIterator<>(left, right);
+  }
+
+  @Override
+  public String print() {
+    // A default printing behavior. Can be overridden by implementations if needed.
+    return getClass().getSimpleName().toUpperCase();
   }
 
   @Override
