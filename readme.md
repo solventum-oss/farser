@@ -281,6 +281,43 @@ while (iter.hasNext()) {
 ```
 
 
+#### Abstract Syntax Tree Printing
+
+An instance of `AbstractSyntaxTree` can be printed in textual form using the 
+`AbstractSyntaxTreePrinter`. The printer follows the iteration documented 
+above, meaning that the printed output is in LTR/"Polish/prefix notation" form.
+
+```java
+String formula = "(A & B | C) & D";
+...
+AbstractSyntaxTree<MaskedContext<String>> ast = parser.buildTree();
+
+String printed = AbstractSyntaxTreePrinter.printTree(ast);
+System.out.println(printed);
+```
+
+results in
+
+```text
+AND
+  OR
+    AND
+      A
+      B
+    C
+  D
+```
+
+The output value of each node can be controlled with an optional printing 
+function provided to the `AbstractSyntaxTreePrinter.printTree` call. 
+The function can then be used to print additional (context) information, 
+evaluate each node and show the result, add structure symbols to the
+output (e.g. JSON symbols) and so on.
+The printer context `AstPrinterContext` contains information like 
+peek (looking at the next element and depth), the indentation prefix 
+string to use and the "depth direction" of the current and next node.
+
+
 #### Abstract Syntax Tree Examples
 
 The following diagrams are a visual representation of the AST after it was parsed by the descent parser.
