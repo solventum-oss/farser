@@ -1,5 +1,6 @@
 package com.mmm.his.cer.utility.farser.lexer;
 
+import com.mmm.his.cer.utility.farser.CommonTokenFlag;
 import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Pattern;
@@ -19,7 +20,7 @@ import java.util.regex.Pattern;
  * }
  * </pre>
  *
-
+ *
  * @param <T> The enumeration type which implements this interface.
  * @author Mike Funaro
  */
@@ -34,7 +35,7 @@ public interface TokenType<T extends Enum<T>> {
 
   /**
    * The token value (e.g. the formula operator).<br />
-   * Returns an empty optional for the ATOM token with the value.
+   * Returns an empty optional for the {@link CommonTokenType#ATOM} token with the value.
    *
    * @return The token value.
    */
@@ -45,15 +46,26 @@ public interface TokenType<T extends Enum<T>> {
    *
    * @return The common token type, or an empty optional if there is none.
    */
-  Optional<CommonTokenType> getCommonTokenType();
+  Optional<CommonTokenFlag> getCommonTokenType();
 
   /**
-   * A simple equals-check against the {@link CommonTokenType} (if there is one set for this token).
+   * Retrieves the {@link CommonTokenFlag} but fails with an exception if no such flag is available.
+   *
+   * @return The flag
+   */
+  default CommonTokenFlag getCommonTokenTypeOrThrow() {
+    return getCommonTokenType().orElseThrow(
+        () -> new UnsupportedOperationException(
+            CommonTokenType.class.getSimpleName() + " required"));
+  }
+
+  /**
+   * A simple equals-check against a {@link CommonTokenFlag} (if there is one set for this token).
    *
    * @param commonTokenType The common token type to check against. May be <code>null</code>.
    * @return Whether or not the common types are equal
    */
-  default boolean isEqual(CommonTokenType commonTokenType) {
+  default boolean isEqual(CommonTokenFlag commonTokenType) {
     return getCommonTokenType().orElse(null) == commonTokenType;
   }
 
@@ -83,10 +95,11 @@ public interface TokenType<T extends Enum<T>> {
    * if no such entry with that common token type exists.
    *
    * @param tokenTypeClass The enumeration class with the tokens
-   * @param commonType The {@link CommonTokenType} to look for
+   * @param commonType     The {@link CommonTokenType} to look for
    * @return The token
    * @throws IllegalArgumentException If the token type class is not an enumeration, or if the token
-   *         type class does not contain the provided common token type entry.
+   *                                  type class does not contain the provided common token type
+   *                                  entry.
    */
   static <T extends TokenType<?>> T getForCommonTypeMandatory(Class<T> tokenTypeClass,
       CommonTokenType commonType) {

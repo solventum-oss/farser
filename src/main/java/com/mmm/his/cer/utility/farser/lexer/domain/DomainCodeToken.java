@@ -1,12 +1,16 @@
 package com.mmm.his.cer.utility.farser.lexer.domain;
 
+import com.mmm.his.cer.utility.farser.CommonTokenFlag;
+import com.mmm.his.cer.utility.farser.ast.AstCommonTokenType;
 import com.mmm.his.cer.utility.farser.lexer.CommonTokenType;
 import com.mmm.his.cer.utility.farser.lexer.LexerToken;
 import com.mmm.his.cer.utility.farser.lexer.TokenType;
 import java.util.Optional;
 
 /**
- * All recognized types of tokens that we need to be concerned with when lexing a string.
+ * All recognized types of tokens that we need to be concerned with when lexing a <b>HIS domain
+ * code</b> formula string. This token enum also includes configuration types (flags) for building
+ * an AST.
  *
  * @author Mike Funaro
  */
@@ -28,12 +32,12 @@ public enum DomainCodeToken implements TokenType<DomainCodeToken> {
   /**
    * Left parenthesis.
    */
-  LPAREN("(", CommonTokenType.LPAREN),
+  LPAREN("(", AstCommonTokenType.LPAREN),
 
   /**
    * Right parenthesis.
    */
-  RPAREN(")", CommonTokenType.RPAREN),
+  RPAREN(")", AstCommonTokenType.RPAREN),
 
   /**
    * Assigning a value to a variable.
@@ -53,17 +57,17 @@ public enum DomainCodeToken implements TokenType<DomainCodeToken> {
   /**
    * Logical AND.
    */
-  AND("and", CommonTokenType.AND),
+  AND("and", AstCommonTokenType.RIGHT),
 
   /**
    * Logical OR.
    */
-  OR("or", CommonTokenType.OR),
+  OR("or", AstCommonTokenType.LEFT),
 
   /**
    * Logical NOT.
    */
-  NOT("not", CommonTokenType.NOT),
+  NOT("not", AstCommonTokenType.NOT),
 
   /**
    * A comma separating multiple function parameters.
@@ -91,7 +95,7 @@ public enum DomainCodeToken implements TokenType<DomainCodeToken> {
   POINTER("->");
 
   private final String value;
-  private final CommonTokenType commonType;
+  private final CommonTokenFlag commonType;
 
   /**
    * A new token type.
@@ -99,7 +103,7 @@ public enum DomainCodeToken implements TokenType<DomainCodeToken> {
    * @param value      The token value, or <code>null</code> if not used
    * @param commonType The common token type, or <code>null</code> if not needed
    */
-  DomainCodeToken(String value, CommonTokenType commonType) {
+  DomainCodeToken(String value, CommonTokenFlag commonType) {
     this.value = value;
     this.commonType = commonType;
 
@@ -121,7 +125,7 @@ public enum DomainCodeToken implements TokenType<DomainCodeToken> {
   }
 
   @Override
-  public Optional<CommonTokenType> getCommonTokenType() {
+  public Optional<CommonTokenFlag> getCommonTokenType() {
     return Optional.ofNullable(commonType);
   }
 

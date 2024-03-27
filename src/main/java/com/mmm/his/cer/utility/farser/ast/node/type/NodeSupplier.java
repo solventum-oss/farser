@@ -1,5 +1,12 @@
 package com.mmm.his.cer.utility.farser.ast.node.type;
 
+import com.mmm.his.cer.utility.farser.ast.AstCommonTokenType;
+import com.mmm.his.cer.utility.farser.ast.node.operator.And;
+import com.mmm.his.cer.utility.farser.ast.node.operator.Not;
+import com.mmm.his.cer.utility.farser.ast.node.operator.Or;
+import com.mmm.his.cer.utility.farser.lexer.CommonTokenType;
+import com.mmm.his.cer.utility.farser.lexer.LexerToken;
+
 /**
  * Interface for calling applications to implement so that they can provide custom terminal nodes
  * for special logic to be evaluated within the AST.
@@ -11,7 +18,7 @@ package com.mmm.his.cer.utility.farser.ast.node.type;
  *
  * @author Mike Funaro
  */
-public interface NodeSupplier<T, C> {
+public interface NodeSupplier<L extends LexerToken<?>, C> {
 
   /**
    * Create a terminal node. This is type defined on the class. The input will be a token of a
@@ -21,5 +28,30 @@ public interface NodeSupplier<T, C> {
    * @param token The formula token/operand for which to create the node for
    * @return BooleanExpression that was instantiated in this method.
    */
-  BooleanExpression<C> createNode(T token);
+  BooleanExpression<C> createNode(L token);
+
+  default NonTerminal<C> createNonTerminalNode(L token) {
+    AstCommonTokenType type =
+        (AstCommonTokenType) token.getCommonType()
+        .orElseThrow(() -> new UnsupportedOperationException(
+            "The non-terminal node supplier can only create nodes with a "
+                + CommonTokenType.class.getSimpleName()));
+    switch (type) {
+      case RIGHT:
+        return new And<>();
+      case LEFT:
+        return new Or<>();
+      case NOT:
+        return new Not<>();
+      default:
+        throw new UnsupportedOperationException(
+            "Invalid "
+                + CommonTokenType.class.getSimpleName()
+                + "."
+                + type
+                + " for the non-terminal node supplier");
+    }
+  }
+
+
 }

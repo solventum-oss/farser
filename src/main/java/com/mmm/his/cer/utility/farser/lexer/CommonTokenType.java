@@ -1,15 +1,16 @@
 package com.mmm.his.cer.utility.farser.lexer;
 
+import com.mmm.his.cer.utility.farser.CommonTokenFlag;
 
 /**
- * These common token types can be used to mark tokens in your own {@link TokenType} implementation.
- * Some of them are mandatory and have to exist in your own {@link TokenType} implementation, others
- * are not mandatory.
+ * These common token types can be used to mark tokens in your own {@link TokenType} implementation
+ * to aid in lexing with {@link Lexer#lex(Class, String, LexerTokenFactory)}. Some of them are
+ * mandatory and have to exist in your own {@link TokenType} implementation, others are not
+ * mandatory.
  *
  * @author Thomas Naeff
  */
-public enum CommonTokenType {
-
+public enum CommonTokenType implements CommonTokenFlag {
 
   /**
    * An atom token is the content which does not match any other token (e.g. all the characters in
@@ -31,35 +32,10 @@ public enum CommonTokenType {
    * readability.<br />
    * See {@link #SPACE_PATTERN} for the pattern used to match this token.
    */
-  SPACE(true),
+  SPACE(true);
 
   /**
-   * A left parenthesis "(".
-   */
-  LPAREN(false),
-
-  /**
-   * A right parenthesis ")".
-   */
-  RPAREN(false),
-
-  /**
-   * A negation/not.
-   */
-  NOT(false),
-
-  /**
-   * An <code>AND</code> operator.
-   */
-  AND(false),
-
-  /**
-   * An <code>OR</code> operator.
-   */
-  OR(false);
-
-  /**
-   * One or more spaces in a non-capturing group. <br />
+   * One or more spaces in a non-capturing group.<br />
    * The non-capturing group is important to avoid extra groups to be captured once the complete
    * token pattern is assembled.
    */

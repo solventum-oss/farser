@@ -1,5 +1,6 @@
 package com.mmm.his.cer.utility.farser.lexer.tokentype;
 
+import com.mmm.his.cer.utility.farser.CommonTokenFlag;
 import com.mmm.his.cer.utility.farser.lexer.CommonTokenType;
 import com.mmm.his.cer.utility.farser.lexer.LexerToken;
 import com.mmm.his.cer.utility.farser.lexer.TokenType;
@@ -58,7 +59,7 @@ public enum TestToken implements TokenType<TestToken> {
       "!!");
 
   private final Optional<String> value;
-  private final Optional<CommonTokenType> commonType;
+  private final Optional<CommonTokenFlag> commonType;
 
   /**
    * A new token type.
@@ -66,7 +67,7 @@ public enum TestToken implements TokenType<TestToken> {
    * @param value      The token value, or <code>null</code> if not used
    * @param commonType The common token type, or <code>null</code> if not needed
    */
-  TestToken(String value, CommonTokenType commonType) {
+  TestToken(String value, CommonTokenFlag commonType) {
     this.value = Optional.ofNullable(value);
     this.commonType = Optional.ofNullable(commonType);
 
@@ -88,7 +89,7 @@ public enum TestToken implements TokenType<TestToken> {
   }
 
   @Override
-  public Optional<CommonTokenType> getCommonTokenType() {
+  public Optional<CommonTokenFlag> getCommonTokenType() {
     return commonType;
   }
 
