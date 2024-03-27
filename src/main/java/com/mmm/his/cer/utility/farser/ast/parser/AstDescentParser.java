@@ -3,8 +3,9 @@ package com.mmm.his.cer.utility.farser.ast.parser;
 import com.mmm.his.cer.utility.farser.CommonTokenFlag;
 import com.mmm.his.cer.utility.farser.ast.AbstractSyntaxTree;
 import com.mmm.his.cer.utility.farser.ast.AstCommonTokenType;
+import com.mmm.his.cer.utility.farser.ast.AstTokenType;
 import com.mmm.his.cer.utility.farser.ast.DrgSyntaxTree;
-import com.mmm.his.cer.utility.farser.ast.node.type.BooleanExpression;
+import com.mmm.his.cer.utility.farser.ast.node.type.Expression;
 import com.mmm.his.cer.utility.farser.ast.node.type.NodeSupplier;
 import com.mmm.his.cer.utility.farser.ast.node.type.NonTerminal;
 import com.mmm.his.cer.utility.farser.lexer.CommonTokenType;
@@ -15,7 +16,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.ListIterator;
 import java.util.Map;
-import java.util.function.Function;
 
 /**
  * Recursive descent parser that will build an Abstract syntax tree from a formula (list of tokens).
@@ -45,20 +45,6 @@ public class AstDescentParser<L extends LexerToken<T>, T extends TokenType<?>, C
   public AstDescentParser(Iterator<L> tokenIterator,
       NodeSupplier<L, C> nodeSupplier) {
     this(tokenIterator, nodeSupplier, null);
-  }
-
-  /**
-   * Ctor.
-   *
-   * @param tokenIterator list of tokens to parse into the Abstract syntax tree. May be
-   *                      <code>null</code>.
-   * @param nodeSupplier  a factory which creates nodes for the tree. As standard java functional
-   *                      interface.
-   */
-  public AstDescentParser(Iterator<L> tokenIterator,
-      Function<L, BooleanExpression<C>> nodeSupplier) {
-    // Simply "wraps" the Java functional interface as 'NodeSupplier'.
-    this(tokenIterator, nodeSupplier::apply, null);
   }
 
   /**
@@ -101,7 +87,6 @@ public class AstDescentParser<L extends LexerToken<T>, T extends TokenType<?>, C
     this.tokenIterator = tokenIterator;
     // Position at first token
     this.currentToken = tokenIterator != null ? tokenIterator.next() : null;
-    System.out.println("current: " + currentToken.getValue());
   }
 
   /**
@@ -112,7 +97,7 @@ public class AstDescentParser<L extends LexerToken<T>, T extends TokenType<?>, C
    */
   @Deprecated
   public DrgSyntaxTree<C> buildExpressionTree() {
-    BooleanExpression<C> root = expression(null);
+    Expression<C, Boolean> root = expression(null, AstTokenType.NOT_AN_OPERATOR);
     return new DrgSyntaxTree<>(root);
   }
 
@@ -127,7 +112,7 @@ public class AstDescentParser<L extends LexerToken<T>, T extends TokenType<?>, C
   @Deprecated
   public DrgSyntaxTree<C> buildExpressionTree(ListIterator<L> tokenIterator) {
     setTokenIterator(tokenIterator);
-    BooleanExpression<C> root = expression(null);
+    Expression<C, Boolean> root = expression(null, AstTokenType.NOT_AN_OPERATOR);
     return new DrgSyntaxTree<>(root);
   }
 
@@ -135,7 +120,7 @@ public class AstDescentParser<L extends LexerToken<T>, T extends TokenType<?>, C
    * Build the abstract syntax tree.
    */
   public AbstractSyntaxTree<C> buildTree() {
-    BooleanExpression<C> root = expression(null);
+    Expression<C, Boolean> root = expression(null, AstTokenType.NOT_AN_OPERATOR);
     return new AbstractSyntaxTree<>(root);
   }
 
@@ -146,70 +131,134 @@ public class AstDescentParser<L extends LexerToken<T>, T extends TokenType<?>, C
    */
   public AbstractSyntaxTree<C> buildTree(ListIterator<L> tokenIterator) {
     setTokenIterator(tokenIterator);
-    BooleanExpression<C> root = expression(null);
+    Expression<C, Boolean> root = expression(null, AstTokenType.NOT_AN_OPERATOR);
     return new AbstractSyntaxTree<>(root);
   }
 
   /**
-   * Expression method which will build the OR after parsing a term.
+   * Expression method which will build the lower precedence elements after parsing a term.
+   *
+   * @param <X>                    A dummy data type for the node evaluation result types to avoid
+   *                               the use of <code>?</code> and the need for (unchecked) casting.
+   *                               In general, it can not programmatically guarantee that one nodes
+   *                               evaluation return type matches the other. It has to rely on
+   *                               runtime (class cast) exceptions when malformed formulas or
+   *                               implementations are used.
+   * @param left                   The node to be used (or passed further down) as left-side node
+   * @param leftOperatorPrecedence The operator precedence of the provided <code>left</code> node
+   * @return Potentially a new (non-terminal/operator) node with a potential new evaluation return
+   *         type. Or the input <code>left</code> node passed through with a matching evaluation
+   *         return type.
    */
-  private BooleanExpression<C> expression(BooleanExpression<C> root) {
-    root = term(root);
-    while (currentToken.getType().isEqual(AstCommonTokenType.LEFT)) {
-      NonTerminal<C> or = nodeSupplier.createNonTerminalNode(currentToken);
-      this.eat(currentToken.getType().getCommonTokenTypeOrThrow()); // Move iterator if 'OR'
-      or.setLeft(root);
-      root = term(root);
-      or.setRight(root);
-      root = or;
+  private <X> Expression<C, X> expression(Expression<C, X> left, int leftOperatorPrecedence) {
+    left = term(left, leftOperatorPrecedence);
+    // Higher value means lower precedence
+    while (getCurrentTokenAstType().isLowerOrSamePrecedence(leftOperatorPrecedence)) {
+      NonTerminal<C, X> operator = uncheckedCast(nodeSupplier.createNonTerminalNode(currentToken));
+      // Save the current operator precedence before advancing the token iterator
+      int operatorPrecedence = getCurrentOperatorPrecedence();
+      this.eat();
+      operator.setLeft(left);
+      Expression<C, X> right = term(left, operatorPrecedence);
+      operator.setRight(right);
+      // The non-terminal/operator node, as combination of left/right evaluation, may have a
+      // different evaluation return type than the individual left/right nodes.
+      left = uncheckedCast(operator);
     }
-    return root;
+    return left;
   }
 
   /**
-   * Term method which will build the AND after parsing the factors or operands.
+   * Term method which will build the higher precedence elements after parsing the factors or
+   * operands.
+   *
+   * @param <X>                    A dummy data type for the node evaluation result types to avoid
+   *                               the use of <code>?</code> and the need for (unchecked) casting.
+   *                               In general, it can not programmatically guarantee that one nodes
+   *                               evaluation return type matches the other. It has to rely on
+   *                               runtime (class cast) exceptions when malformed formulas or
+   *                               implementations are used.
+   * @param left                   The node to be used (or passed further down) as left-side node
+   * @param leftOperatorPrecedence The operator precedence of the provided <code>left</code> node
+   * @return Potentially a new (non-terminal/operator) node with a potential new evaluation return
+   *         type. Or the input <code>left</code> node passed through with a matching evaluation
+   *         return type.
    */
-  private BooleanExpression<C> term(BooleanExpression<C> root) {
-    root = factor(root);
-    while (currentToken.getType().isEqual(AstCommonTokenType.RIGHT)) {
-      NonTerminal<C> and = nodeSupplier.createNonTerminalNode(currentToken);
-      this.eat(currentToken.getType().getCommonTokenTypeOrThrow()); // Move iterator if 'AND'
-      and.setLeft(root);
-      root = factor(root);
-      and.setRight(root);
-      root = and;
+  private <X> Expression<C, X> term(Expression<C, X> left, int leftOperatorPrecedence) {
+    left = factor(left, leftOperatorPrecedence);
+    while (getCurrentTokenAstType().isHigherPrecedence(leftOperatorPrecedence)) {
+      NonTerminal<C, X> operator = uncheckedCast(nodeSupplier.createNonTerminalNode(currentToken));
+      // Save the current operator precedence before advancing the token iterator
+      int operatorPrecedence = getCurrentOperatorPrecedence();
+      this.eat();
+      operator.setLeft(left);
+      Expression<C, X> right = term(left, operatorPrecedence);
+      operator.setRight(right);
+      // The non-terminal/operator node, as combination of left/right evaluation, may have a
+      // different evaluation return type than the individual left/right nodes.
+      left = uncheckedCast(operator);
     }
-    return root;
+    return left;
+  }
+
+  /**
+   * Method which will build the negation/not node, with only one child node.
+   *
+   * @param <R>                    The (boolean) return type of the negated <code>left</code> node,
+   *                               as well as the (boolean) return type of the returned not-node.
+   *                               This data type is not set as {@link Boolean} to avoid for
+   *                               (unchecked) casting. In general, it can not programmatically
+   *                               guarantee that one nodes evaluation return type matches the
+   *                               other. It has to rely on runtime (class cast) exceptions when
+   *                               malformed formulas or implementations are used.
+   * @param left                   The node to be used (or passed further down) as left-side node
+   * @param leftOperatorPrecedence The operator precedence of the provided <code>left</code> node
+   * @return A new (non-terminal/operator) node with a new evaluation return type
+   */
+  private <R> Expression<C, R> not(Expression<C, R> left, int leftOperatorPrecedence) {
+    NonTerminal<C, R> operator = uncheckedCast(nodeSupplier.createNonTerminalNode(currentToken));
+    this.eat(AstCommonTokenType.NOT); // Move iterator if 'NOT'
+    left = factor(left, leftOperatorPrecedence);
+    operator.setLeft(left);
+    // The non-terminal/operator node, as combination of left/right evaluation, may have a
+    // different evaluation return type than the individual left/right nodes.
+    return uncheckedCast(operator);
   }
 
   /**
    * Factor out a single operand.
+   *
+   * @param <X>                    A dummy data type for the node evaluation result types to avoid
+   *                               the use of <code>?</code> and the need for (unchecked) casting.
+   *                               In general, it can not programmatically guarantee that one nodes
+   *                               evaluation return type matches the other. It has to rely on
+   *                               runtime (class cast) exceptions when malformed formulas or
+   *                               implementations are used.
+   * @param left                   The node to be used (or passed further down) as left-side node
+   * @param leftOperatorPrecedence The operator precedence of the provided <code>left</code> node
+   * @return Potentially a new (non-terminal/operator or ATOM) node with a potential new evaluation
+   *         return type. Or the input <code>left</code> node passed through with a matching
+   *         evaluation return type.
    */
-  private BooleanExpression<C> factor(BooleanExpression<C> root) {
+  private <X> Expression<C, X> factor(Expression<C, X> left, int leftOperatorPrecedence) {
     TokenType<?> tokenType = currentToken.getType();
-    // Get common type for generic checking. Ok to return 'null', it is only used in NPE safe logic
-    // below.
+    // Get common type for generic checking.
+    // Ok to return 'null', it is only used in NPE safe logic below.
     CommonTokenFlag commonType = tokenType.getCommonTokenType().orElse(null);
     if (commonType == CommonTokenType.ATOM) {
-      NodeSupplier<L, C> supplier = suppliers.getOrDefault(
-          currentToken.getValue(), nodeSupplier);
-      root = supplier.createNode(currentToken);
+      NodeSupplier<L, C> supplier = suppliers.getOrDefault(currentToken.getValue(), nodeSupplier);
+      left = uncheckedCast(supplier.createNode(currentToken));
       this.eat(CommonTokenType.ATOM); // Move iterator if 'ATOM'
     } else if (commonType == AstCommonTokenType.LPAREN) {
       this.eat(AstCommonTokenType.LPAREN); // Move iterator if 'LPAREN'
-      root = this.expression(root);
-      this.eat(AstCommonTokenType.RPAREN);
+      left = this.expression(left, leftOperatorPrecedence);
+      this.eat(AstCommonTokenType.RPAREN); // Move iterator if 'RPAREN'
     } else if (commonType == AstCommonTokenType.NOT) {
-      NonTerminal<C> not = nodeSupplier.createNonTerminalNode(currentToken);
-      this.eat(AstCommonTokenType.NOT); // Move iterator if 'NOT'
-      root = factor(root);
-      not.setLeft(root);
-      root = not;
+      left = not(left, leftOperatorPrecedence);
     } else {
       throw new FarserException("Expression malformed on token " + currentToken);
     }
-
-    return root;
+    return left;
   }
 
   /**
@@ -225,6 +274,67 @@ public class AstDescentParser<L extends LexerToken<T>, T extends TokenType<?>, C
     if (currentToken.getType().isEqual(type) && this.tokenIterator.hasNext()) {
       currentToken = this.tokenIterator.next();
     }
+  }
+
+  /**
+   * Move the iterator forward.
+   *
+   * @param type the type of the token to eat.
+   */
+  private void eat() {
+    if (this.tokenIterator.hasNext()) {
+      currentToken = this.tokenIterator.next();
+    }
+  }
+
+  /**
+   * Casts the current token type to {@link AstTokenType}.<br>
+   * Also checks the token type when casting to {@link AstTokenType} to ensure it implements that
+   * type. Informs the user if implementation is wrong.
+   *
+   * @return The cast token type of the current token
+   */
+  private AstTokenType<?> getCurrentTokenAstType() {
+    TokenType<?> type = currentToken.getType();
+    if (!(type instanceof AstTokenType)) {
+      throw new FarserException("The token type "
+          + type.getClass()
+          + " does not implement "
+          + AstTokenType.class.getName());
+    }
+    return (AstTokenType<?>) type;
+  }
+
+
+
+  /**
+   * Gets the {@link AstTokenType#getOperatorPrecedence()} by casting the {@link TokenType} to
+   * {@link AstTokenType}.<br>
+   * No type checking is done to avoid unnecessary overhead. This call always follows an
+   * {@link #getCurrentTokenAstType()} which does type checking.
+   *
+   * @return The operator precedence of the current token
+   */
+  private int getCurrentOperatorPrecedence() {
+    TokenType<?> type = currentToken.getType();
+    return ((AstTokenType<?>) type).getOperatorPrecedence();
+  }
+
+  /**
+   * A helper method to do an unchecked cast and suppress the warning. Only for situations where
+   * programmatic generic type checking is not possible and we have to rely on runtime (class cast)
+   * exceptions.<br>
+   * This avoids creating a temporary intermediate variable to attach the
+   * <code>@SuppressWarnings("unchecked")</code> to.
+   *
+   * @param <I>         The input data type
+   * @param <O>         The type to cast to
+   * @param inputObject The object to cast
+   * @return The cast object
+   */
+  @SuppressWarnings("unchecked")
+  private static <I, O> O uncheckedCast(I inputObject) {
+    return (O) inputObject;
   }
 
 }

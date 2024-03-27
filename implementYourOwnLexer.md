@@ -22,16 +22,16 @@ public enum MyOwnTokenType implements TokenType<MyOwnTokenType> {
 
   ATOM(null, CommonTokenType.ATOM),
   SPACE(" ", CommonTokenType.SPACE),
-  LPAREN("(", CommonTokenType.LPAREN),
-  RPAREN(")", CommonTokenType.RPAREN),
+  LPAREN("("),
+  RPAREN(")"),
 
   AND("&&"),
   OR("||");
 
   private final String value;
-  private final CommonTokenType commonType;
+  private final CommonTokenFlag commonType;
 
-  MyOwnTokenType(String value, CommonTokenType commonType) {
+  MyOwnTokenType(String value, CommonTokenFlag commonType) {
     this.value = value;
     this.commonType = commonType;
   }
@@ -46,7 +46,7 @@ public enum MyOwnTokenType implements TokenType<MyOwnTokenType> {
   }
 
   @Override
-  public Optional<CommonTokenType> getCommonTokenType() {
+  public Optional<CommonTokenFlag> getCommonTokenType() {
     return Optional.ofNullable(commonType);
   }
 }
@@ -74,7 +74,7 @@ This class represents an instance (a container) of each token - with *type* and 
 A list of `LexerToken` is produced by the lexer.
 
 The *value* in this token class is generally the same as the value of the `TokenType` enum. Only 
-for `ATOM` tokens the value will be something different - the *value* will be whatever the value 
+for `ATOM` tokens the value will be something different - the ATOM *value* will be whatever the value 
 from the formula is.
 
 Depending on the `LexerTokenFactory` implementation, this token class can also contain other 

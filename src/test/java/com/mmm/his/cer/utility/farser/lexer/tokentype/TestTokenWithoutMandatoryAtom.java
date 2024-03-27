@@ -67,5 +67,4 @@ public enum TestTokenWithoutMandatoryAtom implements TokenType<TestTokenWithoutM
     return commonType;
   }
 
-
 }

@@ -20,7 +20,7 @@ public class ContainsNode<C extends Collection<A>, A> implements BooleanExpressi
   }
 
   @Override
-  public boolean evaluate(C context) {
+  public Boolean evaluate(C context) {
     return context.contains(this.value);
   }
 

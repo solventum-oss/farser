@@ -29,7 +29,7 @@ public class Lexer {
    * @return List of {@link LexerToken} that were created from the input string.
    */
   public static <L extends LexerToken<T>, T extends TokenType<?>> List<L>
-  lex(Class<T> tokenTypeEnumClass, String input, LexerTokenFactory<L, T> factory) {
+      lex(Class<T> tokenTypeEnumClass, String input, LexerTokenFactory<L, T> factory) {
     List<L> result = new ArrayList<>();
     Pattern delimiterPattern = TokenType.createTokenPattern(tokenTypeEnumClass);
     Matcher delimiterMatcher = delimiterPattern.matcher(input);

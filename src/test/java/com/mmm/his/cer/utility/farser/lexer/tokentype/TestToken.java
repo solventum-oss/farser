@@ -93,5 +93,4 @@ public enum TestToken implements TokenType<TestToken> {
     return commonType;
   }
 
-
 }

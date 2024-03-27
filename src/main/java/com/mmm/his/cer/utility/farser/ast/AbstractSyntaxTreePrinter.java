@@ -1,7 +1,7 @@
 package com.mmm.his.cer.utility.farser.ast;
 
 import com.mmm.his.cer.utility.farser.ast.node.LtrExpressionIterator;
-import com.mmm.his.cer.utility.farser.ast.node.type.BooleanExpression;
+import com.mmm.his.cer.utility.farser.ast.node.type.Expression;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiFunction;
@@ -24,7 +24,7 @@ public final class AbstractSyntaxTreePrinter {
 
   /**
    * Prints a simple tree representation.<br>
-   * Uses {@link #printNodeSimple(BooleanExpression)}.
+   * Uses {@link #printNodeSimple(Expression, AstPrinterContext)}.
    *
    * @param ast The AST
    * @return The tree representation as string
@@ -34,19 +34,18 @@ public final class AbstractSyntaxTreePrinter {
   }
 
   /**
-   *
    * Prints a tree representation based on the provided node printing function.
    *
    * @param ast       The AST to print
-   * @param printNode The function which determines how to print a node. The
-   *                  {@link BooleanExpression} function input may be <code>null</code> when the
-   *                  printing is past the last node (to possibly finalize/close data structures).
-   *                  See {@link #printNodeSimple(BooleanExpression, AstPrinterContext)} for a
-   *                  simple starting point.
-   * @return
+   * @param printNode The function which determines how to print a node. The {@link Expression}
+   *                  function input may be <code>null</code> when the printing is past the last
+   *                  node (to possibly finalize/close data structures). See
+   *                  {@link #printNodeSimple(Expression, AstPrinterContext)} for a simple starting
+   *                  point.
+   * @return The tree representation as string
    */
   public static <T> String printTree(AbstractSyntaxTree<T> ast,
-      Function<BooleanExpression<T>, String> printNode) {
+      Function<Expression<T, ?>, String> printNode) {
     return printTree(ast, DEFAULT_INDENTATION, (node, next) -> printNode.apply(node));
   }
 
@@ -54,15 +53,15 @@ public final class AbstractSyntaxTreePrinter {
    * Prints a simple tree representation.
    *
    * @param ast       The AST
-   * @param printNode The function which determines how to print a node. The
-   *                  {@link BooleanExpression} function input may be <code>null</code> when the
-   *                  printing is past the last node (to possibly finalize/close data structures).
-   *                  See {@link #printNodeSimple(BooleanExpression, AstPrinterContext)} for a
-   *                  simple starting point.
+   * @param printNode The function which determines how to print a node. The {@link Expression}
+   *                  function input may be <code>null</code> when the printing is past the last
+   *                  node (to possibly finalize/close data structures). See
+   *                  {@link #printNodeSimple(Expression, AstPrinterContext)} for a simple starting
+   *                  point.
    * @return The tree representation as string
    */
   public static <T> String printTree(AbstractSyntaxTree<T> ast,
-      BiFunction<BooleanExpression<T>, AstPrinterContext<T>, String> printNode) {
+      BiFunction<Expression<T, ?>, AstPrinterContext<T>, String> printNode) {
     return printTree(ast, DEFAULT_INDENTATION, printNode);
   }
 
@@ -70,15 +69,15 @@ public final class AbstractSyntaxTreePrinter {
    * Prints a simple tree representation.
    *
    * @param ast       The AST
-   * @param printNode The function which determines how to print a node. The
-   *                  {@link BooleanExpression} function input may be <code>null</code> when the
-   *                  printing is past the last node (to possibly finalize/close data structures).
-   *                  See {@link #printNodeSimple(BooleanExpression, AstPrinterContext)} for a
-   *                  simple starting point.
+   * @param printNode The function which determines how to print a node. The {@link Expression}
+   *                  function input may be <code>null</code> when the printing is past the last
+   *                  node (to possibly finalize/close data structures). See
+   *                  {@link #printNodeSimple(Expression, AstPrinterContext)} for a simple starting
+   *                  point.
    * @return The tree representation as string
    */
   public static <T> String printTree(AbstractSyntaxTree<T> ast, String indentation,
-      BiFunction<BooleanExpression<T>, AstPrinterContext<T>, String> printNode) {
+      BiFunction<Expression<T, ?>, AstPrinterContext<T>, String> printNode) {
     StringBuilder sb = new StringBuilder();
     int previousDepth = 0;
     int currentDepth = 0;
@@ -88,7 +87,7 @@ public final class AbstractSyntaxTreePrinter {
 
     while (iter.hasNext()) {
       // Need to get next first, so that depth of new/current node is available.
-      BooleanExpression<T> node = iter.next();
+      Expression<T, ?> node = iter.next();
       previousDepth = currentDepth;
       currentDepth = iter.getCurrentDepth();
 
@@ -119,12 +118,12 @@ public final class AbstractSyntaxTreePrinter {
    * @param context   The printer context
    */
   private static <T> void appendPrinted(StringBuilder sb,
-      BiFunction<BooleanExpression<T>, AstPrinterContext<T>, String> printNode,
-      BooleanExpression<T> node, AstPrinterContext<T> context) {
+      BiFunction<Expression<T, ?>, AstPrinterContext<T>, String> printNode,
+      Expression<T, ?> node, AstPrinterContext<T> context) {
     String printed = printNode.apply(node, context);
     // Do not add if printer function returned NULL. Documented behavior on this printer class
     // constructors.
-    if (printed != null ) {
+    if (printed != null) {
       sb.append(printed);
     }
   }
@@ -139,7 +138,7 @@ public final class AbstractSyntaxTreePrinter {
    */
   private static <T> AstPrinterContext<T> createPrinterContext(LtrExpressionIterator<T> iter,
       String prefix, int previousDepth) {
-    BooleanExpression<T> peeked = null;
+    Expression<T, ?> peeked = null;
     peeked = iter.hasNext() ? iter.peek() : null;
 
     int currentDepth = iter.getCurrentDepth();
@@ -191,7 +190,7 @@ public final class AbstractSyntaxTreePrinter {
    * @param node The node to print
    * @return The printed representation
    */
-  public static String printNodeSimple(BooleanExpression<?> node, AstPrinterContext<?> context) {
+  public static String printNodeSimple(Expression<?, ?> node, AstPrinterContext<?> context) {
     // Ignore any "closing" structure at the end of the tree.
     if (node == null) {
       return null;
@@ -205,12 +204,10 @@ public final class AbstractSyntaxTreePrinter {
   }
 
 
-  /***********************************************************************************************************************
-   *
+  /*************************************************************************************************
+   * A printer context to provide the printing function more details about the current state.
    *
    * @author Thomas Naeff
-   *
-   * @param <T>
    */
   public static class AstPrinterContext<T> {
 
@@ -246,10 +243,10 @@ public final class AbstractSyntaxTreePrinter {
      * The next node (peek). May be <code>null</code> when the iteration/printing is at or past the
      * last node.
      */
-    public final BooleanExpression<T> next;
+    public final Expression<T, ?> next;
 
     private AstPrinterContext(String prefix, int depth, AstPrintDirection direction,
-        BooleanExpression<T> next, int nextDepth, AstPrintDirection nextDirection) {
+        Expression<T, ?> next, int nextDepth, AstPrintDirection nextDirection) {
       this.depth = depth;
       this.nextDepth = nextDepth;
       this.prefix = prefix;

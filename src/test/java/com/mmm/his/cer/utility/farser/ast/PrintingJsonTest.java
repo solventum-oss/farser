@@ -7,7 +7,8 @@ import com.mmm.his.cer.utility.farser.ast.AbstractSyntaxTreePrinter.AstPrintDire
 import com.mmm.his.cer.utility.farser.ast.AbstractSyntaxTreePrinter.AstPrinterContext;
 import com.mmm.his.cer.utility.farser.ast.AstTest.StringOperandSupplier;
 import com.mmm.his.cer.utility.farser.ast.node.type.BooleanExpression;
-import com.mmm.his.cer.utility.farser.ast.node.type.NonTerminal;
+import com.mmm.his.cer.utility.farser.ast.node.type.BooleanNonTerminal;
+import com.mmm.his.cer.utility.farser.ast.node.type.Expression;
 import com.mmm.his.cer.utility.farser.ast.parser.DescentParser;
 import com.mmm.his.cer.utility.farser.ast.setup.MaskedContext;
 import com.mmm.his.cer.utility.farser.lexer.DrgFormulaLexer;
@@ -83,7 +84,7 @@ public class PrintingJsonTest {
 
     private NodePrinterJson() {}
 
-    public String printNode(BooleanExpression<?> node, AstPrinterContext<?> printerContext) {
+    public String printNode(Expression<?, ?> node, AstPrinterContext<?> printerContext) {
       StringBuilder sb = new StringBuilder();
 
       if ((printerContext.direction == AstPrintDirection.UP) && !closingBrackets.isEmpty()) {
@@ -100,7 +101,7 @@ public class PrintingJsonTest {
 
       if (node != null) {
         // sb.append(String.format("%02d", printerContext.depth));
-        if ((node instanceof NonTerminal) && (printerContext.next instanceof NonTerminal)) {
+        if ((node instanceof BooleanNonTerminal) && (printerContext.next instanceof BooleanNonTerminal)) {
           sb.append(printerContext.prefix);
           // sb.append(node.getClass().getSimpleName());
           sb.append("\"");
@@ -108,7 +109,7 @@ public class PrintingJsonTest {
           sb.append("\": {");
           closingBrackets.add("}");
           sb.append(System.lineSeparator());
-        } else if ((node instanceof NonTerminal)
+        } else if ((node instanceof BooleanNonTerminal)
             && (printerContext.next instanceof BooleanExpression)) {
           sb.append(printerContext.prefix);
           // sb.append(node.getClass().getSimpleName());

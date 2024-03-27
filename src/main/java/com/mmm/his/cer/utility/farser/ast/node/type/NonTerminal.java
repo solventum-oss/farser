@@ -4,21 +4,34 @@ import com.mmm.his.cer.utility.farser.ast.node.LtrExpressionIterator;
 
 /**
  * This class represents a non-terminal node in the AST. These types of nodes will have a left and a
- * right child.
+ * right child. Both child nodes have the same evaluation result (data) type, producing a combined
+ * boolean evaluation result type.
  *
  * @param <C> The node context type used in the terminal nodes.
- * @author Mike Funaro
+ * @param <E> The result type of each left/right expression
+ *
+ * @author Thomas Naeff
  */
-public abstract class NonTerminal<C> implements BooleanExpression<C> {
+public abstract class NonTerminal<C, E> implements BooleanExpression<C> {
 
-  protected BooleanExpression<C> left;
-  protected BooleanExpression<C> right;
+  protected Expression<C, E> left;
+  protected Expression<C, E> right;
 
-  public void setLeft(BooleanExpression<C> left) {
+  /**
+   * Sets the left-side child node.
+   *
+   * @param left The node to set
+   */
+  public void setLeft(Expression<C, E> left) {
     this.left = left;
   }
 
-  public void setRight(BooleanExpression<C> right) {
+  /**
+   * Sets the right-side child node.
+   *
+   * @param right The node to set
+   */
+  public void setRight(Expression<C, E> right) {
     this.right = right;
   }
 

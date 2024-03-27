@@ -1,6 +1,6 @@
 package com.mmm.his.cer.utility.farser.ast.node;
 
-import com.mmm.his.cer.utility.farser.ast.node.type.BooleanExpression;
+import com.mmm.his.cer.utility.farser.ast.node.type.Expression;
 import java.util.Arrays;
 import java.util.Iterator;
 
@@ -14,20 +14,20 @@ import java.util.Iterator;
  *
  * @param <C> The expression context data type
  */
-public class LtrExpressionIterator<C> implements Iterator<BooleanExpression<C>> {
+public class LtrExpressionIterator<C> implements Iterator<Expression<C, ?>> {
 
   /**
    * The value returned by {@link #getPeekedDepth()} if {@link #peek()} has not been called yet.
    */
   public static final int PEEKED_DEPTH_NONE = -1;
 
-  private final Iterator<BooleanExpression<C>> nodes;
+  private final Iterator<Expression<C, ?>> nodes;
   private final int currentDepth;
   private Integer depthBeforePeek = null;
   private LtrExpressionIterator<C> currentIterator;
-  private BooleanExpression<C> peeked = null;
+  private Expression<C, ?> peeked = null;
 
-  private LtrExpressionIterator(int depth, Iterator<BooleanExpression<C>> nodes) {
+  private LtrExpressionIterator(int depth, Iterator<Expression<C, ?>> nodes) {
     this.currentDepth = depth;
     this.nodes = nodes;
   }
@@ -37,7 +37,7 @@ public class LtrExpressionIterator<C> implements Iterator<BooleanExpression<C>> 
   }
 
   @SafeVarargs
-  public LtrExpressionIterator(BooleanExpression<C>... nodes) {
+  public LtrExpressionIterator(Expression<C, ?>... nodes) {
     this(0, Arrays.asList(nodes).iterator());
   }
 
@@ -75,12 +75,12 @@ public class LtrExpressionIterator<C> implements Iterator<BooleanExpression<C>> 
   }
 
   @Override
-  public BooleanExpression<C> next() {
+  public Expression<C, ?> next() {
     // Only advance if not already done so by 'peek' for example.
     if (peeked == null) {
       return nextInternal();
     } else {
-      BooleanExpression<C> tmp = peeked;
+      Expression<C, ?> tmp = peeked;
       // Reset, to continue normal.
       peeked = null;
       depthBeforePeek = null;
@@ -88,7 +88,7 @@ public class LtrExpressionIterator<C> implements Iterator<BooleanExpression<C>> 
     }
   }
 
-  private BooleanExpression<C> nextInternal() {
+  private Expression<C, ?> nextInternal() {
     if ((currentIterator != null) && currentIterator.hasNext()) {
       // Iterate down the tree first
       return currentIterator.next();
@@ -97,7 +97,7 @@ public class LtrExpressionIterator<C> implements Iterator<BooleanExpression<C>> 
       currentIterator = null;
     }
 
-    BooleanExpression<C> current = nodes.next();
+    Expression<C, ?> current = nodes.next();
 
     // Keep node iterator for later to iterate down the tree.
     currentIterator = new LtrExpressionIterator<>(currentDepth + 1, current.iterator());
@@ -112,7 +112,7 @@ public class LtrExpressionIterator<C> implements Iterator<BooleanExpression<C>> 
    *
    * @return The next element in the iteration
    */
-  public BooleanExpression<C> peek() {
+  public Expression<C, ?> peek() {
     // Only peek if not already peeked.
     if (peeked == null) {
       depthBeforePeek = getCurrentDepthInternal();

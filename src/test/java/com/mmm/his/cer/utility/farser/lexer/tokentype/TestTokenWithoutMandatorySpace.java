@@ -61,5 +61,4 @@ public enum TestTokenWithoutMandatorySpace implements TokenType<TestTokenWithout
     return commonType;
   }
 
-
 }

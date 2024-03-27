@@ -5,7 +5,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import com.mmm.his.cer.utility.farser.ast.AbstractSyntaxTreePrinter.AstPrinterContext;
 import com.mmm.his.cer.utility.farser.ast.AstTest.StringOperandSupplier;
-import com.mmm.his.cer.utility.farser.ast.node.type.BooleanExpression;
+import com.mmm.his.cer.utility.farser.ast.node.type.Expression;
 import com.mmm.his.cer.utility.farser.ast.parser.DescentParser;
 import com.mmm.his.cer.utility.farser.ast.setup.MaskedContext;
 import com.mmm.his.cer.utility.farser.ast.setup.TestContext;
@@ -54,8 +54,9 @@ public class PrintingTest {
   }
 
   @Test
-  public void testSimplestFormula1() throws Exception {
+  public void testSimplestFormula_reversedOperandPrecedence() throws Exception {
 
+    // OR is first in the formula, but should have a "weaker bond" than the AND
     List<DrgLexerToken> lexerTokens = DrgFormulaLexer.lex("A | B & C");
     DescentParser<MaskedContext<String>> parser = new DescentParser<>(lexerTokens.listIterator(),
         new StringOperandSupplier(), Collections.emptyMap());
@@ -77,8 +78,9 @@ public class PrintingTest {
   }
 
   @Test
-  public void testSimplestFormula2() throws Exception {
+  public void testSimplestFormula_leftToRightOperandPrecedence() throws Exception {
 
+    // The "stronger" AND operand appears first, then the "weaker" OR operand
     List<DrgLexerToken> lexerTokens = DrgFormulaLexer.lex("A & B | C");
     DescentParser<MaskedContext<String>> parser = new DescentParser<>(lexerTokens.listIterator(),
         new StringOperandSupplier(), Collections.emptyMap());
@@ -188,13 +190,13 @@ public class PrintingTest {
      *                       skip evaluation
      * @return The node output
      */
-    public String printNode(BooleanExpression<T> node, AstPrinterContext<?> printerContext) {
+    public String printNode(Expression<T, ?> node, AstPrinterContext<?> printerContext) {
       StringBuilder sb = new StringBuilder();
       if (node != null) {
         sb.append(printerContext.prefix);
         sb.append(node.print());
         if (evaluationContext != null) {
-          boolean result = node.evaluate(evaluationContext);
+          Object result = node.evaluate(evaluationContext);
           sb.append(" = " + result);
         }
         sb.append(System.lineSeparator());
@@ -205,7 +207,7 @@ public class PrintingTest {
   }
 
 
-  public static String printNode(BooleanExpression<?> node, AstPrinterContext<?> printerContext) {
+  public static String printNode(Expression<?, ?> node, AstPrinterContext<?> printerContext) {
     if (node == null) {
       return null;
     }
@@ -219,7 +221,7 @@ public class PrintingTest {
     return sb.toString();
   }
 
-  public static String printNodeWithPeek(BooleanExpression<?> node,
+  public static String printNodeWithPeek(Expression<?, ?> node,
       AstPrinterContext<?> printerContext) {
     StringBuilder sb = new StringBuilder();
     // Print depth to ensure it does not get affected by the peek

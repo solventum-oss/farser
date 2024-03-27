@@ -1,6 +1,6 @@
 package com.mmm.his.cer.utility.farser.ast.node.operator;
 
-import com.mmm.his.cer.utility.farser.ast.node.type.NonTerminal;
+import com.mmm.his.cer.utility.farser.ast.node.type.BooleanNonTerminal;
 
 /**
  * Implementation of a non-terminal node for use in the AST. This class represents a logical AND
@@ -9,10 +9,10 @@ import com.mmm.his.cer.utility.farser.ast.node.type.NonTerminal;
  * @param <C> The context type used in the terminal nodes.
  * @author Mike Funaro
  */
-public class And<C> extends NonTerminal<C> {
+public class And<C> extends BooleanNonTerminal<C> {
 
   @Override
-  public boolean evaluate(C context) {
+  public Boolean evaluate(C context) {
     // Evaluate left-side first, then right-side
     return left.evaluate(context) && right.evaluate(context);
   }

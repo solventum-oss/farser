@@ -2,7 +2,8 @@ package com.mmm.his.cer.utility.farser.ast;
 
 import com.mmm.his.cer.utility.farser.ast.node.LtrExpressionIterator;
 import com.mmm.his.cer.utility.farser.ast.node.type.BooleanExpression;
-import com.mmm.his.cer.utility.farser.ast.node.type.NonTerminal;
+import com.mmm.his.cer.utility.farser.ast.node.type.BooleanNonTerminal;
+import com.mmm.his.cer.utility.farser.ast.node.type.Expression;
 import com.mmm.his.cer.utility.farser.ast.parser.ExpressionResult;
 
 /**
@@ -12,20 +13,20 @@ import com.mmm.his.cer.utility.farser.ast.parser.ExpressionResult;
  * @author Mike Funaro
  * @author Thomas Naeff
  */
-public class AbstractSyntaxTree<C> extends NonTerminal<C> {
+public class AbstractSyntaxTree<C> extends BooleanNonTerminal<C> {
 
-  private BooleanExpression<C> ast;
+  private Expression<C, Boolean> ast;
 
-  public AbstractSyntaxTree(BooleanExpression<C> ast) {
+  public AbstractSyntaxTree(Expression<C, Boolean> ast) {
     this.ast = ast;
   }
 
-  public void setAst(BooleanExpression<C> ast) {
+  public void setAst(Expression<C, Boolean> ast) {
     this.ast = ast;
   }
 
   @Override
-  public boolean evaluate(C context) {
+  public Boolean evaluate(C context) {
     return this.ast.evaluate(context);
   }
 

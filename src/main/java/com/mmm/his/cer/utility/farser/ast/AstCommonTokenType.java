@@ -1,7 +1,16 @@
 package com.mmm.his.cer.utility.farser.ast;
 
 import com.mmm.his.cer.utility.farser.CommonTokenFlag;
+import com.mmm.his.cer.utility.farser.ast.node.type.NodeSupplier;
+import com.mmm.his.cer.utility.farser.ast.parser.AstDescentParser;
+import com.mmm.his.cer.utility.farser.lexer.LexerToken;
 
+/**
+ * Common token types for AST ({@link AstDescentParser}) logic.
+ *
+ * @author Thomas Naeff
+ *
+ */
 public enum AstCommonTokenType implements CommonTokenFlag {
 
   /**
@@ -20,13 +29,29 @@ public enum AstCommonTokenType implements CommonTokenFlag {
   NOT,
 
   /**
-   * A left-side assignment (e.g. <code>OR</code> operator).
+   * An "AND" operator.<br>
+   * <br>
+   * This flag exists for backwards compatibility when a {@link NodeSupplier} is used without the
+   * {@link NodeSupplier#createNonTerminalNode(LexerToken)} method being overridden.
+   *
+   * @deprecated Instead of using this flag, it is preferred to override
+   *             {@link NodeSupplier#createNonTerminalNode(LexerToken)} with your custom token
+   *             types.
    */
-  LEFT,
+  @Deprecated
+  AND,
 
   /**
-   * A right-side assignment (e.g. <code>AND</code> operator).
+   * An "OR" operator.<br>
+   * <br>
+   * This flag exists for backwards compatibility when a {@link NodeSupplier} is used without the
+   * {@link NodeSupplier#createNonTerminalNode(LexerToken)} method being overridden.
+   *
+   * @deprecated Instead of using this flag, it is preferred to override
+   *             {@link NodeSupplier#createNonTerminalNode(LexerToken)} with your custom token
+   *             types.
    */
-  RIGHT;
+  @Deprecated
+  OR;
 
 }

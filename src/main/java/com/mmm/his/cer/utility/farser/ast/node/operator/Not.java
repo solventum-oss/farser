@@ -1,7 +1,7 @@
 package com.mmm.his.cer.utility.farser.ast.node.operator;
 
-import com.mmm.his.cer.utility.farser.ast.node.type.BooleanExpression;
-import com.mmm.his.cer.utility.farser.ast.node.type.NonTerminal;
+import com.mmm.his.cer.utility.farser.ast.node.type.BooleanNonTerminal;
+import com.mmm.his.cer.utility.farser.ast.node.type.Expression;
 
 /**
  * Implementation of a non-terminal node for use in the AST. This type of node will only have a left
@@ -10,28 +10,26 @@ import com.mmm.his.cer.utility.farser.ast.node.type.NonTerminal;
  * @param <C> The context type used in the terminal nodes.
  * @author Mike Funaro
  */
-public class Not<C> extends NonTerminal<C> {
+public class Not<C> extends BooleanNonTerminal<C> {
 
   /**
-   * For a not node, we should only set one child. This implementation allows to set the left child
+   * For a NOT node, we should only set one child. This implementation allows to set the left child
    * only. And should be the only public API for child setting of a Not node.
-   *
-   * @param child the child for this node.
    */
   @Override
-  public void setLeft(BooleanExpression<C> left) {
+  public void setLeft(Expression<C, Boolean> left) {
     // Overridden for updated javadoc.
     super.setLeft(left);
   }
 
   @Override
-  public void setRight(BooleanExpression<C> right) {
+  public void setRight(Expression<C, Boolean> right) {
     // Not nodes will only have one child and that is the left child. Throw error.
     throw new UnsupportedOperationException("Can only set the left-side child for NOT nodes");
   }
 
   @Override
-  public boolean evaluate(C context) {
+  public Boolean evaluate(C context) {
     boolean evaluation = left.evaluate(context);
     return !evaluation;
   }

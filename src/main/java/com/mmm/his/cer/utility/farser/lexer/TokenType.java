@@ -6,8 +6,8 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 
 /**
- * The interface to use for an enumeration which defines tokens that are recognized for this
- * specific type of code.<br />
+ * The interface to use for an enumeration which defines tokens that are recognized when lexing for
+ * this specific type of code (operand, operator, ...).<br />
  * <br />
  * Example:
  *
