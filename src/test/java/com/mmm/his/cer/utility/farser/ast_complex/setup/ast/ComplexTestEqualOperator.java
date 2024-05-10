@@ -1,6 +1,6 @@
 package com.mmm.his.cer.utility.farser.ast_complex.setup.ast;
 
-import com.mmm.his.cer.utility.farser.ast.node.type.NonTerminal;
+import com.mmm.his.cer.utility.farser.ast.node.nonterminal.BooleanNonTerminal;
 
 /**
  *
@@ -9,13 +9,13 @@ import com.mmm.his.cer.utility.farser.ast.node.type.NonTerminal;
  *
  * @param <C>
  */
-public class ComplexTestEqualOperator<C> extends NonTerminal<C, Integer> {
+public class ComplexTestEqualOperator<C> extends BooleanNonTerminal<C, Integer> {
 
   @Override
   public Boolean evaluate(C context) {
     Integer leftResult = left.evaluate(context);
     Integer rightResult = left.evaluate(context);
-    // NPE save 'equals'
+    // NPE safe 'equals'
     return leftResult == null ? leftResult == rightResult : leftResult.equals(rightResult);
   }
 

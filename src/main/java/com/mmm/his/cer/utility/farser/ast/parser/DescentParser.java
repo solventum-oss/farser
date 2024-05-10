@@ -1,6 +1,6 @@
 package com.mmm.his.cer.utility.farser.ast.parser;
 
-import com.mmm.his.cer.utility.farser.ast.node.type.NodeSupplier;
+import com.mmm.his.cer.utility.farser.ast.node.supplier.NodeSupplier;
 import com.mmm.his.cer.utility.farser.lexer.drg.DrgFormulaToken;
 import com.mmm.his.cer.utility.farser.lexer.drg.DrgLexerToken;
 import java.util.Iterator;
@@ -16,12 +16,11 @@ import java.util.Map;
  *
  * @param <C> The type of the context used in terminal nodes when evaluating the AST
  */
-public class DescentParser<C> extends AstDescentParser<DrgLexerToken, DrgFormulaToken, C> {
+public class DescentParser<C> extends AstDescentParser<DrgLexerToken, DrgFormulaToken, C, Boolean> {
 
   public DescentParser(Iterator<DrgLexerToken> tokenIterator,
       NodeSupplier<DrgLexerToken, C> defaultSupplier,
       Map<String, NodeSupplier<DrgLexerToken, C>> suppliers) {
     super(tokenIterator, defaultSupplier, suppliers);
   }
-
 }

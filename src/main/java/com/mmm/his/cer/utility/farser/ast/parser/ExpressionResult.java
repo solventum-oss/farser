@@ -6,26 +6,26 @@ package com.mmm.his.cer.utility.farser.ast.parser;
  * @param <C> the type of context which was used for the terminal nodes to evaluate the AST
  * @author Mike Funaro
  */
-public class ExpressionResult<C> {
+public class ExpressionResult<C, R> {
 
-  private final boolean matched;
+  private final R result;
   private final C context;
 
   /**
    * Ctor.
    *
-   * @param matched boolean true if the expression evaluated to true, false otherwise. When there is
+   * @param result boolean true if the expression evaluated to true, false otherwise. When there is
    *                true in the matched field the contents of the matches field will have the
    *                terminal objects that were matched.
    * @param context the context used in evaluation.
    */
-  public ExpressionResult(boolean matched, C context) {
-    this.matched = matched;
+  public ExpressionResult(R result, C context) {
+    this.result = result;
     this.context = context;
   }
 
-  public boolean isMatched() {
-    return matched;
+  public R getResult() {
+    return result;
   }
 
   public C getContext() {

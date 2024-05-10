@@ -6,7 +6,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import com.mmm.his.cer.utility.farser.ast.AbstractSyntaxTree;
 import com.mmm.his.cer.utility.farser.ast.AbstractSyntaxTreePrinter;
 import com.mmm.his.cer.utility.farser.ast.PrintingTest;
-import com.mmm.his.cer.utility.farser.ast.node.type.NodeSupplier;
+import com.mmm.his.cer.utility.farser.ast.node.supplier.NodeSupplier;
 import com.mmm.his.cer.utility.farser.ast.parser.AstDescentParser;
 import com.mmm.his.cer.utility.farser.ast_complex.setup.ComplexTestTokenType;
 import com.mmm.his.cer.utility.farser.ast_complex.setup.ast.ComplexTestAstContext;
@@ -29,9 +29,9 @@ public class ComplexFormulaAstTest {
     String input = "A > 5 & B = 2";
     List<ComplexTestToken> tokens = Lexer.lex(ComplexTestTokenType.class, input, factory);
 
-    AstDescentParser<ComplexTestToken, ComplexTestTokenType, ComplexTestAstContext> parser =
+    AstDescentParser<ComplexTestToken, ComplexTestTokenType, ComplexTestAstContext, Boolean> parser =
         new AstDescentParser<>(tokens.iterator(), defaultNodeSupplier);
-    AbstractSyntaxTree<ComplexTestAstContext> ast = parser.buildTree();
+    AbstractSyntaxTree<ComplexTestAstContext, Boolean> ast = parser.buildTree();
 
     String printed = AbstractSyntaxTreePrinter.printTree(ast);
     String[] lines = printed.split(System.lineSeparator());
@@ -54,9 +54,9 @@ public class ComplexFormulaAstTest {
     String input = "A = 1 & B > 5 | C < 2";
     List<ComplexTestToken> tokens = Lexer.lex(ComplexTestTokenType.class, input, factory);
 
-    AstDescentParser<ComplexTestToken, ComplexTestTokenType, ComplexTestAstContext> parser =
+    AstDescentParser<ComplexTestToken, ComplexTestTokenType, ComplexTestAstContext, Boolean> parser =
         new AstDescentParser<>(tokens.iterator(), defaultNodeSupplier);
-    AbstractSyntaxTree<ComplexTestAstContext> ast = parser.buildTree();
+    AbstractSyntaxTree<ComplexTestAstContext, Boolean> ast = parser.buildTree();
 
     String printed = AbstractSyntaxTreePrinter.printTree(ast);
     String[] lines = printed.split(System.lineSeparator());
@@ -83,9 +83,9 @@ public class ComplexFormulaAstTest {
     String input = "A = 1 | B > 5 & C < 2";
     List<ComplexTestToken> tokens = Lexer.lex(ComplexTestTokenType.class, input, factory);
 
-    AstDescentParser<ComplexTestToken, ComplexTestTokenType, ComplexTestAstContext> parser =
+    AstDescentParser<ComplexTestToken, ComplexTestTokenType, ComplexTestAstContext, Boolean> parser =
         new AstDescentParser<>(tokens.iterator(), defaultNodeSupplier);
-    AbstractSyntaxTree<ComplexTestAstContext> ast = parser.buildTree();
+    AbstractSyntaxTree<ComplexTestAstContext, Boolean> ast = parser.buildTree();
 
     String printed = AbstractSyntaxTreePrinter.printTree(ast);
     String[] lines = printed.split(System.lineSeparator());
@@ -117,10 +117,10 @@ public class ComplexFormulaAstTest {
     // part.
     List<ComplexTestToken> lexerTokens =
         Lexer.lex(ComplexTestTokenType.class, "3 > 2 > 1", factory);
-    AstDescentParser<ComplexTestToken, ComplexTestTokenType, ComplexTestAstContext> parser = new AstDescentParser<>(
+    AstDescentParser<ComplexTestToken, ComplexTestTokenType, ComplexTestAstContext, Boolean> parser = new AstDescentParser<>(
         lexerTokens.listIterator(), defaultNodeSupplier);
 
-    AbstractSyntaxTree<ComplexTestAstContext> ast = parser.buildTree();
+    AbstractSyntaxTree<ComplexTestAstContext, Boolean> ast = parser.buildTree();
 
     String printed = AbstractSyntaxTreePrinter.printTree(ast);
     String[] lines = printed.split(System.lineSeparator());
@@ -143,11 +143,11 @@ public class ComplexFormulaAstTest {
     // build the AST left-to-right.
     List<ComplexTestToken> lexerTokens =
         Lexer.lex(ComplexTestTokenType.class, "3 > 2 & 2 > 1", factory);
-    AstDescentParser<ComplexTestToken, ComplexTestTokenType, ComplexTestAstContext> parser =
+    AstDescentParser<ComplexTestToken, ComplexTestTokenType, ComplexTestAstContext, Boolean> parser =
         new AstDescentParser<>(
             lexerTokens.listIterator(), defaultNodeSupplier);
 
-    AbstractSyntaxTree<ComplexTestAstContext> ast = parser.buildTree();
+    AbstractSyntaxTree<ComplexTestAstContext, Boolean> ast = parser.buildTree();
 
     String printed = AbstractSyntaxTreePrinter.printTree(ast);
     String[] lines = printed.split(System.lineSeparator());
@@ -170,10 +170,10 @@ public class ComplexFormulaAstTest {
 
     // OR is first in the formula, but should have a "weaker bond" than the AND
     List<ComplexTestToken> lexerTokens = Lexer.lex(ComplexTestTokenType.class, "A | B & C", factory);
-    AstDescentParser<ComplexTestToken, ComplexTestTokenType, ComplexTestAstContext> parser = new AstDescentParser<>(
+    AstDescentParser<ComplexTestToken, ComplexTestTokenType, ComplexTestAstContext, Boolean> parser = new AstDescentParser<>(
         lexerTokens.listIterator(), defaultNodeSupplier);
 
-    AbstractSyntaxTree<ComplexTestAstContext> ast = parser.buildTree();
+    AbstractSyntaxTree<ComplexTestAstContext, Boolean> ast = parser.buildTree();
 
     String printed = AbstractSyntaxTreePrinter.printTree(ast, PrintingTest::printNode);
     String[] lines = printed.split(System.lineSeparator());
@@ -194,10 +194,10 @@ public class ComplexFormulaAstTest {
 
     // The "stronger" AND operand appears first, then the "weaker" OR operand
     List<ComplexTestToken> lexerTokens = Lexer.lex(ComplexTestTokenType.class, "A & B | C", factory);
-    AstDescentParser<ComplexTestToken, ComplexTestTokenType, ComplexTestAstContext> parser = new AstDescentParser<>(
+    AstDescentParser<ComplexTestToken, ComplexTestTokenType, ComplexTestAstContext, Boolean> parser = new AstDescentParser<>(
         lexerTokens.listIterator(), defaultNodeSupplier);
 
-    AbstractSyntaxTree<ComplexTestAstContext> ast = parser.buildTree();
+    AbstractSyntaxTree<ComplexTestAstContext, Boolean> ast = parser.buildTree();
 
     String printed = AbstractSyntaxTreePrinter.printTree(ast, PrintingTest::printNode);
     String[] lines = printed.split(System.lineSeparator());
@@ -218,10 +218,10 @@ public class ComplexFormulaAstTest {
 
     List<ComplexTestToken> lexerTokens =
         Lexer.lex(ComplexTestTokenType.class, "(A & B | C) & D | (E & F)", factory);
-    AstDescentParser<ComplexTestToken, ComplexTestTokenType, ComplexTestAstContext> parser = new AstDescentParser<>(
+    AstDescentParser<ComplexTestToken, ComplexTestTokenType, ComplexTestAstContext, Boolean> parser = new AstDescentParser<>(
         lexerTokens.listIterator(), defaultNodeSupplier);
 
-    AbstractSyntaxTree<ComplexTestAstContext> ast = parser.buildTree();
+    AbstractSyntaxTree<ComplexTestAstContext, Boolean> ast = parser.buildTree();
 
     String printed = AbstractSyntaxTreePrinter.printTree(ast, PrintingTest::printNodeWithPeek);
     String[] lines = printed.split(System.lineSeparator());
@@ -252,9 +252,9 @@ public class ComplexFormulaAstTest {
     String input = "a IN TABLE abc";
     List<ComplexTestToken> tokens = Lexer.lex(ComplexTestTokenType.class, input, factory);
 
-    AstDescentParser<ComplexTestToken, ComplexTestTokenType, ComplexTestAstContext> parser =
+    AstDescentParser<ComplexTestToken, ComplexTestTokenType, ComplexTestAstContext, Boolean> parser =
         new AstDescentParser<>(tokens.iterator(), defaultNodeSupplier);
-    AbstractSyntaxTree<ComplexTestAstContext> ast = parser.buildTree();
+    AbstractSyntaxTree<ComplexTestAstContext, Boolean> ast = parser.buildTree();
 
     String printed = AbstractSyntaxTreePrinter.printTree(ast);
     String[] lines = printed.split(System.lineSeparator());
@@ -274,9 +274,9 @@ public class ComplexFormulaAstTest {
     String input = "a IN abc";
     List<ComplexTestToken> tokens = Lexer.lex(ComplexTestTokenType.class, input, factory);
 
-    AstDescentParser<ComplexTestToken, ComplexTestTokenType, ComplexTestAstContext> parser =
+    AstDescentParser<ComplexTestToken, ComplexTestTokenType, ComplexTestAstContext, Boolean> parser =
         new AstDescentParser<>(tokens.iterator(), defaultNodeSupplier);
-    AbstractSyntaxTree<ComplexTestAstContext> ast = parser.buildTree();
+    AbstractSyntaxTree<ComplexTestAstContext, Boolean> ast = parser.buildTree();
 
     String printed = AbstractSyntaxTreePrinter.printTree(ast);
     String[] lines = printed.split(System.lineSeparator());

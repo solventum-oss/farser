@@ -1,6 +1,6 @@
-package com.mmm.his.cer.utility.farser.ast.node.type;
+package com.mmm.his.cer.utility.farser.ast.node.nonterminal;
 
-import com.mmm.his.cer.utility.farser.ast.node.LtrExpressionIterator;
+import com.mmm.his.cer.utility.farser.ast.node.type.Expression;
 
 /**
  * This class represents a non-terminal node in the AST. These types of nodes will have a left and a
@@ -12,7 +12,7 @@ import com.mmm.his.cer.utility.farser.ast.node.LtrExpressionIterator;
  *
  * @author Thomas Naeff
  */
-public abstract class NonTerminal<C, E> implements BooleanExpression<C> {
+public abstract class BaseNonTerminal<C, E> implements NonTerminal<C, E> {
 
   protected Expression<C, E> left;
   protected Expression<C, E> right;
@@ -22,6 +22,7 @@ public abstract class NonTerminal<C, E> implements BooleanExpression<C> {
    *
    * @param left The node to set
    */
+  @Override
   public void setLeft(Expression<C, E> left) {
     this.left = left;
   }
@@ -31,19 +32,9 @@ public abstract class NonTerminal<C, E> implements BooleanExpression<C> {
    *
    * @param right The node to set
    */
+  @Override
   public void setRight(Expression<C, E> right) {
     this.right = right;
-  }
-
-  @Override
-  public LtrExpressionIterator<C> iterator() {
-    return new LtrExpressionIterator<>(left, right);
-  }
-
-  @Override
-  public String print() {
-    // A default printing behavior. Can be overridden by implementations if needed.
-    return getClass().getSimpleName().toUpperCase();
   }
 
   @Override

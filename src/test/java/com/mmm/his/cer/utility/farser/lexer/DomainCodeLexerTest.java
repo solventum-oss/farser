@@ -2,6 +2,7 @@ package com.mmm.his.cer.utility.farser.lexer;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+
 import com.mmm.his.cer.utility.farser.lexer.domain.DomainCodeLexerToken;
 import com.mmm.his.cer.utility.farser.lexer.domain.DomainCodeToken;
 import java.util.List;

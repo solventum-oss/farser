@@ -1,7 +1,7 @@
 package com.mmm.his.cer.utility.farser.ast;
 
 import com.mmm.his.cer.utility.farser.CommonTokenFlag;
-import com.mmm.his.cer.utility.farser.ast.node.type.NodeSupplier;
+import com.mmm.his.cer.utility.farser.ast.node.supplier.NodeSupplier;
 import com.mmm.his.cer.utility.farser.ast.parser.AstDescentParser;
 import com.mmm.his.cer.utility.farser.lexer.LexerToken;
 

@@ -1,11 +1,11 @@
 package com.mmm.his.cer.utility.farser.ast_complex.setup.ast;
 
-import com.mmm.his.cer.utility.farser.ast.node.operator.And;
-import com.mmm.his.cer.utility.farser.ast.node.operator.Not;
-import com.mmm.his.cer.utility.farser.ast.node.operator.Or;
+import com.mmm.his.cer.utility.farser.ast.node.nonterminal.BaseNonTerminal;
+import com.mmm.his.cer.utility.farser.ast.node.operator.bool.And;
+import com.mmm.his.cer.utility.farser.ast.node.operator.bool.Not;
+import com.mmm.his.cer.utility.farser.ast.node.operator.bool.Or;
+import com.mmm.his.cer.utility.farser.ast.node.supplier.NodeSupplier;
 import com.mmm.his.cer.utility.farser.ast.node.type.Expression;
-import com.mmm.his.cer.utility.farser.ast.node.type.NodeSupplier;
-import com.mmm.his.cer.utility.farser.ast.node.type.NonTerminal;
 import com.mmm.his.cer.utility.farser.ast_complex.setup.lex.ComplexTestToken;
 import com.mmm.his.cer.utility.farser.lexer.FarserException;
 
@@ -18,7 +18,7 @@ public class ComplexTestAstNodeSupplier implements NodeSupplier<ComplexTestToken
 
 
   @Override
-  public NonTerminal<ComplexTestAstContext, ?> createNonTerminalNode(ComplexTestToken token) {
+  public BaseNonTerminal<ComplexTestAstContext, ?> createNonTerminalNode(ComplexTestToken token) {
 
     switch (token.type) {
       case GT:

@@ -1,6 +1,6 @@
-package com.mmm.his.cer.utility.farser.ast.node.operator;
+package com.mmm.his.cer.utility.farser.ast.node.operator.bool;
 
-import com.mmm.his.cer.utility.farser.ast.node.type.BooleanNonTerminal;
+import com.mmm.his.cer.utility.farser.ast.node.nonterminal.BooleanNonTerminal;
 
 /**
  * Implementation of a non-terminal node for use in the AST. This class represents a logical OR
@@ -9,7 +9,7 @@ import com.mmm.his.cer.utility.farser.ast.node.type.BooleanNonTerminal;
  * @param <C> The context type used in the terminal nodes.
  * @author Mike Funaro
  */
-public class Or<C> extends BooleanNonTerminal<C> {
+public class Or<C> extends BooleanNonTerminal<C, Boolean> {
 
   @Override
   public Boolean evaluate(C context) {

@@ -2,7 +2,6 @@ package com.mmm.his.cer.utility.farser.ast;
 
 import com.mmm.his.cer.utility.farser.ast.node.LtrExpressionIterator;
 import com.mmm.his.cer.utility.farser.ast.node.type.BooleanExpression;
-import com.mmm.his.cer.utility.farser.ast.node.type.BooleanNonTerminal;
 import com.mmm.his.cer.utility.farser.ast.node.type.Expression;
 import com.mmm.his.cer.utility.farser.ast.parser.ExpressionResult;
 
@@ -13,29 +12,26 @@ import com.mmm.his.cer.utility.farser.ast.parser.ExpressionResult;
  * @author Mike Funaro
  * @author Thomas Naeff
  */
-public class AbstractSyntaxTree<C> extends BooleanNonTerminal<C> {
+public class AbstractSyntaxTree<C, R> {
 
-  private Expression<C, Boolean> ast;
+  private Expression<C, R> ast;
 
-  public AbstractSyntaxTree(Expression<C, Boolean> ast) {
+  public AbstractSyntaxTree(Expression<C, R> ast) {
     this.ast = ast;
   }
 
-  public void setAst(Expression<C, Boolean> ast) {
+  public void setAst(Expression<C, R> ast) {
     this.ast = ast;
   }
 
-  @Override
-  public Boolean evaluate(C context) {
+  private R evaluate(C context) {
     return this.ast.evaluate(context);
   }
 
-  @Override
   public LtrExpressionIterator<C> iterator() {
     return new LtrExpressionIterator<>(ast);
   }
 
-  @Override
   public String print() {
     return this.ast.print();
   }
@@ -47,9 +43,9 @@ public class AbstractSyntaxTree<C> extends BooleanNonTerminal<C> {
    * @return {@link ExpressionResult} ExpressionResult object which will have the data about the
    *         outcome of the evaluation.
    */
-  public ExpressionResult<C> evaluateExpression(C context) {
-    boolean evaluate = evaluate(context);
-    return new ExpressionResult<>(evaluate, context);
+  public ExpressionResult<C, R> evaluateExpression(C context) {
+    R result = evaluate(context);
+    return new ExpressionResult<>(result, context);
   }
 
 }

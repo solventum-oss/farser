@@ -1,6 +1,6 @@
-package com.mmm.his.cer.utility.farser.ast.node.operator;
+package com.mmm.his.cer.utility.farser.ast.node.operator.bool;
 
-import com.mmm.his.cer.utility.farser.ast.node.type.BooleanNonTerminal;
+import com.mmm.his.cer.utility.farser.ast.node.nonterminal.BooleanNonTerminal;
 import com.mmm.his.cer.utility.farser.ast.node.type.Expression;
 
 /**
@@ -10,7 +10,7 @@ import com.mmm.his.cer.utility.farser.ast.node.type.Expression;
  * @param <C> The context type used in the terminal nodes.
  * @author Mike Funaro
  */
-public class Not<C> extends BooleanNonTerminal<C> {
+public class Not<C> extends BooleanNonTerminal<C, Boolean> {
 
   /**
    * For a NOT node, we should only set one child. This implementation allows to set the left child

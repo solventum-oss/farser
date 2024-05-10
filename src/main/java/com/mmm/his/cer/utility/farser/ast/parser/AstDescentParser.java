@@ -5,9 +5,9 @@ import com.mmm.his.cer.utility.farser.ast.AbstractSyntaxTree;
 import com.mmm.his.cer.utility.farser.ast.AstCommonTokenType;
 import com.mmm.his.cer.utility.farser.ast.AstTokenType;
 import com.mmm.his.cer.utility.farser.ast.DrgSyntaxTree;
+import com.mmm.his.cer.utility.farser.ast.node.nonterminal.NonTerminal;
+import com.mmm.his.cer.utility.farser.ast.node.supplier.NodeSupplier;
 import com.mmm.his.cer.utility.farser.ast.node.type.Expression;
-import com.mmm.his.cer.utility.farser.ast.node.type.NodeSupplier;
-import com.mmm.his.cer.utility.farser.ast.node.type.NonTerminal;
 import com.mmm.his.cer.utility.farser.lexer.CommonTokenType;
 import com.mmm.his.cer.utility.farser.lexer.FarserException;
 import com.mmm.his.cer.utility.farser.lexer.LexerToken;
@@ -20,14 +20,13 @@ import java.util.Map;
 /**
  * Recursive descent parser that will build an Abstract syntax tree from a formula (list of tokens).
  *
- * @author Mike Funaro
- * @author Thomas Naeff
- *
  * @param <L> The type of the token container
  * @param <T> The type of the token type (enum)
  * @param <C> The type of the context used when evaluating the AST
+ * @author Mike Funaro
+ * @author Thomas Naeff
  */
-public class AstDescentParser<L extends LexerToken<T>, T extends TokenType<?>, C> {
+public class AstDescentParser<L extends LexerToken<T>, T extends TokenType<?>, C, R> {
 
   private L currentToken;
   private Iterator<L> tokenIterator;
@@ -42,9 +41,13 @@ public class AstDescentParser<L extends LexerToken<T>, T extends TokenType<?>, C
    *                      <code>null</code>.
    * @param nodeSupplier  a factory which creates nodes for the tree.
    */
-  public AstDescentParser(Iterator<L> tokenIterator,
-      NodeSupplier<L, C> nodeSupplier) {
+  public AstDescentParser(Iterator<L> tokenIterator, NodeSupplier<L, C> nodeSupplier) {
     this(tokenIterator, nodeSupplier, null);
+  }
+
+  public static <L extends LexerToken<T>, T extends TokenType<?>, C, R> AstDescentParser<L, T, C,
+      R> of(Iterator<L> tokenIterator, NodeSupplier<L, C> nodeSupplier) {
+    return new AstDescentParser<>(tokenIterator, nodeSupplier);
   }
 
   /**
@@ -93,7 +96,7 @@ public class AstDescentParser<L extends LexerToken<T>, T extends TokenType<?>, C
    * Build the abstract syntax tree.
    *
    * @deprecated Call {@link #buildTree()} instead for a non-DRG specific named AST class version
-   *             with the exact same functionality.
+   *     with the exact same functionality.
    */
   @Deprecated
   public DrgSyntaxTree<C> buildExpressionTree() {
@@ -105,9 +108,8 @@ public class AstDescentParser<L extends LexerToken<T>, T extends TokenType<?>, C
    * Build the abstract syntax tree from the provided formula/tokens.
    *
    * @param tokenIterator list of tokens to parse into the Abstract syntax tree.
-   *
    * @deprecated Call {@link #buildTree(ListIterator)} instead for a non-DRG specific named AST
-   *             class version with the exact same functionality.
+   *     class version with the exact same functionality.
    */
   @Deprecated
   public DrgSyntaxTree<C> buildExpressionTree(ListIterator<L> tokenIterator) {
@@ -119,8 +121,8 @@ public class AstDescentParser<L extends LexerToken<T>, T extends TokenType<?>, C
   /**
    * Build the abstract syntax tree.
    */
-  public AbstractSyntaxTree<C> buildTree() {
-    Expression<C, Boolean> root = expression(null, AstTokenType.NOT_AN_OPERATOR);
+  public AbstractSyntaxTree<C, R> buildTree() {
+    Expression<C, R> root = expression(null, AstTokenType.NOT_AN_OPERATOR);
     return new AbstractSyntaxTree<>(root);
   }
 
@@ -129,9 +131,9 @@ public class AstDescentParser<L extends LexerToken<T>, T extends TokenType<?>, C
    *
    * @param tokenIterator list of tokens to parse into the Abstract syntax tree.
    */
-  public AbstractSyntaxTree<C> buildTree(ListIterator<L> tokenIterator) {
+  public AbstractSyntaxTree<C, R> buildTree(ListIterator<L> tokenIterator) {
     setTokenIterator(tokenIterator);
-    Expression<C, Boolean> root = expression(null, AstTokenType.NOT_AN_OPERATOR);
+    Expression<C, R> root = expression(null, AstTokenType.NOT_AN_OPERATOR);
     return new AbstractSyntaxTree<>(root);
   }
 
@@ -147,14 +149,15 @@ public class AstDescentParser<L extends LexerToken<T>, T extends TokenType<?>, C
    * @param left                   The node to be used (or passed further down) as left-side node
    * @param leftOperatorPrecedence The operator precedence of the provided <code>left</code> node
    * @return Potentially a new (non-terminal/operator) node with a potential new evaluation return
-   *         type. Or the input <code>left</code> node passed through with a matching evaluation
-   *         return type.
+   *     type. Or the input <code>left</code> node passed through with a matching evaluation
+   *     return type.
    */
   private <X> Expression<C, X> expression(Expression<C, X> left, int leftOperatorPrecedence) {
     left = term(left, leftOperatorPrecedence);
     // Higher value means lower precedence
     while (getCurrentTokenAstType().isLowerOrSamePrecedence(leftOperatorPrecedence)) {
-      NonTerminal<C, X> operator = uncheckedCast(nodeSupplier.createNonTerminalNode(currentToken));
+      NonTerminal<C, X> operator = uncheckedCast(
+          nodeSupplier.createNonTerminalNode(currentToken));
       // Save the current operator precedence before advancing the token iterator
       int operatorPrecedence = getCurrentOperatorPrecedence();
       this.eat();
@@ -181,13 +184,14 @@ public class AstDescentParser<L extends LexerToken<T>, T extends TokenType<?>, C
    * @param left                   The node to be used (or passed further down) as left-side node
    * @param leftOperatorPrecedence The operator precedence of the provided <code>left</code> node
    * @return Potentially a new (non-terminal/operator) node with a potential new evaluation return
-   *         type. Or the input <code>left</code> node passed through with a matching evaluation
-   *         return type.
+   *     type. Or the input <code>left</code> node passed through with a matching evaluation
+   *     return type.
    */
   private <X> Expression<C, X> term(Expression<C, X> left, int leftOperatorPrecedence) {
     left = factor(left, leftOperatorPrecedence);
     while (getCurrentTokenAstType().isHigherPrecedence(leftOperatorPrecedence)) {
-      NonTerminal<C, X> operator = uncheckedCast(nodeSupplier.createNonTerminalNode(currentToken));
+      NonTerminal<C, X> operator = uncheckedCast(
+          nodeSupplier.createNonTerminalNode(currentToken));
       // Save the current operator precedence before advancing the token iterator
       int operatorPrecedence = getCurrentOperatorPrecedence();
       this.eat();
@@ -216,7 +220,8 @@ public class AstDescentParser<L extends LexerToken<T>, T extends TokenType<?>, C
    * @return A new (non-terminal/operator) node with a new evaluation return type
    */
   private <R> Expression<C, R> not(Expression<C, R> left, int leftOperatorPrecedence) {
-    NonTerminal<C, R> operator = uncheckedCast(nodeSupplier.createNonTerminalNode(currentToken));
+    NonTerminal<C, R> operator = uncheckedCast(
+        nodeSupplier.createNonTerminalNode(currentToken));
     this.eat(AstCommonTokenType.NOT); // Move iterator if 'NOT'
     left = factor(left, leftOperatorPrecedence);
     operator.setLeft(left);
@@ -237,8 +242,8 @@ public class AstDescentParser<L extends LexerToken<T>, T extends TokenType<?>, C
    * @param left                   The node to be used (or passed further down) as left-side node
    * @param leftOperatorPrecedence The operator precedence of the provided <code>left</code> node
    * @return Potentially a new (non-terminal/operator or ATOM) node with a potential new evaluation
-   *         return type. Or the input <code>left</code> node passed through with a matching
-   *         evaluation return type.
+   *     return type. Or the input <code>left</code> node passed through with a matching
+   *     evaluation return type.
    */
   private <X> Expression<C, X> factor(Expression<C, X> left, int leftOperatorPrecedence) {
     TokenType<?> tokenType = currentToken.getType();
@@ -278,8 +283,6 @@ public class AstDescentParser<L extends LexerToken<T>, T extends TokenType<?>, C
 
   /**
    * Move the iterator forward.
-   *
-   * @param type the type of the token to eat.
    */
   private void eat() {
     if (this.tokenIterator.hasNext()) {
@@ -304,7 +307,6 @@ public class AstDescentParser<L extends LexerToken<T>, T extends TokenType<?>, C
     }
     return (AstTokenType<?>) type;
   }
-
 
 
   /**

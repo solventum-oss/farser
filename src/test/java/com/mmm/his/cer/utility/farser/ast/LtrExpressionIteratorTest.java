@@ -29,7 +29,7 @@ public class LtrExpressionIteratorTest {
         new StringOperandSupplier(), Collections.emptyMap());
 
     // System.out.println(lexerTokens);
-    AbstractSyntaxTree<MaskedContext<String>> ast = parser.buildTree();
+    AbstractSyntaxTree<MaskedContext<String>, Boolean> ast = parser.buildTree();
 
     LtrExpressionIterator<MaskedContext<String>> iter = ast.iterator();
 
@@ -84,7 +84,7 @@ public class LtrExpressionIteratorTest {
         new StringOperandSupplier(), Collections.emptyMap());
 
     // System.out.println(lexerTokens);
-    AbstractSyntaxTree<MaskedContext<String>> ast = parser.buildTree();
+    AbstractSyntaxTree<MaskedContext<String>, Boolean> ast = parser.buildTree();
 
     LtrExpressionIterator<MaskedContext<String>> iter = ast.iterator();
 
@@ -199,7 +199,7 @@ public class LtrExpressionIteratorTest {
         new StringOperandSupplier(), Collections.emptyMap());
 
     // System.out.println(lexerTokens);
-    AbstractSyntaxTree<MaskedContext<String>> ast = parser.buildTree();
+    AbstractSyntaxTree<MaskedContext<String>, Boolean> ast = parser.buildTree();
 
     Iterator<Expression<MaskedContext<String>, ?>> iter = ast.iterator();
 
@@ -227,7 +227,7 @@ public class LtrExpressionIteratorTest {
         new StringOperandSupplier(), Collections.emptyMap());
 
     // System.out.println(lexerTokens);
-    AbstractSyntaxTree<MaskedContext<String>> ast = parser.buildTree();
+    AbstractSyntaxTree<MaskedContext<String>, Boolean> ast = parser.buildTree();
 
     LtrExpressionIterator<MaskedContext<String>> iter = ast.iterator();
 
@@ -250,7 +250,7 @@ public class LtrExpressionIteratorTest {
         new StringOperandSupplier(), Collections.emptyMap());
 
     // System.out.println(lexerTokens);
-    AbstractSyntaxTree<MaskedContext<String>> ast = parser.buildTree();
+    AbstractSyntaxTree<MaskedContext<String>, Boolean> ast = parser.buildTree();
 
     LtrExpressionIterator<MaskedContext<String>> iter = ast.iterator();
 

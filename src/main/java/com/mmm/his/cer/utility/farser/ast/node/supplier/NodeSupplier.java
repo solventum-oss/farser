@@ -1,17 +1,17 @@
-package com.mmm.his.cer.utility.farser.ast.node.type;
+package com.mmm.his.cer.utility.farser.ast.node.supplier;
 
 import com.mmm.his.cer.utility.farser.ast.AstCommonTokenType;
-import com.mmm.his.cer.utility.farser.ast.node.operator.And;
-import com.mmm.his.cer.utility.farser.ast.node.operator.Not;
-import com.mmm.his.cer.utility.farser.ast.node.operator.Or;
+import com.mmm.his.cer.utility.farser.ast.node.nonterminal.NonTerminal;
+import com.mmm.his.cer.utility.farser.ast.node.operator.bool.And;
+import com.mmm.his.cer.utility.farser.ast.node.operator.bool.Not;
+import com.mmm.his.cer.utility.farser.ast.node.operator.bool.Or;
+import com.mmm.his.cer.utility.farser.ast.node.type.Expression;
 import com.mmm.his.cer.utility.farser.lexer.LexerToken;
 
 /**
  * Interface for calling applications to implement so that they can provide custom terminal nodes
  * for special logic to be evaluated within the AST.
  *
- * @param <T> the token type that will be used to create the node, based on the list of lexed tokens
- *            that are used to create the AST
  * @param <C> the parametric type on {@link Expression} terminal nodes - the context data passed in
  *            when the AST is evaluated
  *
@@ -49,11 +49,11 @@ public interface NodeSupplier<L extends LexerToken<?>, C> {
 
     switch (type) {
       case AND:
-        return (NonTerminal<C, ?>) new And<>();
+        return new And<>();
       case OR:
-        return (NonTerminal<C, ?>) new Or<>();
+        return new Or<>();
       case NOT:
-        return (NonTerminal<C, ?>) new Not<>();
+        return new Not<>();
       default:
         throw new UnsupportedOperationException(
             "Invalid "

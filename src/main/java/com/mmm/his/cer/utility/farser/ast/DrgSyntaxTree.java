@@ -11,7 +11,7 @@ import com.mmm.his.cer.utility.farser.ast.node.type.Expression;
  *             with the exact same functionality.
  */
 @Deprecated
-public class DrgSyntaxTree<C> extends AbstractSyntaxTree<C> {
+public class DrgSyntaxTree<C> extends AbstractSyntaxTree<C, Boolean> {
 
   public DrgSyntaxTree(Expression<C, Boolean> ast) {
     super(ast);

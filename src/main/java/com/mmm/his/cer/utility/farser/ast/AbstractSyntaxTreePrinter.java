@@ -29,7 +29,7 @@ public final class AbstractSyntaxTreePrinter {
    * @param ast The AST
    * @return The tree representation as string
    */
-  public static String printTree(AbstractSyntaxTree<?> ast) {
+  public static String printTree(AbstractSyntaxTree<?, ?> ast) {
     return printTree(ast, DEFAULT_INDENTATION, AbstractSyntaxTreePrinter::printNodeSimple);
   }
 
@@ -44,7 +44,7 @@ public final class AbstractSyntaxTreePrinter {
    *                  point.
    * @return The tree representation as string
    */
-  public static <T> String printTree(AbstractSyntaxTree<T> ast,
+  public static <T, R> String printTree(AbstractSyntaxTree<T, R> ast,
       Function<Expression<T, ?>, String> printNode) {
     return printTree(ast, DEFAULT_INDENTATION, (node, next) -> printNode.apply(node));
   }
@@ -60,7 +60,7 @@ public final class AbstractSyntaxTreePrinter {
    *                  point.
    * @return The tree representation as string
    */
-  public static <T> String printTree(AbstractSyntaxTree<T> ast,
+  public static <T, R> String printTree(AbstractSyntaxTree<T, R> ast,
       BiFunction<Expression<T, ?>, AstPrinterContext<T>, String> printNode) {
     return printTree(ast, DEFAULT_INDENTATION, printNode);
   }
@@ -76,7 +76,7 @@ public final class AbstractSyntaxTreePrinter {
    *                  point.
    * @return The tree representation as string
    */
-  public static <T> String printTree(AbstractSyntaxTree<T> ast, String indentation,
+  public static <T, R> String printTree(AbstractSyntaxTree<T, R> ast, String indentation,
       BiFunction<Expression<T, ?>, AstPrinterContext<T>, String> printNode) {
     StringBuilder sb = new StringBuilder();
     int previousDepth = 0;
