@@ -425,7 +425,7 @@ public class AstTest {
   }
 
   public static class StringOperandSupplier implements
-      NodeSupplier<DrgLexerToken, MaskedContext<String>> {
+  NodeSupplier<DrgLexerToken, MaskedContext<String>> {
 
     @Override
     public BooleanExpression<MaskedContext<String>> createNode(DrgLexerToken token) {
@@ -434,7 +434,7 @@ public class AstTest {
   }
 
   private static class CustomOperandSupplier implements
-      NodeSupplier<DrgLexerToken, MaskedContext<CustomTestOperand>> {
+  NodeSupplier<DrgLexerToken, MaskedContext<CustomTestOperand>> {
 
     @Override
     public BooleanExpression<MaskedContext<CustomTestOperand>> createNode(
@@ -445,7 +445,7 @@ public class AstTest {
   }
 
   private static class MsdrgGrouperFunctionSupplier implements
-      NodeSupplier<DrgLexerToken, MaskedContext<String>> {
+  NodeSupplier<DrgLexerToken, MaskedContext<String>> {
 
     private final List<String> otherInformation;
 
@@ -469,7 +469,7 @@ public class AstTest {
     }
 
     @Override
-    public boolean evaluate(MaskedContext<String> context) {
+    public Boolean evaluate(MaskedContext<String> context) {
       if (otherInformation.contains("luck")) {
         context.accumulate("luck");
         return true;
