@@ -20,10 +20,10 @@ public class Attribute {
 
   @Override
   public String toString() {
-    return "Attribute{" +
-        "prefix=" + prefix +
-        ", listName='" + value + '\'' +
-        '}';
+    return "Attribute{" 
+        + "prefix=" + prefix 
+        + ", listName='" + value + '\'' 
+        + '}';
   }
 
   @Override

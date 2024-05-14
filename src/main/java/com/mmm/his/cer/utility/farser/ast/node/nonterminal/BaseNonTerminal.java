@@ -1,6 +1,7 @@
 package com.mmm.his.cer.utility.farser.ast.node.nonterminal;
 
 import com.mmm.his.cer.utility.farser.ast.node.type.Expression;
+import java.util.Objects;
 
 /**
  * This class represents a non-terminal node in the AST. These types of nodes will have a left and a
@@ -40,5 +41,22 @@ public abstract class BaseNonTerminal<C, E> implements NonTerminal<C, E> {
   @Override
   public String toString() {
     return "NonTerminal{" + "left=" + left + ", right=" + right + '}';
+  }
+
+  @Override
+  public boolean equals(Object object) {
+    if (this == object) {
+      return true;
+    }
+    if (!(object instanceof BaseNonTerminal)) {
+      return false;
+    }
+    BaseNonTerminal<?, ?> that = (BaseNonTerminal<?, ?>) object;
+    return Objects.equals(left, that.left) && Objects.equals(right, that.right);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(left, right);
   }
 }

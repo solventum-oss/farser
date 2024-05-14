@@ -1,18 +1,21 @@
 package com.mmm.his.cer.utility.farser.ast.node.operator.ahrq;
 
+import com.mmm.his.cer.utility.farser.ast.node.nonterminal.BaseNonTerminal;
 import com.mmm.his.cer.utility.farser.ast.node.type.Expression;
 import com.mmm.his.cer.utility.farser.ast.node.type.MaskedContext;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Implementation of a non-terminal node for use in the AST. This class represents a logical AND
- * operation.
+ * Implementation of a non-terminal node for use in the AST. This class represents a logical NOT
+ * operation with customization of data handling for AHRQ.
  *
  * @param <C> The context type used in the terminal nodes.
+ * @param <T> The return type which will be composed in the {@link EvalResult}.
  * @author Mike Funaro
  */
-public class Not<C extends MaskedContext<T>, T> extends AhrqOperator<C, T> {
+public class Not<C extends MaskedContext<T>, T> extends
+    BaseNonTerminal<C, EvalResult<T>> implements Expression<C, EvalResult<T>> {
 
   /**
    * For a NOT node, we should only set one child. This implementation allows to set the left child
@@ -43,4 +46,5 @@ public class Not<C extends MaskedContext<T>, T> extends AhrqOperator<C, T> {
   public String toString() {
     return "And{" + "left=" + left + ", right=" + right + '}';
   }
+  
 }

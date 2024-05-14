@@ -1,7 +1,7 @@
 package com.mmm.his.cer.utility.farser.ast.node.type;
 
 /**
- * farser.
+ * Temp class to get something working.
  *
  * @author Mike Funaro
  */
@@ -18,6 +18,9 @@ public enum AttributeType {
     this.prefix = prefix;
   }
 
+  /**
+   * Comment.
+   */
   public static AttributeType getOperandType(String str) {
     if (str != null) {
       for (AttributeType v : values()) {
@@ -29,6 +32,9 @@ public enum AttributeType {
     return NONE;
   }
 
+  /**
+   * Comment.
+   */
   public static boolean isMatchedAttributeType(AttributeType first, AttributeType second) {
     boolean match = false;
     if (first == second) {
