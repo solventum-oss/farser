@@ -12,7 +12,6 @@ import com.mmm.his.cer.utility.farser.lexer.Lexer;
 import com.mmm.his.cer.utility.farser.lexer.set.SetFormulaTokenFactory;
 import com.mmm.his.cer.utility.farser.lexer.set.SetLogicToken;
 import com.mmm.his.cer.utility.farser.lexer.set.SetLogicTokenType;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -31,45 +30,61 @@ public class SetAstTest {
 
   @Test
   public void differenceSimple() {
-    String input = "A - B";
-
-    // Lex the tokens
-    List<SetLogicToken> tokens = Lexer.lex(SetLogicTokenType.class, input, factory);
-
-    // Build tree
-    AstDescentParser<SetLogicToken, SetLogicTokenType, LookupContext<String>, List<String>> ast =
-        new AstDescentParser<>(tokens.iterator(), nodeSupplier);
-
-    ExpressionResult<LookupContext<String>, List<String>> result = ast.buildTree()
-        .evaluateExpression(context);
-
+    ExpressionResult<LookupContext<String>, List<String>> result = evaluate("A - B");
     assertThat(result.getResult().toArray(), is(Matchers.arrayContaining("A", "C")));
   }
 
   @Test
   public void intersectionSimple() {
-    String input = "A & B";
-
-    // Lex the tokens
-    List<SetLogicToken> tokens = Lexer.lex(SetLogicTokenType.class, input, factory);
-
-    // Build tree
-    AstDescentParser<SetLogicToken, SetLogicTokenType, LookupContext<String>, List<String>> parser =
-        new AstDescentParser<>(tokens.iterator(), nodeSupplier);
-
-    AbstractSyntaxTree<LookupContext<String>, List<String>> ast = parser.buildTree();
-
-    ExpressionResult<LookupContext<String>, List<String>> result = ast.evaluateExpression(context);
-
+    ExpressionResult<LookupContext<String>, List<String>> result = evaluate("A & B");
     assertThat(result.getResult().toArray(), is(Matchers.arrayContaining("B")));
   }
 
   @Test
   public void unionSimple() {
-    String input = "A | B";
+    ExpressionResult<LookupContext<String>, List<String>> result = evaluate("A | B");
+    assertThat(result.getResult().toArray(), is(Matchers.arrayContaining("A", "B", "C", "D", "E")));
+  }
 
+  @Test
+  public void complexMinus() {
+    ExpressionResult<LookupContext<String>, List<String>> result = evaluate("A - (B - C)");
+    assertThat(result.getResult().toArray(), is(Matchers.arrayContaining("A", "B", "C")));
+  }
+
+  @Test
+  public void complexMinusThenUnion() {
+    ExpressionResult<LookupContext<String>, List<String>> result = evaluate("A | (B - C)");
+    assertThat(result.getResult().toArray(), is(Matchers.arrayContaining("A", "B", "C", "E")));
+  }
+
+  @Test
+  public void complexIntersectionThenUnion() {
+    ExpressionResult<LookupContext<String>, List<String>> result = evaluate("A | (B & C)");
+    assertThat(result.getResult().toArray(), is(Matchers.arrayContaining("A", "B", "C", "D")));
+  }
+
+  @Test
+  public void complexUnionThenIntersection() {
+    ExpressionResult<LookupContext<String>, List<String>> result = evaluate("A & (B | C)");
+    assertThat(result.getResult().toArray(), is(Matchers.arrayContaining("B")));
+  }
+
+  @Test
+  public void complexLeftSideUnionThenIntersection() {
+    ExpressionResult<LookupContext<String>, List<String>> result = evaluate("(A & B) | C)");
+    assertThat(result.getResult().toArray(), is(Matchers.arrayContaining("B", "D", "F")));
+  }
+
+  /**
+   * Helper method to lex, build tree from, and evaluate the formula.
+   *
+   * @param formula the formula to use.
+   * @return the ExpressionResult.
+   */
+  private ExpressionResult<LookupContext<String>, List<String>> evaluate(String formula) {
     // Lex the tokens
-    List<SetLogicToken> tokens = Lexer.lex(SetLogicTokenType.class, input, factory);
+    List<SetLogicToken> tokens = Lexer.lex(SetLogicTokenType.class, formula, factory);
 
     // Build tree
     AstDescentParser<SetLogicToken, SetLogicTokenType, LookupContext<String>, List<String>> parser =
@@ -77,105 +92,15 @@ public class SetAstTest {
 
     AbstractSyntaxTree<LookupContext<String>, List<String>> ast = parser.buildTree();
 
-    ExpressionResult<LookupContext<String>, List<String>> result = ast.evaluateExpression(context);
-
-    assertThat(result.getResult().toArray(), is(Matchers.arrayContaining("A", "B", "C", "D", "E")));
+    return ast.evaluateExpression(context);
   }
 
-  //
-  //  @Test
-  //  public void testUnion() {
-  //    List<SetLexerToken> lexerTokens = SetFormulaLexer.lex("A | B");
-  //    SetDescentParser<TestContext, String> parser = new SetDescentParser<>(
-  //        lexerTokens.listIterator(), defaultSupplier);
-  //
-  //    SetSyntaxTree<TestContext, String> ast = parser.buildExpressionTree();
-  //    SetExpressionResult<TestContext, String> evaluation = ast.evaluateExpression(
-  //        new TestContext());
-  //    TestContext context = evaluation.getContext();
-  //    assertThat(context.getResultData().toArray(),
-  //        is(Matchers.arrayContaining("A", "B", "C", "D", "E")));
-  //
-  //  }
-  //
-  //  @Test
-  //  public void testComplexMinus() {
-  //    List<SetLexerToken> lexerTokens = SetFormulaLexer.lex("A - (B - C)");
-  //    SetDescentParser<TestContext, String> parser = new SetDescentParser<>(
-  //        lexerTokens.listIterator(), defaultSupplier);
-  //
-  //    SetSyntaxTree<TestContext, String> ast = parser.buildExpressionTree();
-  //    SetExpressionResult<TestContext, String> evaluation = ast.evaluateExpression(
-  //        new TestContext());
-  //    TestContext context = evaluation.getContext();
-  //    assertThat(context.getResultData().toArray(),
-  //        is(Matchers.arrayContaining("A", "B", "C")));
-  //
-  //  }
-  //
-  //  @Test
-  //  public void testComplexMinusThenUnion() {
-  //    List<SetLexerToken> lexerTokens = SetFormulaLexer.lex("A | (B - C)");
-  //    SetDescentParser<TestContext, String> parser = new SetDescentParser<>(
-  //        lexerTokens.listIterator(), defaultSupplier);
-  //
-  //    SetSyntaxTree<TestContext, String> ast = parser.buildExpressionTree();
-  //    SetExpressionResult<TestContext, String> evaluation = ast.evaluateExpression(
-  //        new TestContext());
-  //    TestContext context = evaluation.getContext();
-  //    assertThat(context.getResultData().toArray(),
-  //        is(Matchers.arrayContaining("A", "B", "C", "E")));
-  //
-  //  }
-  //
-  //  @Test
-  //  public void testComplexIntersectionThenUnion() {
-  //    List<SetLexerToken> lexerTokens = SetFormulaLexer.lex("A | (B & C)");
-  //    SetDescentParser<TestContext, String> parser = new SetDescentParser<>(
-  //        lexerTokens.listIterator(), defaultSupplier);
-  //
-  //    SetSyntaxTree<TestContext, String> ast = parser.buildExpressionTree();
-  //    SetExpressionResult<TestContext, String> evaluation = ast.evaluateExpression(
-  //        new TestContext());
-  //    TestContext context = evaluation.getContext();
-  //    assertThat(context.getResultData().toArray(),
-  //        is(Matchers.arrayContaining("A", "B", "C", "D")));
-  //
-  //  }
-  //
-  //  @Test
-  //  public void testComplexUnionThenIntersection() {
-  //    List<SetLexerToken> lexerTokens = SetFormulaLexer.lex("A & (B | C)");
-  //    SetDescentParser<TestContext, String> parser = new SetDescentParser<>(
-  //        lexerTokens.listIterator(), defaultSupplier);
-  //
-  //    SetSyntaxTree<TestContext, String> ast = parser.buildExpressionTree();
-  //    SetExpressionResult<TestContext, String> evaluation = ast.evaluateExpression(
-  //        new TestContext());
-  //    TestContext context = evaluation.getContext();
-  //    assertThat(context.getResultData().toArray(),
-  //        is(Matchers.arrayContaining("B")));
-  //  }
-  //
-  //  @Test
-  //  public void testComplexLeftSideUnionThenIntersection() {
-  //    List<SetLexerToken> lexerTokens = SetFormulaLexer.lex("(A & B) | C)");
-  //    SetDescentParser<TestContext, String> parser = new SetDescentParser<>(
-  //        lexerTokens.listIterator(), defaultSupplier);
-  //
-  //    SetSyntaxTree<TestContext, String> ast = parser.buildExpressionTree();
-  //    SetExpressionResult<TestContext, String> evaluation = ast.evaluateExpression(
-  //        new TestContext());
-  //
-  //    TestContext context = evaluation.getContext();
-  //    assertThat(context.getResultData().toArray(),
-  //        is(Matchers.arrayContaining("B", "D", "F")));
-  //  }
-
-  public class TestContext implements LookupContext<String> {
+  /**
+   * Context class to use in this testing. It contains fake runtime data to be used.
+   */
+  private static class TestContext implements LookupContext<String> {
 
     Map<String, List<String>> runtimeData = new HashMap<>();
-    List<String> resultData = new ArrayList<>();
 
     public TestContext() {
       runtimeData.put("A", Arrays.asList("A", "B", "C"));
@@ -187,6 +112,5 @@ public class SetAstTest {
     public List<String> lookupData(String key) {
       return runtimeData.get(key);
     }
-
   }
 }

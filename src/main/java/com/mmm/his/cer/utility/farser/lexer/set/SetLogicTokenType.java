@@ -1,6 +1,7 @@
 package com.mmm.his.cer.utility.farser.lexer.set;
 
 import com.mmm.his.cer.utility.farser.CommonTokenFlag;
+import com.mmm.his.cer.utility.farser.ast.AstCommonTokenType;
 import com.mmm.his.cer.utility.farser.ast.AstTokenType;
 import com.mmm.his.cer.utility.farser.lexer.CommonTokenType;
 import com.mmm.his.cer.utility.farser.lexer.TokenType;
@@ -15,7 +16,8 @@ public enum SetLogicTokenType implements TokenType<SetLogicTokenType>,
     AstTokenType<SetLogicTokenType> {
   ATOM(null, CommonTokenType.ATOM),
   SPACE(" ", CommonTokenType.SPACE),
-  RPAREN(")"),
+  LPAREN("(", AstCommonTokenType.LPAREN),
+  RPAREN(")", AstCommonTokenType.RPAREN),
   INTERSECTION("&", 2),
   DIFFERENCE("-", 3),
   UNION("|", 1);
@@ -34,10 +36,6 @@ public enum SetLogicTokenType implements TokenType<SetLogicTokenType>,
     this.value = value;
     this.operatorPrecedence = operatorPrecedence;
     this.commonType = null;
-  }
-
-  SetLogicTokenType(String value) {
-    this(value, null);
   }
 
   @Override
