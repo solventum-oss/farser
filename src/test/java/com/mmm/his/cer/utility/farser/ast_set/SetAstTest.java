@@ -53,6 +53,12 @@ public class SetAstTest {
   }
 
   @Test
+  public void complexMinusNoGrouping() {
+    ExpressionResult<LookupContext<String>, List<String>> result = evaluate("A - B - C");
+    assertThat(result.getResult().toArray(), is(Matchers.arrayContaining("A", "C")));
+  }
+
+  @Test
   public void complexMinusThenUnion() {
     ExpressionResult<LookupContext<String>, List<String>> result = evaluate("A | (B - C)");
     assertThat(result.getResult().toArray(), is(Matchers.arrayContaining("A", "B", "C", "E")));
