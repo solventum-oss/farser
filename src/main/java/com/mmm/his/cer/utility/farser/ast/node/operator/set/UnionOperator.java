@@ -7,14 +7,15 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * msdrg-junior.
+ * Set logic operator that handles the union of two lists of items.
  *
  * @author Mike Funaro
  */
 public class UnionOperator<C extends LookupContext<T>, T> extends SetLogicOperator<C, T> {
-  
+
   @Override
   public List<T> applyLogic(List<T> left, List<T> right) {
+    // Get the union of the left and right lists.
     Set<T> leftData = new HashSet<>(left);
     leftData.addAll(right);
     return new ArrayList<>(leftData);

@@ -7,6 +7,38 @@
   <groupId>com.mmm.his.cer.utility</groupId>
   <artifactId>farser</artifactId>
   <version>4.2.0-SNAPSHOT</version>
+  
+  <name>Farser</name>
+  <description>
+    Farser provides a robust toolset for lexical analysis, parsing string inputs 
+    into tokens, and constructing customized Abstract Syntax Trees (ASTs). It enables the efficient 
+    evaluation of these trees, facilitating the development and analysis of complex expressions and
+    languages.
+  </description>
+  <url>https://github.com/solventum-oss/farser</url>
+
+  <licenses>
+    <license>
+      <name>BSD 3-Clause License</name>
+      <url>https://opensource.org/licenses/BSD-3-Clause</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <developers>
+    <developer>
+      <name>Mike Funaro</name>
+      <email>mfunaro@solventum.com</email>
+      <organization>Solventum</organization>
+      <organizationUrl>https://www.solventum.com</organizationUrl>
+    </developer>
+  </developers>
+
+  <scm>
+    <connection>scm:git:git://github.com/solventum-oss/farser.git</connection>
+    <developerConnection>scm:git:ssh://github.com:solventum-oss/farser.git</developerConnection>
+    <url>https://github.com/solventum-oss/farser</url>
+  </scm>
 
   <properties>
     <java_version>1.8</java_version>
@@ -15,6 +47,18 @@
     <junitVersion>4.13.1</junitVersion>
     <compilerPluginVersion>3.8.1</compilerPluginVersion>
   </properties>
+
+
+  <distributionManagement>
+    <snapshotRepository>
+      <id>ossrh</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+    </snapshotRepository>
+    <repository>
+      <id>ossrh</id>
+      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+    </repository>
+  </distributionManagement>
 
   <dependencies>
 

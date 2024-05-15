@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * msdrg-junior.
+ * Set logic operator that will handle the intersection between two lists of items.
  *
  * @author Mike Funaro
  */
@@ -15,6 +15,7 @@ public class IntersectionOperator<C extends LookupContext<T>, T> extends SetLogi
   
   @Override
   public List<T> applyLogic(List<T> left, List<T> right) {
+    // Get the intersection between the left and right lists.
     Set<T> leftData = new HashSet<>(left);
     leftData.retainAll(right);
     return new ArrayList<>(leftData);
