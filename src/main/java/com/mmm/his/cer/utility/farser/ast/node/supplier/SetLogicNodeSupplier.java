@@ -11,7 +11,8 @@ import com.mmm.his.cer.utility.farser.lexer.FarserException;
 import com.mmm.his.cer.utility.farser.lexer.set.SetLogicToken;
 
 /**
- * msdrg-junior.
+ * Set logic node supplier. Contains the knowledge to create terminal and non-terminal nodes for
+ * set logic evaluation.
  *
  * @author Mike Funaro
  */
