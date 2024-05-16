@@ -1,18 +1,18 @@
 package com.mmm.his.cer.utility.farser.ast.node.operator.set;
 
-import com.mmm.his.cer.utility.farser.ast.node.nonterminal.SetNonTerminal;
+import com.mmm.his.cer.utility.farser.ast.node.nonterminal.SetTheoryNonTerminal;
 import com.mmm.his.cer.utility.farser.ast.node.type.LookupContext;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Base node for performing Set logic. This will ensure that the left and right nodes are processed
+ * Base node for performing Set theory. This will ensure that the left and right nodes are processed
  * so that data is fetched, and then perform the "math" as defined in the subclass.
  *
  * @author Mike Funaro
  */
-public abstract class SetLogicOperator<C extends LookupContext<T>, T> extends
-    SetNonTerminal<C, List<T>> {
+public abstract class SetTheoryOperator<C extends LookupContext<T>, T> extends
+    SetTheoryNonTerminal<C, List<T>> {
 
   @Override
   public List<T> evaluate(C context) {

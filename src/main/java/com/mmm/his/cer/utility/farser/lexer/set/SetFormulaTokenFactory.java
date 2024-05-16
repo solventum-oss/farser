@@ -6,21 +6,22 @@ import com.mmm.his.cer.utility.farser.lexer.drg.DrgLexerToken;
 import java.security.InvalidParameterException;
 
 /**
- * The factory which creates a {@link SetLogicToken}s.
+ * The factory which creates a {@link SetTheoryToken}s.
  *
  * @author Mike Funaro
  */
-public class SetFormulaTokenFactory implements LexerTokenFactory<SetLogicToken, SetLogicTokenType> {
+public class SetFormulaTokenFactory implements
+    LexerTokenFactory<SetTheoryToken, SetTheoryTokenType> {
 
   @Override
-  public SetLogicToken create(SetLogicTokenType tokenType, String value) {
-    if (tokenType == SetLogicTokenType.SPACE) {
+  public SetTheoryToken create(SetTheoryTokenType tokenType, String value) {
+    if (tokenType == SetTheoryTokenType.SPACE) {
       // Ignore spaces
       return null;
-    } else if (tokenType == SetLogicTokenType.ATOM) {
+    } else if (tokenType == SetTheoryTokenType.ATOM) {
       return buildTokenFromAtom(value);
     } else {
-      return new SetLogicToken(tokenType, value);
+      return new SetTheoryToken(tokenType, value);
     }
   }
 
@@ -32,14 +33,14 @@ public class SetFormulaTokenFactory implements LexerTokenFactory<SetLogicToken, 
    * @param atom the atom string
    * @return The token with value and with or without prefix
    */
-  private static SetLogicToken buildTokenFromAtom(String atom) {
+  private static SetTheoryToken buildTokenFromAtom(String atom) {
     String[] split = DrgLexerToken.PREFIX_SEPARATOR_PATTERN.split(atom);
     if (split.length == 2) {
       // Prefix and value
-      return new SetLogicToken(SetLogicTokenType.ATOM, split[1].trim(), split[0].trim());
+      return new SetTheoryToken(SetTheoryTokenType.ATOM, split[1].trim(), split[0].trim());
     } else if (split.length == 1) {
       // Only value
-      return new SetLogicToken(SetLogicTokenType.ATOM, split[0].trim());
+      return new SetTheoryToken(SetTheoryTokenType.ATOM, split[0].trim());
     } else {
       throw new InvalidParameterException("Invalid "
           + DrgFormulaToken.ATOM.name()

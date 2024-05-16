@@ -6,19 +6,19 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 
 /**
- * Set logic token implementation.
+ * Set theory token implementation.
  *
  * @author Mike Funaro
  */
-public class SetLogicToken implements LexerToken<SetLogicTokenType> {
+public class SetTheoryToken implements LexerToken<SetTheoryTokenType> {
 
   public static final String PREFIX_SEPARATOR_STRING = ":";
   /**
    * The regex pattern for {@link #PREFIX_SEPARATOR_STRING}.
    */
   public static final Pattern PREFIX_SEPARATOR_PATTERN =
-      Pattern.compile(SetLogicToken.PREFIX_SEPARATOR_STRING);
-  public final SetLogicTokenType type;
+      Pattern.compile(SetTheoryToken.PREFIX_SEPARATOR_STRING);
+  public final SetTheoryTokenType type;
   public final String value;
   public final String prefix;
 
@@ -27,7 +27,7 @@ public class SetLogicToken implements LexerToken<SetLogicTokenType> {
    *
    * @param type The token type
    */
-  public SetLogicToken(SetLogicTokenType type) {
+  public SetTheoryToken(SetTheoryTokenType type) {
     this.type = type;
     this.value = type.getValue().orElse(null);
     this.prefix = null;
@@ -39,7 +39,7 @@ public class SetLogicToken implements LexerToken<SetLogicTokenType> {
    * @param type  The token type
    * @param value The token value
    */
-  public SetLogicToken(SetLogicTokenType type, String value) {
+  public SetTheoryToken(SetTheoryTokenType type, String value) {
     this.type = type;
     this.value = value;
     this.prefix = null;
@@ -52,7 +52,7 @@ public class SetLogicToken implements LexerToken<SetLogicTokenType> {
    * @param value  The token value
    * @param prefix The prefix (if there is one)
    */
-  public SetLogicToken(SetLogicTokenType type, String value, String prefix) {
+  public SetTheoryToken(SetTheoryTokenType type, String value, String prefix) {
     this.type = type;
     this.value = value;
     this.prefix = prefix;
@@ -60,7 +60,7 @@ public class SetLogicToken implements LexerToken<SetLogicTokenType> {
 
 
   @Override
-  public SetLogicTokenType getType() {
+  public SetTheoryTokenType getType() {
     return type;
   }
 
@@ -76,7 +76,7 @@ public class SetLogicToken implements LexerToken<SetLogicTokenType> {
 
   @Override
   public String toString() {
-    if (type == SetLogicTokenType.ATOM) {
+    if (type == SetTheoryTokenType.ATOM) {
       String prefixString = "";
       if (prefix != null && !prefix.isEmpty()) {
         prefixString = " with prefix " + prefix;

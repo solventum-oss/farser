@@ -8,24 +8,24 @@ import com.mmm.his.cer.utility.farser.ast.node.terminal.DataLookupNode;
 import com.mmm.his.cer.utility.farser.ast.node.type.Expression;
 import com.mmm.his.cer.utility.farser.ast.node.type.LookupContext;
 import com.mmm.his.cer.utility.farser.lexer.FarserException;
-import com.mmm.his.cer.utility.farser.lexer.set.SetLogicToken;
+import com.mmm.his.cer.utility.farser.lexer.set.SetTheoryToken;
 
 /**
- * Set logic node supplier. Contains the knowledge to create terminal and non-terminal nodes for
- * set logic evaluation.
+ * Set theory node supplier. Contains the knowledge to create terminal and non-terminal nodes for
+ * Set theory evaluation.
  *
  * @author Mike Funaro
  */
-public class SetLogicNodeSupplier implements NodeSupplier<SetLogicToken, LookupContext<String>> {
+public class SetTheoryNodeSupplier implements NodeSupplier<SetTheoryToken, LookupContext<String>> {
 
 
   @Override
-  public Expression<LookupContext<String>, ?> createNode(SetLogicToken token) {
+  public Expression<LookupContext<String>, ?> createNode(SetTheoryToken token) {
     return new DataLookupNode<>(token.value);
   }
 
   @Override
-  public NonTerminal<LookupContext<String>, ?> createNonTerminalNode(SetLogicToken token) {
+  public NonTerminal<LookupContext<String>, ?> createNonTerminalNode(SetTheoryToken token) {
     switch (token.type) {
       case DIFFERENCE:
         return new DifferenceOperator<>();

@@ -4,14 +4,14 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import com.mmm.his.cer.utility.farser.ast.AbstractSyntaxTree;
-import com.mmm.his.cer.utility.farser.ast.node.supplier.SetLogicNodeSupplier;
+import com.mmm.his.cer.utility.farser.ast.node.supplier.SetTheoryNodeSupplier;
 import com.mmm.his.cer.utility.farser.ast.node.type.LookupContext;
 import com.mmm.his.cer.utility.farser.ast.parser.AstDescentParser;
 import com.mmm.his.cer.utility.farser.ast.parser.ExpressionResult;
 import com.mmm.his.cer.utility.farser.lexer.Lexer;
 import com.mmm.his.cer.utility.farser.lexer.set.SetFormulaTokenFactory;
-import com.mmm.his.cer.utility.farser.lexer.set.SetLogicToken;
-import com.mmm.his.cer.utility.farser.lexer.set.SetLogicTokenType;
+import com.mmm.his.cer.utility.farser.lexer.set.SetTheoryToken;
+import com.mmm.his.cer.utility.farser.lexer.set.SetTheoryTokenType;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -25,7 +25,7 @@ import org.junit.Test;
 public class SetAstTest {
 
   TestContext context = new TestContext();
-  SetLogicNodeSupplier nodeSupplier = new SetLogicNodeSupplier();
+  SetTheoryNodeSupplier nodeSupplier = new SetTheoryNodeSupplier();
   SetFormulaTokenFactory factory = new SetFormulaTokenFactory();
 
   @Test
@@ -84,10 +84,10 @@ public class SetAstTest {
    */
   private ExpressionResult<LookupContext<String>, List<String>> evaluate(String formula) {
     // Lex the tokens
-    List<SetLogicToken> tokens = Lexer.lex(SetLogicTokenType.class, formula, factory);
+    List<SetTheoryToken> tokens = Lexer.lex(SetTheoryTokenType.class, formula, factory);
 
     // Build tree
-    AstDescentParser<SetLogicToken, SetLogicTokenType, LookupContext<String>, List<String>> parser =
+    AstDescentParser<SetTheoryToken, SetTheoryTokenType, LookupContext<String>, List<String>> parser =
         new AstDescentParser<>(tokens.iterator(), nodeSupplier);
 
     AbstractSyntaxTree<LookupContext<String>, List<String>> ast = parser.buildTree();

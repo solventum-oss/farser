@@ -4,11 +4,11 @@ import com.mmm.his.cer.utility.farser.ast.node.LtrExpressionIterator;
 import com.mmm.his.cer.utility.farser.ast.node.type.Expression;
 
 /**
- * A non-terminal base class for set logic.
+ * A non-terminal base class for Set theory.
  *
  * @author Mike Funaro
  */
-public abstract class SetNonTerminal<C, E> extends BaseNonTerminal<C, E> implements
+public abstract class SetTheoryNonTerminal<C, E> extends BaseNonTerminal<C, E> implements
     Expression<C, E> {
 
   @Override

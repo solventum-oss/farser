@@ -5,11 +5,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Set logic operator that will handle the difference between two lists of items.
+ * Set theory operator that will handle the difference between two lists of items.
  *
  * @author Mike Funaro
  */
-public class DifferenceOperator<C extends LookupContext<T>, T> extends SetLogicOperator<C, T> {
+public class DifferenceOperator<C extends LookupContext<T>, T> extends SetTheoryOperator<C, T> {
 
   @Override
   public List<T> applyLogic(List<T> left, List<T> right) {

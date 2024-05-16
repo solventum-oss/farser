@@ -7,11 +7,11 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Set logic operator that will handle the intersection between two lists of items.
+ * Set theory operator that will handle the intersection between two lists of items.
  *
  * @author Mike Funaro
  */
-public class IntersectionOperator<C extends LookupContext<T>, T> extends SetLogicOperator<C, T> {
+public class IntersectionOperator<C extends LookupContext<T>, T> extends SetTheoryOperator<C, T> {
   
   @Override
   public List<T> applyLogic(List<T> left, List<T> right) {

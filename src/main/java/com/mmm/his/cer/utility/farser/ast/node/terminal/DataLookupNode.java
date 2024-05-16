@@ -5,7 +5,7 @@ import com.mmm.his.cer.utility.farser.ast.node.type.LookupContext;
 import java.util.Collection;
 
 /**
- * A terminal node to be used in Set logic. This node, requires a SetContext that will either 
+ * A terminal node to be used in Set theory. This node, requires a SetContext that will either 
  * contain the data that can be looked up using a key or contain a handle to something that can 
  * be used to fetch the data from an outside source using the key.
  *

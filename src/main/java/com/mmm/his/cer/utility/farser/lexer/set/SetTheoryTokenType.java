@@ -8,12 +8,12 @@ import com.mmm.his.cer.utility.farser.lexer.TokenType;
 import java.util.Optional;
 
 /**
- * Token type for handling set logic.
+ * Token type for handling Set theory.
  *
  * @author Mike Funaro
  */
-public enum SetLogicTokenType implements TokenType<SetLogicTokenType>,
-    AstTokenType<SetLogicTokenType> {
+public enum SetTheoryTokenType implements TokenType<SetTheoryTokenType>,
+    AstTokenType<SetTheoryTokenType> {
   ATOM(null, CommonTokenType.ATOM),
   SPACE(" ", CommonTokenType.SPACE),
   LPAREN("(", AstCommonTokenType.LPAREN),
@@ -26,13 +26,13 @@ public enum SetLogicTokenType implements TokenType<SetLogicTokenType>,
   private final CommonTokenFlag commonType;
   private final int operatorPrecedence;
 
-  SetLogicTokenType(String value, CommonTokenFlag commonType) {
+  SetTheoryTokenType(String value, CommonTokenFlag commonType) {
     this.value = value;
     this.commonType = commonType;
     this.operatorPrecedence = NOT_AN_OPERATOR;
   }
 
-  SetLogicTokenType(String value, int operatorPrecedence) {
+  SetTheoryTokenType(String value, int operatorPrecedence) {
     this.value = value;
     this.operatorPrecedence = operatorPrecedence;
     this.commonType = null;

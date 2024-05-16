@@ -3,8 +3,7 @@ package com.mmm.his.cer.utility.farser.ast.node.type;
 import java.util.List;
 
 /**
- * Context interface for Set logic. Any context that will be used in a Set logic AST will need to
- * implement this interface.
+ * Context interface which provides a way to lookup data based on a key.
  *
  * @author Mike Funaro
  */

@@ -7,11 +7,11 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Set logic operator that handles the union of two lists of items.
+ * Set theory operator that handles the union of two lists of items.
  *
  * @author Mike Funaro
  */
-public class UnionOperator<C extends LookupContext<T>, T> extends SetLogicOperator<C, T> {
+public class UnionOperator<C extends LookupContext<T>, T> extends SetTheoryOperator<C, T> {
 
   @Override
   public List<T> applyLogic(List<T> left, List<T> right) {
