@@ -1,5 +1,6 @@
 package com.mmm.his.cer.utility.farser.lexer;
 
+import com.mmm.his.cer.utility.farser.CommonTokenFlag;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
@@ -88,8 +89,12 @@ public class TokenTypeLookup {
         String key = value.get();
         if (lookupMap.containsKey(key)) {
           throw new FarserException(
-              "Duplicate keys are not allowed. Key '" + key + "' alredy exists for "
-                  + lookupMap.get(key).getClass().getName() + "." + enumConst.name());
+              "Duplicate keys are not allowed. Key '"
+                  + key
+                  + "' alredy exists for "
+                  + lookupMap.get(key).getClass().getName()
+                  + "."
+                  + enumConst.name());
         }
         lookupMap.put(key, enumConst);
       }
@@ -107,9 +112,9 @@ public class TokenTypeLookup {
    * @param enumClass The token enumeration class
    * @return An unmodifiable map with all the lookup entries
    * @throws IllegalArgumentException If the token type class is not an enumeration
-   * @throws FarserException          If there are duplicate keys based on the {@link
-   *                                  CommonTokenType}s or if
-   *                                  mandatory {@link CommonTokenType} do not exist.
+   * @throws FarserException          If there are duplicate keys based on the
+   *                                  {@link CommonTokenType}s or if mandatory
+   *                                  {@link CommonTokenType} do not exist.
    */
   protected static <T extends TokenType<?>> Map<CommonTokenType, T> getCommonTypeLookupMap(
       Class<T> enumClass) {
@@ -158,13 +163,17 @@ public class TokenTypeLookup {
     // Build lookup map
     Map<CommonTokenType, T> lookupMap = new EnumMap<>(CommonTokenType.class);
     for (T enumConst : enumClass.getEnumConstants()) {
-      Optional<CommonTokenType> commonType = enumConst.getCommonTokenType();
-      if (commonType.isPresent()) {
-        CommonTokenType key = commonType.get();
+      Optional<CommonTokenFlag> commonType = enumConst.getCommonTokenType();
+      if (commonType.isPresent() && commonType.get() instanceof CommonTokenType) {
+        CommonTokenType key = (CommonTokenType) commonType.get();
         if (lookupMap.containsKey(key)) {
           throw new FarserException(
-              "Duplicate keys are not allowed. Key '" + key + "' alredy exists for "
-                  + lookupMap.get(key).getClass().getName() + "." + enumConst.name());
+              "Duplicate keys are not allowed. Key '"
+                  + key
+                  + "' alredy exists for "
+                  + lookupMap.get(key).getClass().getName()
+                  + "."
+                  + enumConst.name());
         }
         lookupMap.put(key, enumConst);
       }
@@ -189,8 +198,11 @@ public class TokenTypeLookup {
     // Check that all mandatory common types exist
     for (CommonTokenType commonType : CommonTokenType.values()) {
       if (commonType.isMandatory() && !lookupMap.containsKey(commonType)) {
-        throw new FarserException(commonType.getClass().getName() + "." + commonType.name()
-            + " is mandatory. No token found in " + enumClass.getName()
+        throw new FarserException(commonType.getClass().getName()
+            + "."
+            + commonType.name()
+            + " is mandatory. No token found in "
+            + enumClass.getName()
             + " which is marked with this mandatory common type.");
       }
     }
@@ -241,10 +253,11 @@ public class TokenTypeLookup {
 
     List<String> delimiters = new ArrayList<>();
     for (TokenType<?> enumConst : enumClass.getEnumConstants()) {
-      Optional<CommonTokenType> commonType = enumConst.getCommonTokenType();
+      Optional<CommonTokenFlag> commonType = enumConst.getCommonTokenType();
       // Only the ones which are not ATOMs or SPACE
-      if (!commonType.isPresent() || (commonType.get() != CommonTokenType.ATOM
-          && commonType.get() != CommonTokenType.SPACE)) {
+      if (!commonType.isPresent()
+          || commonType.get() != CommonTokenType.ATOM
+              && commonType.get() != CommonTokenType.SPACE) {
         Optional<String> value = enumConst.getValue();
         // Only all non-null values
         value.ifPresent(delimiters::add);

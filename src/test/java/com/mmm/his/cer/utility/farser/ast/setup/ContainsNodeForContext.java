@@ -11,12 +11,17 @@ public class ContainsNodeForContext<T> implements BooleanExpression<MaskedContex
   }
 
   @Override
-  public boolean evaluate(MaskedContext<T> context) {
+  public Boolean evaluate(MaskedContext<T> context) {
     context.evaluating(value);
     if (context.getMask().contains(value)) {
       context.accumulate(value);
       return true;
     }
     return false;
+  }
+
+  @Override
+  public String print() {
+    return String.valueOf(value);
   }
 }

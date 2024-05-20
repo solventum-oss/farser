@@ -1,5 +1,6 @@
 package com.mmm.his.cer.utility.farser.lexer;
 
+import com.mmm.his.cer.utility.farser.CommonTokenFlag;
 import java.util.Optional;
 
 /**
@@ -23,7 +24,7 @@ public interface LexerToken<T extends TokenType<?>> {
    *
    * @return The common token type
    */
-  default Optional<CommonTokenType> getCommonType() {
+  default Optional<CommonTokenFlag> getCommonType() {
     T type = getType();
     // Delegation for simpler access
     return type == null ? Optional.empty() : type.getCommonTokenType();

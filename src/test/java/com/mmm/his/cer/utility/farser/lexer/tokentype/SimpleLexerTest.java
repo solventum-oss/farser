@@ -2,6 +2,7 @@ package com.mmm.his.cer.utility.farser.lexer.tokentype;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+
 import com.mmm.his.cer.utility.farser.lexer.FarserException;
 import com.mmm.his.cer.utility.farser.lexer.Lexer;
 import java.util.List;

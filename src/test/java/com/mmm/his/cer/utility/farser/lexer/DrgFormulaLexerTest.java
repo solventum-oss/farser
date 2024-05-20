@@ -6,14 +6,12 @@ import static org.junit.Assert.assertTrue;
 
 import com.mmm.his.cer.utility.farser.lexer.drg.DrgFormulaToken;
 import com.mmm.his.cer.utility.farser.lexer.drg.DrgLexerToken;
-
+import java.security.InvalidParameterException;
+import java.util.List;
 import org.hamcrest.collection.IsIterableContainingInOrder;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-
-import java.security.InvalidParameterException;
-import java.util.List;
 
 /**
  * farser

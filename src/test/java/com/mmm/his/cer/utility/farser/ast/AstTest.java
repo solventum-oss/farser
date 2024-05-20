@@ -3,8 +3,8 @@ package com.mmm.his.cer.utility.farser.ast;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+import com.mmm.his.cer.utility.farser.ast.node.supplier.NodeSupplier;
 import com.mmm.his.cer.utility.farser.ast.node.type.BooleanExpression;
-import com.mmm.his.cer.utility.farser.ast.node.type.NodeSupplier;
 import com.mmm.his.cer.utility.farser.ast.parser.DescentParser;
 import com.mmm.his.cer.utility.farser.ast.parser.ExpressionResult;
 import com.mmm.his.cer.utility.farser.ast.setup.ContainsNodeForContext;
@@ -47,11 +47,11 @@ public class AstTest {
     DrgSyntaxTree<MaskedContext<String>> ast = parser.buildExpressionTree();
 
     List<String> mask = Collections.singletonList("E");
-    ExpressionResult<MaskedContext<String>> evaluation = ast.evaluateExpression(
+    ExpressionResult<MaskedContext<String>, Boolean> evaluation = ast.evaluateExpression(
         new TestContext<>(mask));
     MaskedContext<String> context = evaluation.getContext();
 
-    assertThat(evaluation.isMatched(), is(true));
+    assertThat(evaluation.getResult(), is(true));
     assertThat(context.getMatches().toArray(),
         Matchers.arrayContaining(new Object[] {"luck", "E"}));
   }
@@ -64,10 +64,10 @@ public class AstTest {
         new StringOperandSupplier(), Collections.emptyMap());
 
     DrgSyntaxTree<MaskedContext<String>> ast = parser.buildExpressionTree();
-    ExpressionResult<MaskedContext<String>> evaluation = ast.evaluateExpression(
+    ExpressionResult<MaskedContext<String>, Boolean> evaluation = ast.evaluateExpression(
         new TestContext<>(Collections.singletonList("A")));
 
-    assertThat(evaluation.isMatched(), is(false));
+    assertThat(evaluation.getResult(), is(false));
   }
 
   @Test
@@ -79,11 +79,11 @@ public class AstTest {
 
     DrgSyntaxTree<MaskedContext<String>> ast = parser.buildExpressionTree();
     List<String> mask = Arrays.asList("B", "C", "F", "G");
-    ExpressionResult<MaskedContext<String>> evaluation = ast
+    ExpressionResult<MaskedContext<String>, Boolean> evaluation = ast
         .evaluateExpression(new TestContext<>(mask));
 
     MaskedContext<String> context = evaluation.getContext();
-    assertThat(evaluation.isMatched(), is(true));
+    assertThat(evaluation.getResult(), is(true));
     assertThat(context.getMatches().toArray(),
         Matchers.arrayContaining(mask.toArray()));
   }
@@ -96,10 +96,10 @@ public class AstTest {
         new StringOperandSupplier(), Collections.emptyMap());
 
     DrgSyntaxTree<MaskedContext<String>> ast = parser.buildExpressionTree();
-    ExpressionResult<MaskedContext<String>> evaluation = ast.evaluateExpression(
+    ExpressionResult<MaskedContext<String>, Boolean> evaluation = ast.evaluateExpression(
         new TestContext<>(Arrays.asList("B", "C", "G")));
 
-    assertThat(evaluation.isMatched(), is(false));
+    assertThat(evaluation.getResult(), is(false));
   }
 
   @Test
@@ -110,11 +110,11 @@ public class AstTest {
 
     DrgSyntaxTree<MaskedContext<String>> ast = parser.buildExpressionTree();
     List<String> mask = Arrays.asList("G", "F", "C", "B");
-    ExpressionResult<MaskedContext<String>> evaluation = ast
+    ExpressionResult<MaskedContext<String>, Boolean> evaluation = ast
         .evaluateExpression(new TestContext<>(mask));
     MaskedContext<String> context = evaluation.getContext();
 
-    assertThat(evaluation.isMatched(), is(true));
+    assertThat(evaluation.getResult(), is(true));
     assertThat(context.getMatches().toArray(),
         Matchers.arrayContaining(new Object[] {"B", "C", "F", "G"}));
   }
@@ -128,11 +128,11 @@ public class AstTest {
 
     DrgSyntaxTree<MaskedContext<String>> ast = parser.buildExpressionTree();
     List<String> mask = Collections.singletonList("A");
-    ExpressionResult<MaskedContext<String>> evaluation = ast.evaluateExpression(
+    ExpressionResult<MaskedContext<String>, Boolean> evaluation = ast.evaluateExpression(
         new TestContext<>(mask));
     MaskedContext<String> context = evaluation.getContext();
 
-    assertThat(evaluation.isMatched(), is(true));
+    assertThat(evaluation.getResult(), is(true));
     assertThat(context.getMatches().toArray(),
         Matchers.arrayContaining(mask.toArray()));
   }
@@ -146,11 +146,11 @@ public class AstTest {
 
     DrgSyntaxTree<MaskedContext<String>> ast = parser.buildExpressionTree();
     List<String> mask = Arrays.asList("D", "G", "H");
-    ExpressionResult<MaskedContext<String>> evaluation = ast.evaluateExpression(
+    ExpressionResult<MaskedContext<String>, Boolean> evaluation = ast.evaluateExpression(
         new TestContext<>(mask));
     MaskedContext<String> context = evaluation.getContext();
 
-    assertThat(evaluation.isMatched(), is(true));
+    assertThat(evaluation.getResult(), is(true));
     assertThat(context.getMatches().toArray(),
         Matchers.arrayContaining(mask.toArray()));
   }
@@ -163,10 +163,10 @@ public class AstTest {
         new StringOperandSupplier(), Collections.emptyMap());
 
     DrgSyntaxTree<MaskedContext<String>> ast = parser.buildExpressionTree();
-    ExpressionResult<MaskedContext<String>> evaluation = ast.evaluateExpression(
+    ExpressionResult<MaskedContext<String>, Boolean> evaluation = ast.evaluateExpression(
         new TestContext<>(Arrays.asList("D", "H")));
 
-    assertThat(evaluation.isMatched(), is(false));
+    assertThat(evaluation.getResult(), is(false));
   }
 
   @Test
@@ -178,11 +178,11 @@ public class AstTest {
 
     DrgSyntaxTree<MaskedContext<String>> ast = parser.buildExpressionTree();
     List<String> mask = Collections.singletonList("A");
-    ExpressionResult<MaskedContext<String>> evaluation = ast.evaluateExpression(
+    ExpressionResult<MaskedContext<String>, Boolean> evaluation = ast.evaluateExpression(
         new TestContext<>(mask));
     MaskedContext<String> context = evaluation.getContext();
 
-    assertThat(evaluation.isMatched(), is(true));
+    assertThat(evaluation.getResult(), is(true));
     assertThat(context.getMatches().toArray(),
         Matchers.arrayContaining(mask.toArray()));
   }
@@ -196,10 +196,10 @@ public class AstTest {
 
     DrgSyntaxTree<MaskedContext<String>> ast = parser.buildExpressionTree();
     List<String> mask = Collections.singletonList("B");
-    ExpressionResult<MaskedContext<String>> evaluation = ast.evaluateExpression(
+    ExpressionResult<MaskedContext<String>, Boolean> evaluation = ast.evaluateExpression(
         new TestContext<>(mask));
 
-    assertThat(evaluation.isMatched(), is(false));
+    assertThat(evaluation.getResult(), is(false));
   }
 
   @Test
@@ -211,10 +211,10 @@ public class AstTest {
 
     DrgSyntaxTree<MaskedContext<String>> ast = parser.buildExpressionTree();
     List<String> mask = Collections.singletonList("G");
-    ExpressionResult<MaskedContext<String>> evaluation = ast.evaluateExpression(
+    ExpressionResult<MaskedContext<String>, Boolean> evaluation = ast.evaluateExpression(
         new TestContext<>(mask));
     MaskedContext<String> context = evaluation.getContext();
-    assertThat(evaluation.isMatched(), is(true));
+    assertThat(evaluation.getResult(), is(true));
 
     // empty matches means that we satisfied the ~B part of the formula.
     assertThat(context.getMatches().isEmpty(), is(true));
@@ -230,11 +230,11 @@ public class AstTest {
     DrgSyntaxTree<MaskedContext<CustomTestOperand>> ast = parser.buildExpressionTree();
     List<CustomTestOperand> mask = Collections
         .singletonList(new CustomTestOperand("A", "NOT_NEEDED"));
-    ExpressionResult<MaskedContext<CustomTestOperand>> evaluation = ast.evaluateExpression(
+    ExpressionResult<MaskedContext<CustomTestOperand>, Boolean> evaluation = ast.evaluateExpression(
         new TestContext<>(mask));
 
     MaskedContext<CustomTestOperand> context = evaluation.getContext();
-    assertThat(evaluation.isMatched(), is(true));
+    assertThat(evaluation.getResult(), is(true));
     assertThat(context.getMatches().toArray(),
         Matchers.arrayContaining(mask.toArray()));
   }
@@ -246,11 +246,11 @@ public class AstTest {
         lexerTokens.listIterator(),
         new CustomOperandSupplier(), customOperandSuppliers);
     DrgSyntaxTree<MaskedContext<CustomTestOperand>> ast = parser.buildExpressionTree();
-    ExpressionResult<MaskedContext<CustomTestOperand>> evaluation = ast
+    ExpressionResult<MaskedContext<CustomTestOperand>, Boolean> evaluation = ast
         .evaluateExpression(
             new TestContext<>(Collections.singletonList(new CustomTestOperand("A", "NOT_NEEDED"))));
 
-    assertThat(evaluation.isMatched(), is(false));
+    assertThat(evaluation.getResult(), is(false));
   }
 
   @Test
@@ -266,19 +266,19 @@ public class AstTest {
     DrgSyntaxTree<MaskedContext<String>> ast2 = parser.buildExpressionTree();
 
     List<String> mask = Collections.singletonList("A");
-    ExpressionResult<MaskedContext<String>> evaluation = ast.evaluateExpression(
+    ExpressionResult<MaskedContext<String>, Boolean> evaluation = ast.evaluateExpression(
         new TestContext<>(mask));
     MaskedContext<String> context = evaluation.getContext();
 
-    assertThat(evaluation.isMatched(), is(true));
+    assertThat(evaluation.getResult(), is(true));
     assertThat(context.getMatches().toArray(),
         Matchers.arrayContaining(mask.toArray()));
 
     List<String> mask2 = Arrays.asList("B", "C");
-    ExpressionResult<MaskedContext<String>> evaluation2 = ast2.evaluateExpression(
+    ExpressionResult<MaskedContext<String>, Boolean> evaluation2 = ast2.evaluateExpression(
         new TestContext<>(mask2));
     context = evaluation2.getContext();
-    assertThat(evaluation2.isMatched(), is(true));
+    assertThat(evaluation2.getResult(), is(true));
     assertThat(context.getMatches().toArray(),
         Matchers.arrayContaining(mask2.toArray()));
   }
@@ -290,10 +290,10 @@ public class AstTest {
         new StringOperandSupplier(), Collections.emptyMap());
     DrgSyntaxTree<MaskedContext<String>> ast = parser.buildExpressionTree();
     List<String> mask = Collections.singletonList("A");
-    ExpressionResult<MaskedContext<String>> evaluation = ast.evaluateExpression(
+    ExpressionResult<MaskedContext<String>, Boolean> evaluation = ast.evaluateExpression(
         new TestContext<>(mask));
     MaskedContext<String> context = evaluation.getContext();
-    assertThat(evaluation.isMatched(), is(true));
+    assertThat(evaluation.getResult(), is(true));
     assertThat(context.getMatches().toArray(),
         Matchers.arrayContaining(mask.toArray()));
   }
@@ -307,10 +307,10 @@ public class AstTest {
 
     DrgSyntaxTree<MaskedContext<String>> ast = parser.buildExpressionTree();
     List<String> mask = Arrays.asList("A", "C", "B");
-    ExpressionResult<MaskedContext<String>> evaluation = ast.evaluateExpression(
+    ExpressionResult<MaskedContext<String>, Boolean> evaluation = ast.evaluateExpression(
         new TestContext<>(mask));
     MaskedContext<String> context = evaluation.getContext();
-    assertThat(evaluation.isMatched(), is(true));
+    assertThat(evaluation.getResult(), is(true));
     assertThat(context.getMatches().size(), is(2));
     assertThat(context.getMatches().toArray(),
         Matchers.arrayContaining(new Object[] {"A", "C"}));
@@ -335,10 +335,10 @@ public class AstTest {
 
     DrgSyntaxTree<MaskedContext<String>> ast1 = parser1.buildExpressionTree();
 
-    ExpressionResult<MaskedContext<String>> evaluation1 = ast1.evaluateExpression(
+    ExpressionResult<MaskedContext<String>, Boolean> evaluation1 = ast1.evaluateExpression(
         new TestContext<>(mask));
 
-    assertThat(evaluation1.isMatched(), is(false));
+    assertThat(evaluation1.getResult(), is(false));
 
     // This second formula will pass the evaluation with the mask.
     List<DrgLexerToken> lexerTokens2 = DrgFormulaLexer.lex("(A & B) | C");
@@ -347,10 +347,10 @@ public class AstTest {
 
     DrgSyntaxTree<MaskedContext<String>> ast2 = parser2.buildExpressionTree();
 
-    ExpressionResult<MaskedContext<String>> evaluation2 = ast2.evaluateExpression(
+    ExpressionResult<MaskedContext<String>, Boolean> evaluation2 = ast2.evaluateExpression(
         new TestContext<>(mask));
 
-    assertThat(evaluation2.isMatched(), is(true));
+    assertThat(evaluation2.getResult(), is(true));
 
     // This third formula will pass the evaluation with the mask. Since it is all on the same level
     // it will be evaluated from left to right. A & B will be grouped as the LEFT side of the OR
@@ -361,10 +361,10 @@ public class AstTest {
 
     DrgSyntaxTree<MaskedContext<String>> ast3 = parser3.buildExpressionTree();
 
-    ExpressionResult<MaskedContext<String>> evaluation3 = ast3.evaluateExpression(
+    ExpressionResult<MaskedContext<String>, Boolean> evaluation3 = ast3.evaluateExpression(
         new TestContext<>(mask));
 
-    assertThat(evaluation3.isMatched(), is(true));
+    assertThat(evaluation3.getResult(), is(true));
   }
 
   /**
@@ -384,10 +384,10 @@ public class AstTest {
 
     DrgSyntaxTree<MaskedContext<String>> ast = parser.buildExpressionTree();
     List<String> mask = Arrays.asList("A", "C");
-    ExpressionResult<MaskedContext<String>> evaluation = ast.evaluateExpression(
+    ExpressionResult<MaskedContext<String>, Boolean> evaluation = ast.evaluateExpression(
         new TestContext<>(mask));
 
-    assertThat(evaluation.isMatched(), is(true));
+    assertThat(evaluation.getResult(), is(true));
   }
 
 
@@ -425,7 +425,7 @@ public class AstTest {
   }
 
   public static class StringOperandSupplier implements
-      NodeSupplier<DrgLexerToken, MaskedContext<String>> {
+  NodeSupplier<DrgLexerToken, MaskedContext<String>> {
 
     @Override
     public BooleanExpression<MaskedContext<String>> createNode(DrgLexerToken token) {
@@ -434,7 +434,7 @@ public class AstTest {
   }
 
   private static class CustomOperandSupplier implements
-      NodeSupplier<DrgLexerToken, MaskedContext<CustomTestOperand>> {
+  NodeSupplier<DrgLexerToken, MaskedContext<CustomTestOperand>> {
 
     @Override
     public BooleanExpression<MaskedContext<CustomTestOperand>> createNode(
@@ -445,7 +445,7 @@ public class AstTest {
   }
 
   private static class MsdrgGrouperFunctionSupplier implements
-      NodeSupplier<DrgLexerToken, MaskedContext<String>> {
+  NodeSupplier<DrgLexerToken, MaskedContext<String>> {
 
     private final List<String> otherInformation;
 
@@ -469,7 +469,7 @@ public class AstTest {
     }
 
     @Override
-    public boolean evaluate(MaskedContext<String> context) {
+    public Boolean evaluate(MaskedContext<String> context) {
       if (otherInformation.contains("luck")) {
         context.accumulate("luck");
         return true;
