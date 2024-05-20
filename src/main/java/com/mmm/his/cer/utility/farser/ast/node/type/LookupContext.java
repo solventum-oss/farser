@@ -12,7 +12,7 @@ public interface LookupContext<T> {
   /**
    * Fetch data from a source.
    *
-   * @param key the key of the daya.
+   * @param key the key of the data.
    * @return a list of data.
    */
   List<T> lookupData(String key);

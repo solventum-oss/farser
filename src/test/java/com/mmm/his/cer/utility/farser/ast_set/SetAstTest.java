@@ -4,6 +4,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import com.mmm.his.cer.utility.farser.ast.AbstractSyntaxTree;
+import com.mmm.his.cer.utility.farser.ast.AbstractSyntaxTreePrinter;
 import com.mmm.his.cer.utility.farser.ast.node.supplier.SetTheoryNodeSupplier;
 import com.mmm.his.cer.utility.farser.ast.node.type.LookupContext;
 import com.mmm.his.cer.utility.farser.ast.parser.AstDescentParser;
@@ -25,7 +26,7 @@ import org.junit.Test;
 public class SetAstTest {
 
   TestContext context = new TestContext();
-  SetTheoryNodeSupplier nodeSupplier = new SetTheoryNodeSupplier();
+  SetTheoryNodeSupplier<String> nodeSupplier = new SetTheoryNodeSupplier<>();
   SetFormulaTokenFactory factory = new SetFormulaTokenFactory();
 
   @Test
@@ -91,7 +92,7 @@ public class SetAstTest {
         new AstDescentParser<>(tokens.iterator(), nodeSupplier);
 
     AbstractSyntaxTree<LookupContext<String>, List<String>> ast = parser.buildTree();
-
+    System.out.println(AbstractSyntaxTreePrinter.printTree(ast));
     return ast.evaluateExpression(context);
   }
 
