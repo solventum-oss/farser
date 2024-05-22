@@ -3,7 +3,6 @@ package com.mmm.his.cer.utility.farser.lexer;
 import com.mmm.his.cer.utility.farser.CommonTokenFlag;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +21,7 @@ public class TokenTypeLookup {
   private static final Map<Class<?>, Map<String, TokenType<?>>> valueLookupMap = new HashMap<>();
 
   private static final Map<Class<TokenType<?>>, //
-      Map<CommonTokenType, TokenType<?>>> commonTypeLookupMap = new HashMap<>();
+      Map<CommonTokenFlag, TokenType<?>>> commonTypeLookupMap = new HashMap<>();
 
   private static final Map<Class<TokenType<?>>, Pattern> patternLookupMap = new HashMap<>();
 
@@ -116,7 +115,7 @@ public class TokenTypeLookup {
    *                                  {@link CommonTokenType}s or if mandatory
    *                                  {@link CommonTokenType} do not exist.
    */
-  protected static <T extends TokenType<?>> Map<CommonTokenType, T> getCommonTypeLookupMap(
+  protected static <T extends TokenType<?>> Map<CommonTokenFlag, T> getCommonTypeLookupMap(
       Class<T> enumClass) {
 
     if (!enumClass.isEnum()) {
@@ -127,21 +126,21 @@ public class TokenTypeLookup {
     if (commonTypeLookupMap.containsKey(enumClass)) {
       // Safe to suppress. Map is created in this method for the given enum class.
       @SuppressWarnings("unchecked")
-      Map<CommonTokenType, T> lookupMap =
-          (Map<CommonTokenType, T>) commonTypeLookupMap.get(enumClass);
+      Map<CommonTokenFlag, T> lookupMap =
+          (Map<CommonTokenFlag, T>) commonTypeLookupMap.get(enumClass);
       return lookupMap;
     }
 
     // Build lookup map
-    Map<CommonTokenType, T> lookupMap = buildCommonTypeLookupMap(enumClass);
+    Map<CommonTokenFlag, T> lookupMap = buildCommonTypeLookupMap(enumClass);
 
     // Check that all mandatory common types are used
     validateCommonTypeLookupMap(enumClass, lookupMap);
 
     // Save to cast. Lookup happens above.
     @SuppressWarnings("unchecked")
-    Map<CommonTokenType, TokenType<?>> lookupMapTmp =
-        (Map<CommonTokenType, TokenType<?>>) lookupMap;
+    Map<CommonTokenFlag, TokenType<?>> lookupMapTmp =
+        (Map<CommonTokenFlag, TokenType<?>>) lookupMap;
 
     // Save to cast. Lookup happens above.
     @SuppressWarnings("unchecked")
@@ -158,14 +157,14 @@ public class TokenTypeLookup {
    * @param enumClass The {@link TokenType} enumeration class
    * @return The map with the values and tokens of the given enumeration class
    */
-  private static <T extends TokenType<?>> Map<CommonTokenType, T> buildCommonTypeLookupMap(
+  private static <T extends TokenType<?>> Map<CommonTokenFlag, T> buildCommonTypeLookupMap(
       Class<T> enumClass) {
     // Build lookup map
-    Map<CommonTokenType, T> lookupMap = new EnumMap<>(CommonTokenType.class);
+    Map<CommonTokenFlag, T> lookupMap = new HashMap<>();
     for (T enumConst : enumClass.getEnumConstants()) {
       Optional<CommonTokenFlag> commonType = enumConst.getCommonTokenType();
-      if (commonType.isPresent() && commonType.get() instanceof CommonTokenType) {
-        CommonTokenType key = (CommonTokenType) commonType.get();
+      if (commonType.isPresent()) {
+        CommonTokenFlag key =  commonType.get();
         if (lookupMap.containsKey(key)) {
           throw new FarserException(
               "Duplicate keys are not allowed. Key '"
@@ -193,7 +192,7 @@ public class TokenTypeLookup {
    *                         common token types missing etc.
    */
   private static <T extends TokenType<?>> void validateCommonTypeLookupMap(Class<T> enumClass,
-      Map<CommonTokenType, T> lookupMap) {
+      Map<CommonTokenFlag, T> lookupMap) {
 
     // Check that all mandatory common types exist
     for (CommonTokenType commonType : CommonTokenType.values()) {

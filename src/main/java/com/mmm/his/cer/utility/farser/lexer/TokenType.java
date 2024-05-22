@@ -63,7 +63,7 @@ public interface TokenType<T extends Enum<T>> {
    * A simple equals-check against a {@link CommonTokenFlag} (if there is one set for this token).
    *
    * @param commonTokenType The common token type to check against. May be <code>null</code>.
-   * @return Whether or not the common types are equal
+   * @return Whether the common types are equal
    */
   default boolean isEqual(CommonTokenFlag commonTokenType) {
     return getCommonTokenType().orElse(null) == commonTokenType;
@@ -78,10 +78,10 @@ public interface TokenType<T extends Enum<T>> {
    * @throws IllegalArgumentException If the token type class is not an enumeration
    */
   static <T extends TokenType<?>> Optional<T> getForCommonType(Class<T> tokenTypeClass,
-      CommonTokenType commonType) {
+      CommonTokenFlag commonType) {
 
     // Build lookup map or retrieve cached lookup map
-    Map<CommonTokenType, T> lookup = TokenTypeLookup.getCommonTypeLookupMap(tokenTypeClass);
+    Map<CommonTokenFlag, T> lookup = TokenTypeLookup.getCommonTypeLookupMap(tokenTypeClass);
 
     if (!lookup.containsKey(commonType)) {
       return Optional.empty();
