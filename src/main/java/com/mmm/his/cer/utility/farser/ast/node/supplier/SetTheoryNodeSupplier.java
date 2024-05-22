@@ -14,18 +14,19 @@ import com.mmm.his.cer.utility.farser.lexer.set.SetTheoryToken;
  * Set theory node supplier. Contains the knowledge to create terminal and non-terminal nodes for
  * Set theory evaluation.
  *
+ * @param <T> The type that is returned from the LookupContext implementation
  * @author Mike Funaro
  */
-public class SetTheoryNodeSupplier implements NodeSupplier<SetTheoryToken, LookupContext<String>> {
+public class SetTheoryNodeSupplier<T> implements NodeSupplier<SetTheoryToken, LookupContext<T>> {
 
 
   @Override
-  public Expression<LookupContext<String>, ?> createNode(SetTheoryToken token) {
+  public Expression<LookupContext<T>, ?> createNode(SetTheoryToken token) {
     return new DataLookupNode<>(token.value);
   }
 
   @Override
-  public NonTerminal<LookupContext<String>, ?> createNonTerminalNode(SetTheoryToken token) {
+  public NonTerminal<LookupContext<T>, ?> createNonTerminalNode(SetTheoryToken token) {
     switch (token.type) {
       case DIFFERENCE:
         return new DifferenceOperator<>();
