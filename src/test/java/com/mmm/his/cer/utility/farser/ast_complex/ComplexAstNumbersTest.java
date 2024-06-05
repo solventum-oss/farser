@@ -1,5 +1,9 @@
 package com.mmm.his.cer.utility.farser.ast_complex;
 
+import com.mmm.his.cer.utility.farser.ast.parser.ExpressionResult;
+import com.mmm.his.cer.utility.farser.ast_complex.setup.ast.numbers.ComplexTestAstNumbersNodeSupplier;
+import java.util.HashMap;
+import java.util.Map;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -9,29 +13,28 @@ import com.mmm.his.cer.utility.farser.ast.PrintingTest;
 import com.mmm.his.cer.utility.farser.ast.node.supplier.NodeSupplier;
 import com.mmm.his.cer.utility.farser.ast.parser.AstDescentParser;
 import com.mmm.his.cer.utility.farser.ast_complex.setup.ComplexTestTokenType;
-import com.mmm.his.cer.utility.farser.ast_complex.setup.ast.ComplexTestAstContext;
-import com.mmm.his.cer.utility.farser.ast_complex.setup.ast.ComplexTestAstNodeSupplier;
+import com.mmm.his.cer.utility.farser.ast_complex.setup.ast.numbers.ComplexTestAstNumbersContext;
 import com.mmm.his.cer.utility.farser.ast_complex.setup.lex.ComplexTestToken;
 import com.mmm.his.cer.utility.farser.ast_complex.setup.lex.ComplexTestTokenFactory;
 import com.mmm.his.cer.utility.farser.lexer.Lexer;
 import java.util.List;
 import org.junit.Test;
 
-public class ComplexFormulaAstTest {
+public class ComplexAstNumbersTest {
 
   private static final ComplexTestTokenFactory factory = new ComplexTestTokenFactory();
-  private static final NodeSupplier<ComplexTestToken, ComplexTestAstContext> defaultNodeSupplier =
-      new ComplexTestAstNodeSupplier();
+  private static final NodeSupplier<ComplexTestToken, ComplexTestAstNumbersContext> defaultNodeSupplier =
+      new ComplexTestAstNumbersNodeSupplier();
 
 
   @Test
-  public void simpleTwoExpressionsGreaterThanAnd() throws Exception {
+  public void printSimpleTwoExpressionsGreaterThanAnd() throws Exception {
     String input = "A > 5 & B = 2";
     List<ComplexTestToken> tokens = Lexer.lex(ComplexTestTokenType.class, input, factory);
 
-    AstDescentParser<ComplexTestToken, ComplexTestTokenType, ComplexTestAstContext, Boolean> parser =
+    AstDescentParser<ComplexTestToken, ComplexTestTokenType, ComplexTestAstNumbersContext, Boolean> parser =
         new AstDescentParser<>(tokens.iterator(), defaultNodeSupplier);
-    AbstractSyntaxTree<ComplexTestAstContext, Boolean> ast = parser.buildTree();
+    AbstractSyntaxTree<ComplexTestAstNumbersContext, Boolean> ast = parser.buildTree();
 
     String printed = AbstractSyntaxTreePrinter.printTree(ast);
     String[] lines = printed.split(System.lineSeparator());
@@ -50,13 +53,13 @@ public class ComplexFormulaAstTest {
   }
 
   @Test
-  public void simpleTwoExpressionsGreaterLessThanAndOr() throws Exception {
+  public void printSimpleTwoExpressionsGreaterLessThanAndOr() throws Exception {
     String input = "A = 1 & B > 5 | C < 2";
     List<ComplexTestToken> tokens = Lexer.lex(ComplexTestTokenType.class, input, factory);
 
-    AstDescentParser<ComplexTestToken, ComplexTestTokenType, ComplexTestAstContext, Boolean> parser =
+    AstDescentParser<ComplexTestToken, ComplexTestTokenType, ComplexTestAstNumbersContext, Boolean> parser =
         new AstDescentParser<>(tokens.iterator(), defaultNodeSupplier);
-    AbstractSyntaxTree<ComplexTestAstContext, Boolean> ast = parser.buildTree();
+    AbstractSyntaxTree<ComplexTestAstNumbersContext, Boolean> ast = parser.buildTree();
 
     String printed = AbstractSyntaxTreePrinter.printTree(ast);
     String[] lines = printed.split(System.lineSeparator());
@@ -79,13 +82,13 @@ public class ComplexFormulaAstTest {
   }
 
   @Test
-  public void simpleTwoExpressionsGreaterLessThanAndOr_andOrOrderSwapped() throws Exception {
+  public void printSimpleTwoExpressionsGreaterLessThanAndOr_andOrOrderSwapped() throws Exception {
     String input = "A = 1 | B > 5 & C < 2";
     List<ComplexTestToken> tokens = Lexer.lex(ComplexTestTokenType.class, input, factory);
 
-    AstDescentParser<ComplexTestToken, ComplexTestTokenType, ComplexTestAstContext, Boolean> parser =
+    AstDescentParser<ComplexTestToken, ComplexTestTokenType, ComplexTestAstNumbersContext, Boolean> parser =
         new AstDescentParser<>(tokens.iterator(), defaultNodeSupplier);
-    AbstractSyntaxTree<ComplexTestAstContext, Boolean> ast = parser.buildTree();
+    AbstractSyntaxTree<ComplexTestAstNumbersContext, Boolean> ast = parser.buildTree();
 
     String printed = AbstractSyntaxTreePrinter.printTree(ast);
     String[] lines = printed.split(System.lineSeparator());
@@ -108,7 +111,7 @@ public class ComplexFormulaAstTest {
   }
 
   @Test
-  public void testMultipleOperatorsWithSamePrecedence() throws Exception {
+  public void printMultipleOperatorsWithSamePrecedence() throws Exception {
 
     // Do two greather-than signs following each other make sense? Not necessarily - different
     // programming languages seem to handle such a case differently (some allow it and it means "3 >
@@ -117,10 +120,10 @@ public class ComplexFormulaAstTest {
     // part.
     List<ComplexTestToken> lexerTokens =
         Lexer.lex(ComplexTestTokenType.class, "3 > 2 > 1", factory);
-    AstDescentParser<ComplexTestToken, ComplexTestTokenType, ComplexTestAstContext, Boolean> parser = new AstDescentParser<>(
+    AstDescentParser<ComplexTestToken, ComplexTestTokenType, ComplexTestAstNumbersContext, Boolean> parser = new AstDescentParser<>(
         lexerTokens.listIterator(), defaultNodeSupplier);
 
-    AbstractSyntaxTree<ComplexTestAstContext, Boolean> ast = parser.buildTree();
+    AbstractSyntaxTree<ComplexTestAstNumbersContext, Boolean> ast = parser.buildTree();
 
     String printed = AbstractSyntaxTreePrinter.printTree(ast);
     String[] lines = printed.split(System.lineSeparator());
@@ -137,17 +140,17 @@ public class ComplexFormulaAstTest {
   }
 
   @Test
-  public void testMultipleOperatorsWithSamePrecedencePlusBoolean() throws Exception {
+  public void printMultipleOperatorsWithSamePrecedencePlusBoolean() throws Exception {
 
     // Two ">" operators which have the same precedence, connected with "AND". Should properly
     // build the AST left-to-right.
     List<ComplexTestToken> lexerTokens =
         Lexer.lex(ComplexTestTokenType.class, "3 > 2 & 2 > 1", factory);
-    AstDescentParser<ComplexTestToken, ComplexTestTokenType, ComplexTestAstContext, Boolean> parser =
+    AstDescentParser<ComplexTestToken, ComplexTestTokenType, ComplexTestAstNumbersContext, Boolean> parser =
         new AstDescentParser<>(
             lexerTokens.listIterator(), defaultNodeSupplier);
 
-    AbstractSyntaxTree<ComplexTestAstContext, Boolean> ast = parser.buildTree();
+    AbstractSyntaxTree<ComplexTestAstNumbersContext, Boolean> ast = parser.buildTree();
 
     String printed = AbstractSyntaxTreePrinter.printTree(ast);
     String[] lines = printed.split(System.lineSeparator());
@@ -166,14 +169,14 @@ public class ComplexFormulaAstTest {
   }
 
   @Test
-  public void testSimplestFormula_reversedOperandPrecedence() throws Exception {
+  public void printSimplestFormula_reversedOperandPrecedence() throws Exception {
 
     // OR is first in the formula, but should have a "weaker bond" than the AND
     List<ComplexTestToken> lexerTokens = Lexer.lex(ComplexTestTokenType.class, "A | B & C", factory);
-    AstDescentParser<ComplexTestToken, ComplexTestTokenType, ComplexTestAstContext, Boolean> parser = new AstDescentParser<>(
+    AstDescentParser<ComplexTestToken, ComplexTestTokenType, ComplexTestAstNumbersContext, Boolean> parser = new AstDescentParser<>(
         lexerTokens.listIterator(), defaultNodeSupplier);
 
-    AbstractSyntaxTree<ComplexTestAstContext, Boolean> ast = parser.buildTree();
+    AbstractSyntaxTree<ComplexTestAstNumbersContext, Boolean> ast = parser.buildTree();
 
     String printed = AbstractSyntaxTreePrinter.printTree(ast, PrintingTest::printNode);
     String[] lines = printed.split(System.lineSeparator());
@@ -190,14 +193,14 @@ public class ComplexFormulaAstTest {
   }
 
   @Test
-  public void testSimplestFormula_leftToRightOperandPrecedence() throws Exception {
+  public void printSimplestFormula_leftToRightOperandPrecedence() throws Exception {
 
     // The "stronger" AND operand appears first, then the "weaker" OR operand
     List<ComplexTestToken> lexerTokens = Lexer.lex(ComplexTestTokenType.class, "A & B | C", factory);
-    AstDescentParser<ComplexTestToken, ComplexTestTokenType, ComplexTestAstContext, Boolean> parser = new AstDescentParser<>(
+    AstDescentParser<ComplexTestToken, ComplexTestTokenType, ComplexTestAstNumbersContext, Boolean> parser = new AstDescentParser<>(
         lexerTokens.listIterator(), defaultNodeSupplier);
 
-    AbstractSyntaxTree<ComplexTestAstContext, Boolean> ast = parser.buildTree();
+    AbstractSyntaxTree<ComplexTestAstNumbersContext, Boolean> ast = parser.buildTree();
 
     String printed = AbstractSyntaxTreePrinter.printTree(ast, PrintingTest::printNode);
     String[] lines = printed.split(System.lineSeparator());
@@ -214,14 +217,14 @@ public class ComplexFormulaAstTest {
   }
 
   @Test
-  public void testPrintTreeWithPeek() throws Exception {
+  public void printTreeWithPeek() throws Exception {
 
     List<ComplexTestToken> lexerTokens =
         Lexer.lex(ComplexTestTokenType.class, "(A & B | C) & D | (E & F)", factory);
-    AstDescentParser<ComplexTestToken, ComplexTestTokenType, ComplexTestAstContext, Boolean> parser = new AstDescentParser<>(
+    AstDescentParser<ComplexTestToken, ComplexTestTokenType, ComplexTestAstNumbersContext, Boolean> parser = new AstDescentParser<>(
         lexerTokens.listIterator(), defaultNodeSupplier);
 
-    AbstractSyntaxTree<ComplexTestAstContext, Boolean> ast = parser.buildTree();
+    AbstractSyntaxTree<ComplexTestAstNumbersContext, Boolean> ast = parser.buildTree();
 
     String printed = AbstractSyntaxTreePrinter.printTree(ast, PrintingTest::printNodeWithPeek);
     String[] lines = printed.split(System.lineSeparator());
@@ -247,47 +250,79 @@ public class ComplexFormulaAstTest {
   }
 
   @Test
-  public void twoWordTokenWithOneWordAmbiguity() throws Exception {
-    // Token "IN TABLE" could also get recognized as "IN", but it should get resolved as "IN TABLE"
-    String input = "a IN TABLE abc";
+  public void evaluateSimpleTrueResult() {
+    String input = "A > 5 & B = 2";
     List<ComplexTestToken> tokens = Lexer.lex(ComplexTestTokenType.class, input, factory);
 
-    AstDescentParser<ComplexTestToken, ComplexTestTokenType, ComplexTestAstContext, Boolean> parser =
+    AstDescentParser<ComplexTestToken, ComplexTestTokenType, ComplexTestAstNumbersContext, Boolean> parser =
         new AstDescentParser<>(tokens.iterator(), defaultNodeSupplier);
-    AbstractSyntaxTree<ComplexTestAstContext, Boolean> ast = parser.buildTree();
+    AbstractSyntaxTree<ComplexTestAstNumbersContext, Boolean> ast = parser.buildTree();
 
-    String printed = AbstractSyntaxTreePrinter.printTree(ast);
-    String[] lines = printed.split(System.lineSeparator());
+    Map<String, Integer> runtimeData = new HashMap<>();
+    runtimeData.put("A", 6);
+    runtimeData.put("B", 2);
 
-    // System.out.println(printed);
-    assertThat(lines, is(new String[] {
-        "IN-TABLE",
-        "  a",
-        "  abc"
-    }));
+    ExpressionResult<ComplexTestAstNumbersContext, Boolean> result =
+        ast.evaluateExpression(new ComplexTestAstNumbersContext(runtimeData));
 
+    assertThat(result.getResult(), is(true));
   }
 
   @Test
-  public void singleWordTokenWithTwoWordAmbiguity() throws Exception {
-    // Token "IN" also exists as "IN TABLE", but it should get resolved as "IN"
-    String input = "a IN abc";
+  public void evaluateSimpleFalseResult() {
+    String input = "A > 5 & B = 2";
     List<ComplexTestToken> tokens = Lexer.lex(ComplexTestTokenType.class, input, factory);
 
-    AstDescentParser<ComplexTestToken, ComplexTestTokenType, ComplexTestAstContext, Boolean> parser =
+    AstDescentParser<ComplexTestToken, ComplexTestTokenType, ComplexTestAstNumbersContext, Boolean> parser =
         new AstDescentParser<>(tokens.iterator(), defaultNodeSupplier);
-    AbstractSyntaxTree<ComplexTestAstContext, Boolean> ast = parser.buildTree();
+    AbstractSyntaxTree<ComplexTestAstNumbersContext, Boolean> ast = parser.buildTree();
 
-    String printed = AbstractSyntaxTreePrinter.printTree(ast);
-    String[] lines = printed.split(System.lineSeparator());
+    Map<String, Integer> runtimeData = new HashMap<>();
+    runtimeData.put("A", 4);
+    runtimeData.put("B", 2);
 
-    // System.out.println(printed);
-    assertThat(lines, is(new String[] {
-        "IN",
-        "  a",
-        "  abc"
-    }));
+    ExpressionResult<ComplexTestAstNumbersContext, Boolean> result =
+        ast.evaluateExpression(new ComplexTestAstNumbersContext(runtimeData));
 
+    assertThat(result.getResult(), is(false));
+  }
+
+  @Test
+  public void evaluateComplexTrueResult() {
+    String input = "A > 5 & B = 2";
+    List<ComplexTestToken> tokens = Lexer.lex(ComplexTestTokenType.class, input, factory);
+
+    AstDescentParser<ComplexTestToken, ComplexTestTokenType, ComplexTestAstNumbersContext, Boolean> parser =
+        new AstDescentParser<>(tokens.iterator(), defaultNodeSupplier);
+    AbstractSyntaxTree<ComplexTestAstNumbersContext, Boolean> ast = parser.buildTree();
+
+    Map<String, Integer> runtimeData = new HashMap<>();
+    runtimeData.put("A", 6);
+    runtimeData.put("B", 2);
+
+    ExpressionResult<ComplexTestAstNumbersContext, Boolean> result =
+        ast.evaluateExpression(new ComplexTestAstNumbersContext(runtimeData));
+
+    assertThat(result.getResult(), is(true));
+  }
+
+  @Test
+  public void evaluateComplexFalseResult() {
+    String input = "A > 5 & B = 2";
+    List<ComplexTestToken> tokens = Lexer.lex(ComplexTestTokenType.class, input, factory);
+
+    AstDescentParser<ComplexTestToken, ComplexTestTokenType, ComplexTestAstNumbersContext, Boolean> parser =
+        new AstDescentParser<>(tokens.iterator(), defaultNodeSupplier);
+    AbstractSyntaxTree<ComplexTestAstNumbersContext, Boolean> ast = parser.buildTree();
+
+    Map<String, Integer> runtimeData = new HashMap<>();
+    runtimeData.put("A", 4);
+    runtimeData.put("B", 2);
+
+    ExpressionResult<ComplexTestAstNumbersContext, Boolean> result =
+        ast.evaluateExpression(new ComplexTestAstNumbersContext(runtimeData));
+
+    assertThat(result.getResult(), is(false));
   }
 
 }

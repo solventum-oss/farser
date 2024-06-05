@@ -1,5 +1,7 @@
 package com.mmm.his.cer.utility.farser.ast_complex;
 
+import com.mmm.his.cer.utility.farser.ast_complex.setup.ast.strings.ComplexTestAstStringsContext;
+import com.mmm.his.cer.utility.farser.ast_complex.setup.ast.strings.ComplexTestAstStringsNodeSupplier;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertThrows;
@@ -9,8 +11,6 @@ import com.mmm.his.cer.utility.farser.ast.AbstractSyntaxTreePrinter;
 import com.mmm.his.cer.utility.farser.ast.node.supplier.NodeSupplier;
 import com.mmm.his.cer.utility.farser.ast.parser.AstDescentParser;
 import com.mmm.his.cer.utility.farser.ast_complex.setup.ComplexTestTokenType;
-import com.mmm.his.cer.utility.farser.ast_complex.setup.ast.ComplexTestAstContext;
-import com.mmm.his.cer.utility.farser.ast_complex.setup.ast.ComplexTestAstNodeSupplier;
 import com.mmm.his.cer.utility.farser.ast_complex.setup.lex.ComplexTestToken;
 import com.mmm.his.cer.utility.farser.ast_complex.setup.lex.ComplexTestTokenFactory;
 import com.mmm.his.cer.utility.farser.lexer.FarserException;
@@ -29,8 +29,8 @@ import org.junit.Test;
 public class AstLimitationsTest {
 
   private static final ComplexTestTokenFactory factory = new ComplexTestTokenFactory();
-  private static final NodeSupplier<ComplexTestToken, ComplexTestAstContext> defaultNodeSupplier =
-      new ComplexTestAstNodeSupplier();
+  private static final NodeSupplier<ComplexTestToken, ComplexTestAstStringsContext> defaultNodeSupplier =
+      new ComplexTestAstStringsNodeSupplier();
 
 
   @Test
@@ -40,7 +40,7 @@ public class AstLimitationsTest {
     String input = "a IN TABLE > 5";
     List<ComplexTestToken> tokens = Lexer.lex(ComplexTestTokenType.class, input, factory);
 
-    AstDescentParser<ComplexTestToken, ComplexTestTokenType, ComplexTestAstContext, Boolean> parser =
+    AstDescentParser<ComplexTestToken, ComplexTestTokenType, ComplexTestAstStringsContext, Boolean> parser =
         new AstDescentParser<>(tokens.iterator(), defaultNodeSupplier);
 
     FarserException exc = assertThrows(FarserException.class, () -> parser.buildTree());
@@ -54,9 +54,9 @@ public class AstLimitationsTest {
     String input = "a IN(1, 2, 3)";
     List<ComplexTestToken> tokens = Lexer.lex(ComplexTestTokenType.class, input, factory);
 
-    AstDescentParser<ComplexTestToken, ComplexTestTokenType, ComplexTestAstContext, Boolean> parser =
+    AstDescentParser<ComplexTestToken, ComplexTestTokenType, ComplexTestAstStringsContext, Boolean> parser =
         new AstDescentParser<>(tokens.iterator(), defaultNodeSupplier);
-    AbstractSyntaxTree<ComplexTestAstContext, Boolean> ast = parser.buildTree();
+    AbstractSyntaxTree<ComplexTestAstStringsContext, Boolean> ast = parser.buildTree();
 
     String printed = AbstractSyntaxTreePrinter.printTree(ast);
     String[] lines = printed.split(System.lineSeparator());

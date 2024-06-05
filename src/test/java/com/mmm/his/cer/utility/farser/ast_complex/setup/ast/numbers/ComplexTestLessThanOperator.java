@@ -1,4 +1,4 @@
-package com.mmm.his.cer.utility.farser.ast_complex.setup.ast;
+package com.mmm.his.cer.utility.farser.ast_complex.setup.ast.numbers;
 
 import com.mmm.his.cer.utility.farser.ast.node.nonterminal.BooleanNonTerminal;
 

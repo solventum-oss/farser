@@ -1,4 +1,4 @@
-package com.mmm.his.cer.utility.farser.ast_complex.setup.ast;
+package com.mmm.his.cer.utility.farser.ast_complex.setup.ast.strings;
 
 import com.mmm.his.cer.utility.farser.ast.node.nonterminal.BooleanNonTerminal;
 
@@ -9,21 +9,21 @@ import com.mmm.his.cer.utility.farser.ast.node.nonterminal.BooleanNonTerminal;
  *
  * @param <C>
  */
-public class ComplexTestInTableOperator<C> extends BooleanNonTerminal<C, String> {
+public class ComplexTestInOperator<C> extends BooleanNonTerminal<C, String> {
 
   @Override
   public Boolean evaluate(C context) {
-    // Just some dummy "in table" evaluation
+    // Just some dummy "in" evaluation
     return right.evaluate(context).contains(left.evaluate(context));
   }
 
   @Override
   public String print() {
-    return "IN-TABLE";
+    return "IN";
   }
 
   @Override
   public String toString() {
-    return "InTable{" + "left=" + left + ", right=" + right + '}';
+    return "In{" + "left=" + left + ", right=" + right + '}';
   }
 }

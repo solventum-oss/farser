@@ -1,4 +1,4 @@
-package com.mmm.his.cer.utility.farser.ast_complex.setup.ast;
+package com.mmm.his.cer.utility.farser.ast_complex.setup.ast.numbers;
 
 import com.mmm.his.cer.utility.farser.ast.node.nonterminal.BaseNonTerminal;
 import com.mmm.his.cer.utility.farser.ast.node.operator.bool.And;
@@ -6,19 +6,35 @@ import com.mmm.his.cer.utility.farser.ast.node.operator.bool.Not;
 import com.mmm.his.cer.utility.farser.ast.node.operator.bool.Or;
 import com.mmm.his.cer.utility.farser.ast.node.supplier.NodeSupplier;
 import com.mmm.his.cer.utility.farser.ast.node.type.Expression;
+import com.mmm.his.cer.utility.farser.ast_complex.setup.ast.strings.ComplexTestInOperator;
+import com.mmm.his.cer.utility.farser.ast_complex.setup.ast.strings.ComplexTestInTableOperator;
 import com.mmm.his.cer.utility.farser.ast_complex.setup.lex.ComplexTestToken;
 import com.mmm.his.cer.utility.farser.lexer.FarserException;
 
-public class ComplexTestAstNodeSupplier implements NodeSupplier<ComplexTestToken, ComplexTestAstContext> {
+public class ComplexTestAstNumbersNodeSupplier implements NodeSupplier<ComplexTestToken, ComplexTestAstNumbersContext> {
+  
+  private boolean isInteger(String value) {
+    boolean result = true;
+    try {
+      Integer.parseInt(value);
+    }
+    catch(NumberFormatException exc) {
+      result = false;
+    }
+    return result;
+  }
 
   @Override
-  public Expression<ComplexTestAstContext, ?> createNode(final ComplexTestToken inToken) {
-    return new ComplexTestTerminalNode(inToken);
+  public Expression<ComplexTestAstNumbersContext, ?> createNode(final ComplexTestToken inToken) {
+    if (isInteger(inToken.value)) {
+      return new ComplexTestTerminalNumberNode(inToken);
+    }
+    return new ComplexTestTerminalLookupNode(inToken);
   }
 
 
   @Override
-  public BaseNonTerminal<ComplexTestAstContext, ?> createNonTerminalNode(ComplexTestToken token) {
+  public BaseNonTerminal<ComplexTestAstNumbersContext, ?> createNonTerminalNode(ComplexTestToken token) {
 
     switch (token.type) {
       case GT:
