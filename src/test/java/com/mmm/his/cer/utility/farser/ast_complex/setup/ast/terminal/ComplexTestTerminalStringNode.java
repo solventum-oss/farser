@@ -1,18 +1,19 @@
-package com.mmm.his.cer.utility.farser.ast_complex.setup.ast.strings;
+package com.mmm.his.cer.utility.farser.ast_complex.setup.ast.terminal;
 
 import com.mmm.his.cer.utility.farser.ast.node.type.Expression;
+import com.mmm.his.cer.utility.farser.ast_complex.setup.ast.ComplexTestAstContext;
 import com.mmm.his.cer.utility.farser.ast_complex.setup.lex.ComplexTestToken;
 
-public class ComplexTestTerminalValueNode implements Expression<ComplexTestAstStringsContext, String> {
+public class ComplexTestTerminalStringNode implements Expression<ComplexTestAstContext, String> {
 
   private final ComplexTestToken token;
 
-  public ComplexTestTerminalValueNode(ComplexTestToken token) {
+  public ComplexTestTerminalStringNode(ComplexTestToken token) {
     this.token = token;
   }
 
   @Override
-  public String evaluate(ComplexTestAstStringsContext context) {
+  public String evaluate(ComplexTestAstContext context) {
     return token.value;
   }
 

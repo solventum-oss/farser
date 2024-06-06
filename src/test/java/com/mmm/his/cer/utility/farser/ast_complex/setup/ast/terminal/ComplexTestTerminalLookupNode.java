@@ -1,6 +1,7 @@
-package com.mmm.his.cer.utility.farser.ast_complex.setup.ast.numbers;
+package com.mmm.his.cer.utility.farser.ast_complex.setup.ast.terminal;
 
 import com.mmm.his.cer.utility.farser.ast.node.type.Expression;
+import com.mmm.his.cer.utility.farser.ast_complex.setup.ast.ComplexTestAstContext;
 import com.mmm.his.cer.utility.farser.ast_complex.setup.lex.ComplexTestToken;
 
 /**
@@ -9,7 +10,7 @@ import com.mmm.his.cer.utility.farser.ast_complex.setup.lex.ComplexTestToken;
  * @author Thomas Naeff
  *
  */
-public class ComplexTestTerminalLookupNode implements Expression<ComplexTestAstNumbersContext, Integer> {
+public class ComplexTestTerminalLookupNode implements Expression<ComplexTestAstContext, Integer> {
 
   private final ComplexTestToken token;
 
@@ -18,8 +19,8 @@ public class ComplexTestTerminalLookupNode implements Expression<ComplexTestAstN
   }
 
   @Override
-  public Integer evaluate(ComplexTestAstNumbersContext context) {
-    return context.getIntMapping(token.value).orElse(null);
+  public Integer evaluate(ComplexTestAstContext context) {
+    return context.getIntegerMapping(token.value).orElse(null);
   }
 
   @Override
