@@ -37,7 +37,7 @@ public class ComplexTestAstNodeSupplier implements NodeSupplier<ComplexTestToken
     }
     int a = 'a';
     int position = (String.valueOf(value.charAt(0)).toLowerCase().codePointAt(0)) - a + 1;
-    return position >= 14;
+    return position >= 13;
   }
 
   @Override
