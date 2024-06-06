@@ -58,8 +58,7 @@ public class ComplexTestAstNodeSupplier implements NodeSupplier<ComplexTestToken
 
 
   @Override
-  public BaseNonTerminal<ComplexTestAstContext, ?> createNonTerminalNode(
-      ComplexTestToken token) {
+  public BaseNonTerminal<ComplexTestAstContext, ?> createNonTerminalNode(ComplexTestToken token) {
 
     switch (token.type) {
       case GT:
