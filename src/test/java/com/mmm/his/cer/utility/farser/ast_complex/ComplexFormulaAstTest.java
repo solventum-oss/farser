@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertThrows;
@@ -136,7 +137,41 @@ public class ComplexFormulaAstTest {
   }
 
   @Test
-  public void textDifferentLeftAndRightTypes() throws Exception {
+  public void evaluateMultipleOperatorsWithSamePrecedenceTrue() throws Exception {
+    List<ComplexTestToken> lexerTokens =
+        Lexer.lex(ComplexTestTokenType.class, "X & Y & Z", factory);
+    AstDescentParser<ComplexTestToken, ComplexTestTokenType, ComplexTestAstContext, Boolean> parser = new AstDescentParser<>(
+        lexerTokens.listIterator(), defaultNodeSupplier);
+
+    AbstractSyntaxTree<ComplexTestAstContext, Boolean> ast = parser.buildTree();
+
+    List<String> data = Arrays.asList("X", "Y", "Z");
+
+    ExpressionResult<ComplexTestAstContext, Boolean> result =
+        ast.evaluateExpression(new ComplexTestAstContext(data));
+
+    assertThat(result.getResult(), is(true));
+  }
+
+  @Test
+  public void evaluateMultipleOperatorsWithSamePrecedenceFalse() throws Exception {
+    List<ComplexTestToken> lexerTokens =
+        Lexer.lex(ComplexTestTokenType.class, "X & Y & Z", factory);
+    AstDescentParser<ComplexTestToken, ComplexTestTokenType, ComplexTestAstContext, Boolean> parser = new AstDescentParser<>(
+        lexerTokens.listIterator(), defaultNodeSupplier);
+
+    AbstractSyntaxTree<ComplexTestAstContext, Boolean> ast = parser.buildTree();
+
+    List<String> data = Arrays.asList("X", "Y", "W");
+
+    ExpressionResult<ComplexTestAstContext, Boolean> result =
+        ast.evaluateExpression(new ComplexTestAstContext(data));
+
+    assertThat(result.getResult(), is(false));
+  }
+
+  @Test
+  public void testPrintAndEvaluateDifferentLeftAndRightTypes() throws Exception {
     List<ComplexTestToken> lexerTokens =
         Lexer.lex(ComplexTestTokenType.class, "X > Y > Z", factory);
     AstDescentParser<ComplexTestToken, ComplexTestTokenType, ComplexTestAstContext, Boolean> parser = new AstDescentParser<>(
@@ -155,45 +190,28 @@ public class ComplexFormulaAstTest {
         "  Z"
     }));
 
-    // While this can parse, evaluation fails because the return types of the children on the left
-    // and right side are different. Errors like this are only caught at runtime.
+    // While this can parse and print, evaluation fails because the return types of the children 
+    // on the left and right side are different. Errors like this are only caught at runtime.
     ClassCastException exc = assertThrows(ClassCastException.class, () ->
         ast.evaluateExpression(new ComplexTestAstContext()));
-    assertThat(exc.getMessage(), is("java.lang.Boolean cannot be cast to java.lang.Integer"));
+    assertThat(exc.getMessage(), containsString("java.lang.Boolean cannot be cast to class java.lang.Integer"));
   }
 
   @Test
-  public void evaluateMultipleOperatorsWithSamePrecedence_True() throws Exception {
+  public void testSneakyDifferentLeftAndRightTypes() throws Exception {
     List<ComplexTestToken> lexerTokens =
-        Lexer.lex(ComplexTestTokenType.class, "X & Y & Z", factory);
+        Lexer.lex(ComplexTestTokenType.class, "x & Y & Z", factory);
     AstDescentParser<ComplexTestToken, ComplexTestTokenType, ComplexTestAstContext, Boolean> parser = new AstDescentParser<>(
         lexerTokens.listIterator(), defaultNodeSupplier);
 
     AbstractSyntaxTree<ComplexTestAstContext, Boolean> ast = parser.buildTree();
 
-    List<String> data = Arrays.asList("X", "Y", "Z");
+    List<String> data = Arrays.asList("Y", "Z");
 
-    ExpressionResult<ComplexTestAstContext, Boolean> result =
-        ast.evaluateExpression(new ComplexTestAstContext(data));
-
-    assertThat(result.getResult(), is(true));
-  }
-
-  @Test
-  public void evaluateMultipleOperatorsWithSamePrecedence_False() throws Exception {
-    List<ComplexTestToken> lexerTokens =
-        Lexer.lex(ComplexTestTokenType.class, "X & Y & Z", factory);
-    AstDescentParser<ComplexTestToken, ComplexTestTokenType, ComplexTestAstContext, Boolean> parser = new AstDescentParser<>(
-        lexerTokens.listIterator(), defaultNodeSupplier);
-
-    AbstractSyntaxTree<ComplexTestAstContext, Boolean> ast = parser.buildTree();
-
-    List<String> data = Arrays.asList("X", "Y", "A");
-
-    ExpressionResult<ComplexTestAstContext, Boolean> result =
-        ast.evaluateExpression(new ComplexTestAstContext(data));
-
-    assertThat(result.getResult(), is(false));
+    // This fails because x returns a string, and Y and Z return a Boolean. 
+    ClassCastException exc = assertThrows(ClassCastException.class, () ->
+        ast.evaluateExpression(new ComplexTestAstContext(data)));
+    assertThat(exc.getMessage(), containsString("java.lang.String cannot be cast to class java.lang.Boolean"));
   }
 
   @Test
