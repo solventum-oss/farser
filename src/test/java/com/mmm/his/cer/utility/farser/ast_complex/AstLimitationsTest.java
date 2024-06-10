@@ -1,9 +1,5 @@
 package com.mmm.his.cer.utility.farser.ast_complex;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertThrows;
-
 import com.mmm.his.cer.utility.farser.ast.AbstractSyntaxTree;
 import com.mmm.his.cer.utility.farser.ast.AbstractSyntaxTreePrinter;
 import com.mmm.his.cer.utility.farser.ast.node.supplier.NodeSupplier;
@@ -16,6 +12,9 @@ import com.mmm.his.cer.utility.farser.ast_complex.setup.lex.ComplexTestTokenFact
 import com.mmm.his.cer.utility.farser.lexer.FarserException;
 import com.mmm.his.cer.utility.farser.lexer.Lexer;
 import java.util.List;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertThrows;
 import org.junit.Test;
 
 

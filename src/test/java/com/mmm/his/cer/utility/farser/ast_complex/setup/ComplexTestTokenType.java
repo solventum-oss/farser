@@ -4,7 +4,6 @@ import com.mmm.his.cer.utility.farser.CommonTokenFlag;
 import com.mmm.his.cer.utility.farser.ast.AstCommonTokenType;
 import com.mmm.his.cer.utility.farser.ast.AstTokenType;
 import com.mmm.his.cer.utility.farser.lexer.CommonTokenType;
-import com.mmm.his.cer.utility.farser.lexer.TokenType;
 import java.util.Optional;
 
 /**
@@ -13,10 +12,7 @@ import java.util.Optional;
  * @author Thomas Naeff
  *
  */
-public enum ComplexTestTokenType
-    implements
-    TokenType<ComplexTestTokenType>,
-    AstTokenType<ComplexTestTokenType> {
+public enum ComplexTestTokenType implements AstTokenType<ComplexTestTokenType> {
 
   ATOM(null, CommonTokenType.ATOM),
   SPACE(" ", CommonTokenType.SPACE),
