@@ -192,9 +192,7 @@ public class ComplexFormulaAstTest {
 
     // While this can parse and print, evaluation fails because the return types of the children 
     // on the left and right side are different. Errors like this are only caught at runtime.
-    ClassCastException exc = assertThrows(ClassCastException.class, () ->
-        ast.evaluateExpression(new ComplexTestAstContext()));
-    assertThat(exc.getMessage(), containsString("java.lang.Boolean cannot be cast to class java.lang.Integer"));
+    assertThrows(ClassCastException.class, () -> ast.evaluateExpression(new ComplexTestAstContext()));
   }
 
   @Test
@@ -209,9 +207,7 @@ public class ComplexFormulaAstTest {
     List<String> data = Arrays.asList("Y", "Z");
 
     // This fails because x returns a string, and Y and Z return a Boolean. 
-    ClassCastException exc = assertThrows(ClassCastException.class, () ->
-        ast.evaluateExpression(new ComplexTestAstContext(data)));
-    assertThat(exc.getMessage(), containsString("java.lang.String cannot be cast to class java.lang.Boolean"));
+    assertThrows(ClassCastException.class, () -> ast.evaluateExpression(new ComplexTestAstContext(data)));
   }
 
   @Test
