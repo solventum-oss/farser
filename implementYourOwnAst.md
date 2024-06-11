@@ -113,12 +113,12 @@ All the operators (the `[Ast]TokenType` enum elements which have an operator pre
 will need an implementation to program the logic on how to evaluate them. For example the 
 operator `>` (greater than) will need an implementation to evaluate *5 > 2*.
 
-The implementations are done by implementing `[Boolean]NonTerminal`. Each node has a 
+The implementations are done by implementing `NonTerminalExpression`. Each node has a 
 "left" and a "right" value (which may be the result of a nested child node evaluation) which 
-it then has to evaluate based on its operator.
+it then has to evaluate based on its operator. 
 
 ```java
-public class MyGreaterThanOperator<C> extends NonTerminal<C, Integer> {
+public class MyGreaterThanOperator<C> extends NonTerminalExpression<C, Integer, Boolean> {
 
   @Override
   public Boolean evaluate(C context) {
