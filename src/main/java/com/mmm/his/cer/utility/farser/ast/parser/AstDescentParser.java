@@ -146,23 +146,24 @@ public class AstDescentParser<L extends LexerToken<T>, T extends TokenType<?>, C
    *                               evaluation return type matches the other. It has to rely on
    *                               runtime (class cast) exceptions when malformed formulas or
    *                               implementations are used.
+   * @param <Y>                    The return type of the right expression.           
    * @param left                   The node to be used (or passed further down) as left-side node
    * @param leftOperatorPrecedence The operator precedence of the provided <code>left</code> node
    * @return Potentially a new (non-terminal/operator) node with a potential new evaluation return
    *     type. Or the input <code>left</code> node passed through with a matching evaluation
    *     return type.
    */
-  private <X> Expression<C, X> expression(Expression<C, X> left, int leftOperatorPrecedence) {
+  private <X, Y> Expression<C, X> expression(Expression<C, X> left, int leftOperatorPrecedence) {
     left = term(left, leftOperatorPrecedence);
     // Higher value means lower precedence
     while (getCurrentTokenAstType().isLowerOrSamePrecedence(leftOperatorPrecedence)) {
-      NonTerminal<C, X> operator = uncheckedCast(
+      NonTerminal<C, X, Y> operator = uncheckedCast(
           nodeSupplier.createNonTerminalNode(currentToken));
       // Save the current operator precedence before advancing the token iterator
       int operatorPrecedence = getCurrentOperatorPrecedence();
       this.eat();
       operator.setLeft(left);
-      Expression<C, X> right = term(left, operatorPrecedence);
+      Expression<C, Y> right = uncheckedCast(term(left, operatorPrecedence));
       operator.setRight(right);
       // The non-terminal/operator node, as combination of left/right evaluation, may have a
       // different evaluation return type than the individual left/right nodes.
@@ -181,22 +182,23 @@ public class AstDescentParser<L extends LexerToken<T>, T extends TokenType<?>, C
    *                               evaluation return type matches the other. It has to rely on
    *                               runtime (class cast) exceptions when malformed formulas or
    *                               implementations are used.
+   * @param <Y>                    The return type of the right expression.              
    * @param left                   The node to be used (or passed further down) as left-side node
    * @param leftOperatorPrecedence The operator precedence of the provided <code>left</code> node
    * @return Potentially a new (non-terminal/operator) node with a potential new evaluation return
    *     type. Or the input <code>left</code> node passed through with a matching evaluation
    *     return type.
    */
-  private <X> Expression<C, X> term(Expression<C, X> left, int leftOperatorPrecedence) {
+  private <X, Y> Expression<C, X> term(Expression<C, X> left, int leftOperatorPrecedence) {
     left = factor(left, leftOperatorPrecedence);
     while (getCurrentTokenAstType().isHigherPrecedence(leftOperatorPrecedence)) {
-      NonTerminal<C, X> operator = uncheckedCast(
+      NonTerminal<C, X, Y> operator = uncheckedCast(
           nodeSupplier.createNonTerminalNode(currentToken));
       // Save the current operator precedence before advancing the token iterator
       int operatorPrecedence = getCurrentOperatorPrecedence();
       this.eat();
       operator.setLeft(left);
-      Expression<C, X> right = term(left, operatorPrecedence);
+      Expression<C, Y> right = uncheckedCast(term(left, operatorPrecedence));
       operator.setRight(right);
       // The non-terminal/operator node, as combination of left/right evaluation, may have a
       // different evaluation return type than the individual left/right nodes.
@@ -208,19 +210,20 @@ public class AstDescentParser<L extends LexerToken<T>, T extends TokenType<?>, C
   /**
    * Method which will build the negation/not node, with only one child node.
    *
-   * @param <R>                    The (boolean) return type of the negated <code>left</code> node,
+   * @param <X>                    The (boolean) return type of the negated <code>left</code> node,
    *                               as well as the (boolean) return type of the returned not-node.
    *                               This data type is not set as {@link Boolean} to avoid for
    *                               (unchecked) casting. In general, it can not programmatically
    *                               guarantee that one nodes evaluation return type matches the
    *                               other. It has to rely on runtime (class cast) exceptions when
    *                               malformed formulas or implementations are used.
+   * @param <Y>                    The return type of the right expression.              
    * @param left                   The node to be used (or passed further down) as left-side node
    * @param leftOperatorPrecedence The operator precedence of the provided <code>left</code> node
    * @return A new (non-terminal/operator) node with a new evaluation return type
    */
-  private <R> Expression<C, R> not(Expression<C, R> left, int leftOperatorPrecedence) {
-    NonTerminal<C, R> operator = uncheckedCast(
+  private <X, Y> Expression<C, X> not(Expression<C, X> left, int leftOperatorPrecedence) {
+    NonTerminal<C, X, Y> operator = uncheckedCast(
         nodeSupplier.createNonTerminalNode(currentToken));
     this.eat(AstCommonTokenType.NOT); // Move iterator if 'NOT'
     left = factor(left, leftOperatorPrecedence);

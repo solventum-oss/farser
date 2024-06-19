@@ -32,7 +32,7 @@ public enum ComplexTestTokenType implements AstTokenType<ComplexTestTokenType> {
   EQUAL("=", 2),
   AND("&", 3),
   OR("|", 4),
-
+  HAS("HAS", 1),
   IN("IN", 1),
   IN_TABLE("IN TABLE", 1);
 
