@@ -1,7 +1,6 @@
 package com.mmm.his.cer.utility.farser.ast.node.nonterminal;
 
 import com.mmm.his.cer.utility.farser.ast.node.LtrExpressionIterator;
-import com.mmm.his.cer.utility.farser.ast.node.type.Expression;
 
 /**
  * This class represents a non-terminal node in the AST. These types of nodes will have a left and a
@@ -14,8 +13,7 @@ import com.mmm.his.cer.utility.farser.ast.node.type.Expression;
  * @implNote This non-terminal node has a return type of Boolean, which is different from the
  *     return types of the child nodes.
  */
-public abstract class BooleanNonTerminal<C, E> extends BaseNonTerminal<C, E, E> implements
-    Expression<C, Boolean> {
+public abstract class BooleanNonTerminal<C, E> extends NonTerminalExpression<C, E, Boolean> {
 
   @Override
   public LtrExpressionIterator<C> iterator() {
