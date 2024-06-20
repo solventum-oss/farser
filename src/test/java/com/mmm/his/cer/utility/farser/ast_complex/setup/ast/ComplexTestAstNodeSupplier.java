@@ -6,6 +6,7 @@ import com.mmm.his.cer.utility.farser.ast.node.operator.bool.Not;
 import com.mmm.his.cer.utility.farser.ast.node.operator.bool.Or;
 import com.mmm.his.cer.utility.farser.ast.node.supplier.NodeSupplier;
 import com.mmm.his.cer.utility.farser.ast.node.type.Expression;
+import com.mmm.his.cer.utility.farser.ast_complex.setup.ast.non_terminal.ComplexTestHasOperator;
 import com.mmm.his.cer.utility.farser.ast_complex.setup.ast.non_terminal.ComplexTestEqualOperator;
 import com.mmm.his.cer.utility.farser.ast_complex.setup.ast.non_terminal.ComplexTestGreaterThanOperator;
 import com.mmm.his.cer.utility.farser.ast_complex.setup.ast.non_terminal.ComplexTestInOperator;
@@ -58,7 +59,7 @@ public class ComplexTestAstNodeSupplier implements NodeSupplier<ComplexTestToken
 
 
   @Override
-  public BaseNonTerminal<ComplexTestAstContext, ?> createNonTerminalNode(ComplexTestToken token) {
+  public BaseNonTerminal<ComplexTestAstContext, ?, ?> createNonTerminalNode(ComplexTestToken token) {
 
     switch (token.type) {
       case GT:
@@ -73,6 +74,8 @@ public class ComplexTestAstNodeSupplier implements NodeSupplier<ComplexTestToken
         return new Or<>();
       case NOT:
         return new Not<>();
+      case HAS:
+        return new ComplexTestHasOperator<>();
       case IN:
         return new ComplexTestInOperator<>();
       case IN_TABLE:

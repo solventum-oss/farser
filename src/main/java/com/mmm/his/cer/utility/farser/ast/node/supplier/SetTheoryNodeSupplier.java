@@ -26,7 +26,7 @@ public class SetTheoryNodeSupplier<T> implements NodeSupplier<SetTheoryToken, Lo
   }
 
   @Override
-  public NonTerminal<LookupContext<T>, ?> createNonTerminalNode(SetTheoryToken token) {
+  public NonTerminal<LookupContext<T>, ?, ?> createNonTerminalNode(SetTheoryToken token) {
     switch (token.type) {
       case DIFFERENCE:
         return new DifferenceOperator<>();

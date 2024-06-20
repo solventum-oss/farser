@@ -7,13 +7,14 @@ import com.mmm.his.cer.utility.farser.ast.node.type.Expression;
  * Wraps together the BaseNonTerminal and Expression classes for easier implementation.
  *
  * @param <C> The node context type used in the terminal nodes.
- * @param <E> The result type of each left/right expression.
- * @param <R> The return type of this expression. 
- * 
+ * @param <L> The result type of the left expression.
+ * @param <R> The result type of the right expression.
+ * @param <E> The return type of this expression. 
+ *
  * @author Rowan Simmons
  */
-public abstract class NonTerminalExpression<C, E, R> extends BaseNonTerminal<C, E> 
-    implements Expression<C, R> {
+public abstract class BaseNonTerminalExpression<C, L, R, E> extends BaseNonTerminal<C, L, R>
+    implements Expression<C, E> {
 
   @Override
   public LtrExpressionIterator<C> iterator() {
@@ -28,7 +29,7 @@ public abstract class NonTerminalExpression<C, E, R> extends BaseNonTerminal<C, 
 
   @Override
   public String toString() {
-    return "NonTerminalExpression{" + "left=" + left + ", right=" + right + '}';
+    return "BaseNonTerminalExpression{" + "left=" + left + ", right=" + right + '}';
   }
 
 }

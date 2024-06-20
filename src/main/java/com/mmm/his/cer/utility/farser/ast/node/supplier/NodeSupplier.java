@@ -35,7 +35,7 @@ public interface NodeSupplier<L extends LexerToken<?>, C> {
    * @param token The formula token/operand for which to create the node for
    * @return Non-terminal expression that was instantiated in this method.
    */
-  default NonTerminal<C, ?> createNonTerminalNode(L token) {
+  default NonTerminal<C, ?, ?> createNonTerminalNode(L token) {
     /*
      * Default implementation to satisfy existing token type (DRG and Domain) implementations which
      * relied on having only AND and OR nodes and this non-terminal-node creation implemented.

@@ -11,19 +11,19 @@ import com.mmm.his.cer.utility.farser.ast.node.type.Expression;
  *
  * @author Mike Funaro
  */
-public interface NonTerminal<C, E> {
+public interface NonTerminal<C, L, R> {
 
   /**
    * Set the left node.
    *
    * @param left the node to set.
    */
-  void setLeft(Expression<C, E> left);
+  void setLeft(Expression<C, L> left);
 
   /**
    * Set the right node.
    *
    * @param right the node to set.
    */
-  void setRight(Expression<C, E> right);
+  void setRight(Expression<C, R> right);
 }

@@ -1,7 +1,6 @@
 package com.mmm.his.cer.utility.farser.ast_complex.setup.ast.non_terminal;
 
-import com.mmm.his.cer.utility.farser.ast.node.nonterminal.BooleanNonTerminal;
-import com.mmm.his.cer.utility.farser.ast.node.nonterminal.NonTerminalExpression;
+import com.mmm.his.cer.utility.farser.ast.node.nonterminal.OtherReturnNonTerminal;
 
 /**
  *
@@ -10,7 +9,7 @@ import com.mmm.his.cer.utility.farser.ast.node.nonterminal.NonTerminalExpression
  *
  * @param <C>
  */
-public class ComplexTestInTableOperator<C> extends NonTerminalExpression<C, String, Boolean> {
+public class ComplexTestInTableOperator<C> extends OtherReturnNonTerminal<C, String, Boolean> {
 
   @Override
   public Boolean evaluate(C context) {

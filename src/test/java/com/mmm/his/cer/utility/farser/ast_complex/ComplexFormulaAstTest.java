@@ -395,5 +395,35 @@ public class ComplexFormulaAstTest {
 
     assertThat(result.getResult(), is(false));
   }
+  
+  @Test
+  public void evaluateHasTrue() throws Exception {
+    String input = "a1bc HAS 1";
+    List<ComplexTestToken> tokens = Lexer.lex(ComplexTestTokenType.class, input, factory);
+
+    AstDescentParser<ComplexTestToken, ComplexTestTokenType, ComplexTestAstContext, Boolean> parser =
+        new AstDescentParser<>(tokens.iterator(), defaultNodeSupplier);
+    AbstractSyntaxTree<ComplexTestAstContext, Boolean> ast = parser.buildTree();
+
+    ExpressionResult<ComplexTestAstContext, Boolean> result =
+        ast.evaluateExpression(new ComplexTestAstContext());
+
+    assertThat(result.getResult(), is(true));
+  }
+
+  @Test
+  public void evaluateHasFalse() throws Exception {
+    String input = "a2bc HAS 1";
+    List<ComplexTestToken> tokens = Lexer.lex(ComplexTestTokenType.class, input, factory);
+
+    AstDescentParser<ComplexTestToken, ComplexTestTokenType, ComplexTestAstContext, Boolean> parser =
+        new AstDescentParser<>(tokens.iterator(), defaultNodeSupplier);
+    AbstractSyntaxTree<ComplexTestAstContext, Boolean> ast = parser.buildTree();
+
+    ExpressionResult<ComplexTestAstContext, Boolean> result =
+        ast.evaluateExpression(new ComplexTestAstContext());
+
+    assertThat(result.getResult(), is(false));
+  }
 
 }

@@ -8,14 +8,15 @@ import com.mmm.his.cer.utility.farser.ast.node.type.Expression;
  * boolean evaluation result type.
  *
  * @param <C> The node context type used in the terminal nodes.
- * @param <E> The result type of each left/right expression
+ * @param <L> The result type of the left expression.
+ * @param <R> The result type of the right expression.
  *
  * @author Thomas Naeff
  */
-public abstract class BaseNonTerminal<C, E> implements NonTerminal<C, E> {
+public abstract class BaseNonTerminal<C, L, R> implements NonTerminal<C, L, R> {
 
-  protected Expression<C, E> left;
-  protected Expression<C, E> right;
+  protected Expression<C, L> left;
+  protected Expression<C, R> right;
 
   /**
    * Sets the left-side child node.
@@ -23,7 +24,7 @@ public abstract class BaseNonTerminal<C, E> implements NonTerminal<C, E> {
    * @param left The node to set
    */
   @Override
-  public void setLeft(Expression<C, E> left) {
+  public void setLeft(Expression<C, L> left) {
     this.left = left;
   }
 
@@ -33,7 +34,7 @@ public abstract class BaseNonTerminal<C, E> implements NonTerminal<C, E> {
    * @param right The node to set
    */
   @Override
-  public void setRight(Expression<C, E> right) {
+  public void setRight(Expression<C, R> right) {
     this.right = right;
   }
 
