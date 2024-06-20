@@ -13,7 +13,7 @@ import com.mmm.his.cer.utility.farser.ast.node.LtrExpressionIterator;
  * @implNote This non-terminal node has a return type of Boolean, which is different from the
  *     return types of the child nodes.
  */
-public abstract class BooleanNonTerminal<C, E> extends NonTerminalExpression<C, E, Boolean> {
+public abstract class BooleanNonTerminal<C, E> extends OtherReturnNonTerminal<C, E, Boolean> {
 
   @Override
   public LtrExpressionIterator<C> iterator() {

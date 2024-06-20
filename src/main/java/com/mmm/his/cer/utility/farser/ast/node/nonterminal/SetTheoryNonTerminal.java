@@ -7,7 +7,7 @@ import com.mmm.his.cer.utility.farser.ast.node.LtrExpressionIterator;
  *
  * @author Mike Funaro
  */
-public abstract class SetTheoryNonTerminal<C, E> extends NonTerminalExpression<C, E, E> {
+public abstract class SetTheoryNonTerminal<C, E> extends SameTypeNonTerminal<C, E> {
 
   @Override
   public LtrExpressionIterator<C> iterator() {

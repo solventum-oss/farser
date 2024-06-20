@@ -9,11 +9,12 @@ package com.mmm.his.cer.utility.farser.ast.node.nonterminal;
  * 
  * @author Rowan Simmons
  */
-public abstract class NonTerminalExpression<C, L, E> extends BaseNonTerminalExpression<C, L, L, E> {
+public abstract class OtherReturnNonTerminal<C, L, E> 
+    extends BaseNonTerminalExpression<C, L, L, E> {
 
   @Override
   public String toString() {
-    return "NonTerminalExpression{" + "left=" + left + ", right=" + right + '}';
+    return "OtherReturnNonTerminal{" + "left=" + left + ", right=" + right + '}';
   }
 
 }
