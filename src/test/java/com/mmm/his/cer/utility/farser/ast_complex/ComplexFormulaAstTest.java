@@ -396,4 +396,103 @@ public class ComplexFormulaAstTest {
     assertThat(result.getResult(), is(false));
   }
 
+  @Test
+  public void evaluateContainsStringIntegrationTrue() {
+    String input = ".containsStrings(a, b) & A > 5";
+    List<ComplexTestToken> tokens = Lexer.lex(ComplexTestTokenType.class, input, factory);
+
+    AstDescentParser<ComplexTestToken, ComplexTestTokenType, ComplexTestAstContext, Boolean> parser =
+            new AstDescentParser<>(tokens.iterator(), defaultNodeSupplier);
+    AbstractSyntaxTree<ComplexTestAstContext, Boolean> ast = parser.buildTree();
+
+    Map<String, Integer> runtimeData = new HashMap<>();
+    runtimeData.put("A", 6);
+
+    ExpressionResult<ComplexTestAstContext, Boolean> result =
+            ast.evaluateExpression(new ComplexTestAstContext(runtimeData, Arrays.asList("a", "b")));
+
+    assertThat(result.getResult(), is(true));
+  }
+
+  @Test
+  public void evaluateContainsStringIntegrationFalse() {
+    String input = ".containsStrings(a, b) & A > 5";
+    List<ComplexTestToken> tokens = Lexer.lex(ComplexTestTokenType.class, input, factory);
+
+    AstDescentParser<ComplexTestToken, ComplexTestTokenType, ComplexTestAstContext, Boolean> parser =
+            new AstDescentParser<>(tokens.iterator(), defaultNodeSupplier);
+    AbstractSyntaxTree<ComplexTestAstContext, Boolean> ast = parser.buildTree();
+
+    Map<String, Integer> runtimeData = new HashMap<>();
+    runtimeData.put("A", 6);
+
+    ExpressionResult<ComplexTestAstContext, Boolean> result =
+            ast.evaluateExpression(new ComplexTestAstContext(runtimeData, Arrays.asList("a", "c")));
+
+    assertThat(result.getResult(), is(false));
+  }
+
+  @Test
+  public void evaluateGetMaxNumber() {
+    String input = ".maxNumber(9, A, B, C)";
+    List<ComplexTestToken> tokens = Lexer.lex(ComplexTestTokenType.class, input, factory);
+
+    AstDescentParser<ComplexTestToken, ComplexTestTokenType, ComplexTestAstContext, Integer> parser =
+            new AstDescentParser<>(tokens.iterator(), defaultNodeSupplier);
+    AbstractSyntaxTree<ComplexTestAstContext, Integer> ast = parser.buildTree();
+
+    Map<String, Integer> runtimeData = new HashMap<>();
+    runtimeData.put("A", 9);
+    runtimeData.put("B", 5);
+    runtimeData.put("C", 3);
+
+
+    ExpressionResult<ComplexTestAstContext, Integer> result =
+            ast.evaluateExpression(new ComplexTestAstContext(runtimeData));
+
+    assertThat(result.getResult(), is(5));
+  }
+
+  @Test
+  public void evaluateMaxNumberGreaterThanTrue() {
+    String input = ".maxNumber(9, A, B, C) > 7";
+    List<ComplexTestToken> tokens = Lexer.lex(ComplexTestTokenType.class, input, factory);
+
+    AstDescentParser<ComplexTestToken, ComplexTestTokenType, ComplexTestAstContext, Boolean> parser =
+            new AstDescentParser<>(tokens.iterator(), defaultNodeSupplier);
+    AbstractSyntaxTree<ComplexTestAstContext, Boolean> ast = parser.buildTree();
+
+    Map<String, Integer> runtimeData = new HashMap<>();
+    runtimeData.put("A", 9);
+    runtimeData.put("B", 10);
+    runtimeData.put("C", 3);
+
+
+    ExpressionResult<ComplexTestAstContext, Boolean> result =
+            ast.evaluateExpression(new ComplexTestAstContext(runtimeData));
+
+    assertThat(result.getResult(), is(true));
+  }
+
+  @Test
+  public void evaluateMaxNumberGreaterThanFalse() {
+    String input = ".maxNumber(9, A, B, C) > 7";
+    List<ComplexTestToken> tokens = Lexer.lex(ComplexTestTokenType.class, input, factory);
+
+    AstDescentParser<ComplexTestToken, ComplexTestTokenType, ComplexTestAstContext, Boolean> parser =
+            new AstDescentParser<>(tokens.iterator(), defaultNodeSupplier);
+    AbstractSyntaxTree<ComplexTestAstContext, Boolean> ast = parser.buildTree();
+
+    Map<String, Integer> runtimeData = new HashMap<>();
+    runtimeData.put("A", 9);
+    runtimeData.put("B", 5);
+    runtimeData.put("C", 3);
+
+
+    ExpressionResult<ComplexTestAstContext, Boolean> result =
+            ast.evaluateExpression(new ComplexTestAstContext(runtimeData));
+
+    assertThat(result.getResult(), is(false));
+  }
+
 }

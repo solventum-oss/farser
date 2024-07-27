@@ -64,9 +64,22 @@ public class AstLimitationsTest {
     assertThat(lines, is(new String[] {
         "IN",
         "  a",
-        "  1," // ... stuff is missing here
+        "  1" // ... stuff is missing here
     }));
 
+  }
+
+  @Test
+  public void evaluateParenthesisWithinFunction() {
+    String input = ".containsStrings(a | (b & c), 2, 3)";
+
+    List<ComplexTestToken> tokens = Lexer.lex(ComplexTestTokenType.class, input, factory);
+
+    AstDescentParser<ComplexTestToken, ComplexTestTokenType, ComplexTestAstContext, Boolean> parser =
+            new AstDescentParser<>(tokens.iterator(), defaultNodeSupplier);
+
+    FarserException exc = assertThrows(FarserException.class, parser::buildTree);
+    assertThat(exc.getMessage(), is("Function expression malformed on token 'LPAREN:('. Expected 'RPAREN'"));
   }
 
 }

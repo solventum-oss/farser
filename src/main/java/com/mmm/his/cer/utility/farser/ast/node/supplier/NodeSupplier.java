@@ -7,6 +7,7 @@ import com.mmm.his.cer.utility.farser.ast.node.operator.bool.Not;
 import com.mmm.his.cer.utility.farser.ast.node.operator.bool.Or;
 import com.mmm.his.cer.utility.farser.ast.node.type.Expression;
 import com.mmm.his.cer.utility.farser.lexer.LexerToken;
+import java.util.List;
 
 /**
  * Interface for calling applications to implement so that they can provide custom terminal nodes
@@ -28,6 +29,19 @@ public interface NodeSupplier<L extends LexerToken<?>, C> {
    * @return Expression that was instantiated in this method.
    */
   Expression<C, ?> createNode(L token);
+
+  /**
+   * Creates a terminal node with arguments.
+   *
+   * @param functionToken The token to create the function node for.
+   * @param args The tokens to supply as arguments.
+   * @return the expression that was instantiated in this method.
+   */
+  default Expression<C, ?> createNode(L functionToken, List<L> args) {
+    //default so this is not necessary for implementations
+    throw new UnsupportedOperationException(
+            "createNode with args has to be overridden to support function calls with arguments");
+  }
 
   /**
    * Creates a non-terminal node (e.g. an operand node).

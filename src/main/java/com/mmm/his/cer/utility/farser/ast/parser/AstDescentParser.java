@@ -12,8 +12,10 @@ import com.mmm.his.cer.utility.farser.lexer.CommonTokenType;
 import com.mmm.his.cer.utility.farser.lexer.FarserException;
 import com.mmm.his.cer.utility.farser.lexer.LexerToken;
 import com.mmm.his.cer.utility.farser.lexer.TokenType;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 
@@ -260,10 +262,59 @@ public class AstDescentParser<L extends LexerToken<T>, T extends TokenType<?>, C
       this.eat(AstCommonTokenType.RPAREN); // Move iterator if 'RPAREN'
     } else if (commonType == AstCommonTokenType.NOT) {
       left = not(left, leftOperatorPrecedence);
+    } else if (commonType == AstCommonTokenType.FUNCTION) {
+      this.eat();
+      left = createNodeWithArgs();
     } else {
       throw new FarserException("Expression malformed on token " + currentToken);
     }
     return left;
+  }
+
+  private CommonTokenFlag getCommonTokenFlag() {
+    return currentToken.getType().getCommonTokenType().orElse(null);
+  }
+
+  /**
+   * Verifies that a token is what is expected. If not, an exception is thrown.
+   *
+   * @param expected The expected token.
+   */
+  private void verifyFunctionTokenValidity(AstCommonTokenType expected) {
+    if (getCommonTokenFlag() != expected) {
+      throw new FarserException("Function expression malformed on token '" + currentToken
+              + "'. Expected '" + expected + "'");
+    }
+  }
+
+  /**
+   * Creates a node with arguments.
+   *
+   * @return The created terminal node.
+   */
+  private <X> Expression<C, X> createNodeWithArgs() {
+    final L functionToken = currentToken; // save the function name
+    this.eat();
+    verifyFunctionTokenValidity(AstCommonTokenType.LPAREN);
+    this.eat();
+
+    CommonTokenFlag commonType = getCommonTokenFlag();
+    List<L> args = new ArrayList<>();
+
+    while (this.tokenIterator.hasNext()
+            && commonType != AstCommonTokenType.RPAREN
+            && commonType != AstCommonTokenType.LPAREN) {
+      if (commonType != AstCommonTokenType.COMMA) {
+        args.add(currentToken);
+      }
+      this.eat();
+      commonType = getCommonTokenFlag();
+    }
+    verifyFunctionTokenValidity(AstCommonTokenType.RPAREN);
+    this.eat();
+
+    NodeSupplier<L, C> supplier = suppliers.getOrDefault(functionToken.getValue(), nodeSupplier);
+    return uncheckedCast(supplier.createNode(functionToken, args));
   }
 
   /**

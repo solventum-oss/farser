@@ -29,6 +29,16 @@ public enum AstCommonTokenType implements CommonTokenFlag {
   NOT,
 
   /**
+   * A function call.
+   */
+  FUNCTION,
+
+  /**
+   * A comma/separator for function arguments.
+   */
+  COMMA,
+
+  /**
    * An "AND" operator.<br>
    * <br>
    * This flag exists for backwards compatibility when a {@link NodeSupplier} is used without the
