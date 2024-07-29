@@ -12,7 +12,7 @@ public class ComplexTestContainsStringsNode implements Expression<ComplexTestAst
     private final List<String> items;
 
     public ComplexTestContainsStringsNode(List<ComplexTestToken> items) {
-        this.items = items.stream().map(v -> v.value).collect(Collectors.toList());;
+        this.items = items.stream().map(v -> v.value).collect(Collectors.toList());
     }
 
     @Override
