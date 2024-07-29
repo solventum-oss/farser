@@ -20,7 +20,7 @@ public enum ComplexTestTokenType implements AstTokenType<ComplexTestTokenType> {
   RPAREN(")", AstCommonTokenType.RPAREN),
   NOT("!", AstCommonTokenType.NOT),
   FUNCTION(".", AstCommonTokenType.FUNCTION),
-  COMMA(",", AstCommonTokenType.COMMA),
+  COMMA(",", AstCommonTokenType.FUNCTION_ARGS_SEPARATOR),
 
   IF("IF"),
   THEN("THEN"),

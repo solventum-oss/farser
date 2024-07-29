@@ -34,9 +34,9 @@ public enum AstCommonTokenType implements CommonTokenFlag {
   FUNCTION,
 
   /**
-   * A comma/separator for function arguments.
+   * A separator for function arguments/parameters.
    */
-  COMMA,
+  FUNCTION_ARGS_SEPARATOR,
 
   /**
    * An "AND" operator.<br>

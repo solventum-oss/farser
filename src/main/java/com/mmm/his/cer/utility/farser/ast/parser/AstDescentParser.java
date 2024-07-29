@@ -304,7 +304,7 @@ public class AstDescentParser<L extends LexerToken<T>, T extends TokenType<?>, C
     while (this.tokenIterator.hasNext()
             && commonType != AstCommonTokenType.RPAREN
             && commonType != AstCommonTokenType.LPAREN) {
-      if (commonType != AstCommonTokenType.COMMA) {
+      if (commonType != AstCommonTokenType.FUNCTION_ARGS_SEPARATOR) {
         args.add(currentToken);
       }
       this.eat();
