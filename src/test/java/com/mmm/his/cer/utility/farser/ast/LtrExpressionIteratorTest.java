@@ -13,7 +13,6 @@ import com.mmm.his.cer.utility.farser.ast.setup.MaskedContext;
 import com.mmm.his.cer.utility.farser.lexer.DrgFormulaLexer;
 import com.mmm.his.cer.utility.farser.lexer.drg.DrgLexerToken;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -25,8 +24,8 @@ public class LtrExpressionIteratorTest {
   public void testFullTreeIteration() throws Exception {
 
     List<DrgLexerToken> lexerTokens = DrgFormulaLexer.lex("(A & B | C) & D | (E & F)");
-    DescentParser<MaskedContext<String>> parser = new DescentParser<>(lexerTokens.listIterator(),
-        new StringOperandSupplier(), Collections.emptyMap());
+    DescentParser<MaskedContext<String>> parser = new DescentParser<>(lexerTokens,
+        new StringOperandSupplier());
 
     // System.out.println(lexerTokens);
     AbstractSyntaxTree<MaskedContext<String>, Boolean> ast = parser.buildTree();
@@ -80,8 +79,8 @@ public class LtrExpressionIteratorTest {
   public void testFullTreeIterationWithPeek() throws Exception {
 
     List<DrgLexerToken> lexerTokens = DrgFormulaLexer.lex("(A & B | C) & D | (E & F)");
-    DescentParser<MaskedContext<String>> parser = new DescentParser<>(lexerTokens.listIterator(),
-        new StringOperandSupplier(), Collections.emptyMap());
+    DescentParser<MaskedContext<String>> parser = new DescentParser<>(lexerTokens,
+        new StringOperandSupplier());
 
     // System.out.println(lexerTokens);
     AbstractSyntaxTree<MaskedContext<String>, Boolean> ast = parser.buildTree();
@@ -195,8 +194,8 @@ public class LtrExpressionIteratorTest {
   public void testFullTreeIterationToString() throws Exception {
 
     List<DrgLexerToken> lexerTokens = DrgFormulaLexer.lex("A & B | C");
-    DescentParser<MaskedContext<String>> parser = new DescentParser<>(lexerTokens.listIterator(),
-        new StringOperandSupplier(), Collections.emptyMap());
+    DescentParser<MaskedContext<String>> parser = new DescentParser<>(lexerTokens,
+        new StringOperandSupplier());
 
     // System.out.println(lexerTokens);
     AbstractSyntaxTree<MaskedContext<String>, Boolean> ast = parser.buildTree();
@@ -223,8 +222,8 @@ public class LtrExpressionIteratorTest {
   public void testSingleAtomIterator() throws Exception {
 
     List<DrgLexerToken> lexerTokens = DrgFormulaLexer.lex("A");
-    DescentParser<MaskedContext<String>> parser = new DescentParser<>(lexerTokens.listIterator(),
-        new StringOperandSupplier(), Collections.emptyMap());
+    DescentParser<MaskedContext<String>> parser = new DescentParser<>(lexerTokens,
+        new StringOperandSupplier());
 
     // System.out.println(lexerTokens);
     AbstractSyntaxTree<MaskedContext<String>, Boolean> ast = parser.buildTree();
@@ -246,8 +245,8 @@ public class LtrExpressionIteratorTest {
   public void testSingleOperandIterator() throws Exception {
 
     List<DrgLexerToken> lexerTokens = DrgFormulaLexer.lex("A & B");
-    DescentParser<MaskedContext<String>> parser = new DescentParser<>(lexerTokens.listIterator(),
-        new StringOperandSupplier(), Collections.emptyMap());
+    DescentParser<MaskedContext<String>> parser = new DescentParser<>(lexerTokens,
+        new StringOperandSupplier());
 
     // System.out.println(lexerTokens);
     AbstractSyntaxTree<MaskedContext<String>, Boolean> ast = parser.buildTree();

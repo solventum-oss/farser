@@ -10,7 +10,6 @@ import com.mmm.his.cer.utility.farser.ast.setup.TestContext;
 import com.mmm.his.cer.utility.farser.lexer.DrgFormulaLexer;
 import com.mmm.his.cer.utility.farser.lexer.drg.DrgLexerToken;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import org.junit.Test;
 
@@ -28,10 +27,10 @@ public class OperandAndEvaluationOrderTest {
 
     String formula = "A & B | C";
     List<DrgLexerToken> lexerTokens = DrgFormulaLexer.lex(formula);
-    DescentParser<MaskedContext<String>> parser = new DescentParser<>(lexerTokens.listIterator(),
-        new StringOperandSupplier(), Collections.emptyMap());
+    DescentParser<MaskedContext<String>> parser = new DescentParser<>(lexerTokens,
+        new StringOperandSupplier());
 
-    DrgSyntaxTree<MaskedContext<String>> ast = parser.buildExpressionTree();
+    AbstractSyntaxTree<MaskedContext<String>, Boolean> ast = parser.buildTree();
 
     // Ensure that evaluation is left-to-right and only the relevant parts of the formula get
     // evaluated until 'true' is determined.
@@ -48,10 +47,10 @@ public class OperandAndEvaluationOrderTest {
 
     String formula = "(A & B) | C";
     List<DrgLexerToken> lexerTokens = DrgFormulaLexer.lex(formula);
-    DescentParser<MaskedContext<String>> parser = new DescentParser<>(lexerTokens.listIterator(),
-        new StringOperandSupplier(), Collections.emptyMap());
+    DescentParser<MaskedContext<String>> parser = new DescentParser<>(lexerTokens,
+        new StringOperandSupplier());
 
-    DrgSyntaxTree<MaskedContext<String>> ast = parser.buildExpressionTree();
+    AbstractSyntaxTree<MaskedContext<String>, Boolean> ast = parser.buildTree();
 
     // Ensure that evaluation is left-to-right and only the relevant parts of the formula get
     // evaluated until 'true' is determined.
@@ -68,10 +67,10 @@ public class OperandAndEvaluationOrderTest {
 
     String formula = "A & (B | C)";
     List<DrgLexerToken> lexerTokens = DrgFormulaLexer.lex(formula);
-    DescentParser<MaskedContext<String>> parser = new DescentParser<>(lexerTokens.listIterator(),
-        new StringOperandSupplier(), Collections.emptyMap());
+    DescentParser<MaskedContext<String>> parser = new DescentParser<>(lexerTokens,
+        new StringOperandSupplier());
 
-    DrgSyntaxTree<MaskedContext<String>> ast = parser.buildExpressionTree();
+    AbstractSyntaxTree<MaskedContext<String>, Boolean> ast = parser.buildTree();
 
     // Ensure that evaluation is left-to-right and only the relevant parts of the formula get
     // evaluated until 'true' is determined.
@@ -88,10 +87,10 @@ public class OperandAndEvaluationOrderTest {
 
     String formula = "C | A & B";
     List<DrgLexerToken> lexerTokens = DrgFormulaLexer.lex(formula);
-    DescentParser<MaskedContext<String>> parser = new DescentParser<>(lexerTokens.listIterator(),
-        new StringOperandSupplier(), Collections.emptyMap());
+    DescentParser<MaskedContext<String>> parser = new DescentParser<>(lexerTokens,
+        new StringOperandSupplier());
 
-    DrgSyntaxTree<MaskedContext<String>> ast = parser.buildExpressionTree();
+    AbstractSyntaxTree<MaskedContext<String>, Boolean> ast = parser.buildTree();
 
     // Ensure that evaluation is left-to-right and only the relevant parts of the formula get
     // evaluated until 'true' is determined.
@@ -108,10 +107,10 @@ public class OperandAndEvaluationOrderTest {
 
     String formula = "C | (A & B)";
     List<DrgLexerToken> lexerTokens = DrgFormulaLexer.lex(formula);
-    DescentParser<MaskedContext<String>> parser = new DescentParser<>(lexerTokens.listIterator(),
-        new StringOperandSupplier(), Collections.emptyMap());
+    DescentParser<MaskedContext<String>> parser = new DescentParser<>(lexerTokens,
+        new StringOperandSupplier());
 
-    DrgSyntaxTree<MaskedContext<String>> ast = parser.buildExpressionTree();
+    AbstractSyntaxTree<MaskedContext<String>, Boolean> ast = parser.buildTree();
 
     // Ensure that evaluation is left-to-right and only the relevant parts of the formula get
     // evaluated until 'true' is determined.
@@ -128,10 +127,10 @@ public class OperandAndEvaluationOrderTest {
 
     String formula = "(C | A) & B";
     List<DrgLexerToken> lexerTokens = DrgFormulaLexer.lex(formula);
-    DescentParser<MaskedContext<String>> parser = new DescentParser<>(lexerTokens.listIterator(),
-        new StringOperandSupplier(), Collections.emptyMap());
+    DescentParser<MaskedContext<String>> parser = new DescentParser<>(lexerTokens,
+        new StringOperandSupplier());
 
-    DrgSyntaxTree<MaskedContext<String>> ast = parser.buildExpressionTree();
+    AbstractSyntaxTree<MaskedContext<String>, Boolean> ast = parser.buildTree();
 
     // Ensure that evaluation is left-to-right and only the relevant parts of the formula get
     // evaluated until 'true' is determined.

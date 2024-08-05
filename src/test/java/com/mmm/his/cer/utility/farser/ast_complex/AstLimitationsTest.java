@@ -40,7 +40,7 @@ public class AstLimitationsTest {
     List<ComplexTestToken> tokens = Lexer.lex(ComplexTestTokenType.class, input, factory);
 
     AstDescentParser<ComplexTestToken, ComplexTestTokenType, ComplexTestAstContext, Boolean> parser =
-        new AstDescentParser<>(tokens.iterator(), defaultNodeSupplier);
+        new AstDescentParser<>(tokens, defaultNodeSupplier);
 
     FarserException exc = assertThrows(FarserException.class, () -> parser.buildTree());
     assertThat(exc.getMessage(), is("Expression malformed on token GT:>"));
@@ -48,13 +48,14 @@ public class AstLimitationsTest {
   }
 
   @Test
-  public void doesNotProperlyWork_OperatorWithParameters() throws Exception {
-    // In this formula, the parenthesis are not recognised as operator parameter content.
+  public void doesNotProperlyWork_NonTerminalNodeWithParameters() throws Exception {
+    // In this formula, the parenthesis are not recognised as operator parameter content. 
+    // Parameters are only recognised for terminal nodes.
     String input = "a IN(1, 2, 3)";
     List<ComplexTestToken> tokens = Lexer.lex(ComplexTestTokenType.class, input, factory);
 
     AstDescentParser<ComplexTestToken, ComplexTestTokenType, ComplexTestAstContext, Boolean> parser =
-        new AstDescentParser<>(tokens.iterator(), defaultNodeSupplier);
+        new AstDescentParser<>(tokens, defaultNodeSupplier);
     AbstractSyntaxTree<ComplexTestAstContext, Boolean> ast = parser.buildTree();
 
     String printed = AbstractSyntaxTreePrinter.printTree(ast);
@@ -71,12 +72,12 @@ public class AstLimitationsTest {
 
   @Test
   public void evaluateParenthesisWithinFunction() {
-    String input = ".containsStrings(a | (b & c), 2, 3)";
+    String input = "containsStrings((b & c), 2, 3)";
 
     List<ComplexTestToken> tokens = Lexer.lex(ComplexTestTokenType.class, input, factory);
 
     AstDescentParser<ComplexTestToken, ComplexTestTokenType, ComplexTestAstContext, Boolean> parser =
-            new AstDescentParser<>(tokens.iterator(), defaultNodeSupplier);
+            new AstDescentParser<>(tokens, defaultNodeSupplier);
 
     FarserException exc = assertThrows(FarserException.class, parser::buildTree);
     assertThat(exc.getMessage(), is("Function expression malformed on token 'LPAREN:('. Expected 'RPAREN'"));

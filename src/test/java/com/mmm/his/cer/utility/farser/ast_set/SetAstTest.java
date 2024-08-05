@@ -89,7 +89,7 @@ public class SetAstTest {
 
     // Build tree
     AstDescentParser<SetTheoryToken, SetTheoryTokenType, LookupContext<String>, List<String>> parser =
-        new AstDescentParser<>(tokens.iterator(), nodeSupplier);
+        new AstDescentParser<>(tokens, nodeSupplier);
 
     AbstractSyntaxTree<LookupContext<String>, List<String>> ast = parser.buildTree();
     System.out.println(AbstractSyntaxTreePrinter.printTree(ast));

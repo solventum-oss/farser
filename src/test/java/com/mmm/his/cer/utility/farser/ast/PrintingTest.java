@@ -12,7 +12,6 @@ import com.mmm.his.cer.utility.farser.ast.setup.TestContext;
 import com.mmm.his.cer.utility.farser.lexer.DrgFormulaLexer;
 import com.mmm.his.cer.utility.farser.lexer.drg.DrgLexerToken;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import org.junit.Test;
 
@@ -28,8 +27,8 @@ public class PrintingTest {
   public void testPrintTree() throws Exception {
 
     List<DrgLexerToken> lexerTokens = DrgFormulaLexer.lex("(A & B | C) & D | (E & F)");
-    DescentParser<MaskedContext<String>> parser = new DescentParser<>(lexerTokens.listIterator(),
-        new StringOperandSupplier(), Collections.emptyMap());
+    DescentParser<MaskedContext<String>> parser = new DescentParser<>(lexerTokens,
+        new StringOperandSupplier());
 
     AbstractSyntaxTree<MaskedContext<String>, Boolean> ast = parser.buildTree();
 
@@ -58,8 +57,8 @@ public class PrintingTest {
 
     // OR is first in the formula, but should have a "weaker bond" than the AND
     List<DrgLexerToken> lexerTokens = DrgFormulaLexer.lex("A | B & C");
-    DescentParser<MaskedContext<String>> parser = new DescentParser<>(lexerTokens.listIterator(),
-        new StringOperandSupplier(), Collections.emptyMap());
+    DescentParser<MaskedContext<String>> parser = new DescentParser<>(lexerTokens,
+        new StringOperandSupplier());
 
     AbstractSyntaxTree<MaskedContext<String>, Boolean> ast = parser.buildTree();
 
@@ -82,8 +81,8 @@ public class PrintingTest {
 
     // The "stronger" AND operand appears first, then the "weaker" OR operand
     List<DrgLexerToken> lexerTokens = DrgFormulaLexer.lex("A & B | C");
-    DescentParser<MaskedContext<String>> parser = new DescentParser<>(lexerTokens.listIterator(),
-        new StringOperandSupplier(), Collections.emptyMap());
+    DescentParser<MaskedContext<String>> parser = new DescentParser<>(lexerTokens,
+        new StringOperandSupplier());
 
     AbstractSyntaxTree<MaskedContext<String>, Boolean> ast = parser.buildTree();
 
@@ -105,8 +104,8 @@ public class PrintingTest {
   public void testPrintTreeWithPeek() throws Exception {
 
     List<DrgLexerToken> lexerTokens = DrgFormulaLexer.lex("(A & B | C) & D | (E & F)");
-    DescentParser<MaskedContext<String>> parser = new DescentParser<>(lexerTokens.listIterator(),
-        new StringOperandSupplier(), Collections.emptyMap());
+    DescentParser<MaskedContext<String>> parser = new DescentParser<>(lexerTokens,
+        new StringOperandSupplier());
 
     AbstractSyntaxTree<MaskedContext<String>, Boolean> ast = parser.buildTree();
 
@@ -137,8 +136,8 @@ public class PrintingTest {
   public void testPrintTreeEvaluated() throws Exception {
 
     List<DrgLexerToken> lexerTokens = DrgFormulaLexer.lex("(A & B | C) & D | (E & F)");
-    DescentParser<MaskedContext<String>> parser = new DescentParser<>(lexerTokens.listIterator(),
-        new StringOperandSupplier(), Collections.emptyMap());
+    DescentParser<MaskedContext<String>> parser = new DescentParser<>(lexerTokens,
+        new StringOperandSupplier());
 
     AbstractSyntaxTree<MaskedContext<String>, Boolean> ast = parser.buildTree();
     List<String> mask = Arrays.asList("A", "C");

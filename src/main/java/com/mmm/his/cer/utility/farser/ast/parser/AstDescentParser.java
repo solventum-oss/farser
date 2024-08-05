@@ -4,7 +4,6 @@ import com.mmm.his.cer.utility.farser.CommonTokenFlag;
 import com.mmm.his.cer.utility.farser.ast.AbstractSyntaxTree;
 import com.mmm.his.cer.utility.farser.ast.AstCommonTokenType;
 import com.mmm.his.cer.utility.farser.ast.AstTokenType;
-import com.mmm.his.cer.utility.farser.ast.DrgSyntaxTree;
 import com.mmm.his.cer.utility.farser.ast.node.nonterminal.NonTerminal;
 import com.mmm.his.cer.utility.farser.ast.node.supplier.NodeSupplier;
 import com.mmm.his.cer.utility.farser.ast.node.type.Expression;
@@ -13,11 +12,8 @@ import com.mmm.his.cer.utility.farser.lexer.FarserException;
 import com.mmm.his.cer.utility.farser.lexer.LexerToken;
 import com.mmm.his.cer.utility.farser.lexer.TokenType;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
 
 /**
  * Recursive descent parser that will build an Abstract syntax tree from a formula (list of tokens).
@@ -31,93 +27,44 @@ import java.util.Map;
 public class AstDescentParser<L extends LexerToken<T>, T extends TokenType<?>, C, R> {
 
   private L currentToken;
-  private Iterator<L> tokenIterator;
+  private LinkedList<L> tokens;
   private final NodeSupplier<L, C> nodeSupplier;
-  @Deprecated
-  private final Map<String, NodeSupplier<L, C>> suppliers;
 
   /**
    * Ctor.
    *
-   * @param tokenIterator list of tokens to parse into the Abstract syntax tree. May be
-   *                      <code>null</code>.
-   * @param nodeSupplier  a factory which creates nodes for the tree.
+   * @param tokens       list of tokens to parse into the Abstract syntax tree. May be
+   *                     <code>null</code>.
+   * @param nodeSupplier a factory which creates nodes for the tree.
    */
-  public AstDescentParser(Iterator<L> tokenIterator, NodeSupplier<L, C> nodeSupplier) {
-    this(tokenIterator, nodeSupplier, null);
-  }
-
-  public static <L extends LexerToken<T>, T extends TokenType<?>, C, R> AstDescentParser<L, T, C,
-      R> of(Iterator<L> tokenIterator, NodeSupplier<L, C> nodeSupplier) {
-    return new AstDescentParser<>(tokenIterator, nodeSupplier);
-  }
-
-  /**
-   * Ctor.
-   *
-   * @param tokenIterator list of tokens to parse into the Abstract syntax tree. May be
-   *                      <code>null</code>.
-   * @param nodeSupplier  a factory which creates nodes for the tree. This supplier is used by
-   *                      default when <code>suppliers</code> does not contain a node specific
-   *                      supplier
-   * @param suppliers     A map with node suppliers specific to certain tokens (token value as map
-   *                      key). May be <code>null</code>. <code>Deprecated</code>, because
-   *                      <code>nodeSupplier</code> can perform the same (return a specific node
-   *                      based on the token value) plus more (work with the complete lexer token
-   *                      data).
-   */
-  public AstDescentParser(Iterator<L> tokenIterator,
-      NodeSupplier<L, C> nodeSupplier,
-      @Deprecated Map<String, NodeSupplier<L, C>> suppliers) {
-    setTokenIterator(tokenIterator);
-
+  public AstDescentParser(List<L> tokens, NodeSupplier<L, C> nodeSupplier) {
     if (nodeSupplier == null) {
       throw new FarserException(
           "Please provide at least a default supplier argument to "
               + DescentParser.class.getSimpleName()
               + " constructor");
     }
+    setTokens(tokens);
     this.nodeSupplier = nodeSupplier;
+  }
 
-    // If there is no map, instantiate new map to avoid NPEs. If nothing is in the map the
-    // nodeSupplier takes over.
-    this.suppliers = suppliers == null ? Collections.emptyMap() : suppliers;
+  public static <L extends LexerToken<T>, T extends TokenType<?>, C, R> AstDescentParser<L, T, C,
+      R> of(LinkedList<L> tokens, NodeSupplier<L, C> nodeSupplier) {
+    return new AstDescentParser<>(tokens, nodeSupplier);
   }
 
   /**
-   * Set a new tokenIterator so that we can build another AST using the same setup parser. Uses the
+   * Sets new tokens so that we can build another AST using the same setup parser. Uses the
    * same {@link NodeSupplier}s which were set when the {@link AstDescentParser} was created.
    */
-  public void setTokenIterator(Iterator<L> tokenIterator) {
-    this.tokenIterator = tokenIterator;
-    // Position at first token
-    this.currentToken = tokenIterator != null ? tokenIterator.next() : null;
-  }
-
-  /**
-   * Build the abstract syntax tree.
-   *
-   * @deprecated Call {@link #buildTree()} instead for a non-DRG specific named AST class version
-   *     with the exact same functionality.
-   */
-  @Deprecated
-  public DrgSyntaxTree<C> buildExpressionTree() {
-    Expression<C, Boolean> root = expression(null, AstTokenType.NOT_AN_OPERATOR);
-    return new DrgSyntaxTree<>(root);
-  }
-
-  /**
-   * Build the abstract syntax tree from the provided formula/tokens.
-   *
-   * @param tokenIterator list of tokens to parse into the Abstract syntax tree.
-   * @deprecated Call {@link #buildTree(ListIterator)} instead for a non-DRG specific named AST
-   *     class version with the exact same functionality.
-   */
-  @Deprecated
-  public DrgSyntaxTree<C> buildExpressionTree(ListIterator<L> tokenIterator) {
-    setTokenIterator(tokenIterator);
-    Expression<C, Boolean> root = expression(null, AstTokenType.NOT_AN_OPERATOR);
-    return new DrgSyntaxTree<>(root);
+  public void setTokens(List<L> tokens) {
+    this.currentToken = null;
+    this.tokens = tokens instanceof LinkedList
+        ? (LinkedList<L>) tokens : createLinkedList(tokens);
+    if (!this.tokens.isEmpty()) {
+      // Position at first token
+      this.currentToken = this.tokens.pop();
+    }
   }
 
   /**
@@ -127,16 +74,24 @@ public class AstDescentParser<L extends LexerToken<T>, T extends TokenType<?>, C
     Expression<C, R> root = expression(null, AstTokenType.NOT_AN_OPERATOR);
     return new AbstractSyntaxTree<>(root);
   }
-
+  
   /**
    * Build the abstract syntax tree from the provided formula.
    *
-   * @param tokenIterator list of tokens to parse into the Abstract syntax tree.
+   * @param tokens list of tokens to parse into the Abstract syntax tree.
    */
-  public AbstractSyntaxTree<C, R> buildTree(ListIterator<L> tokenIterator) {
-    setTokenIterator(tokenIterator);
+  public AbstractSyntaxTree<C, R> buildTree(List<L> tokens) {
+    setTokens(tokens);
     Expression<C, R> root = expression(null, AstTokenType.NOT_AN_OPERATOR);
     return new AbstractSyntaxTree<>(root);
+  }
+
+  private LinkedList<L> createLinkedList(List<L> tokens) {
+    LinkedList<L> linkedList = new LinkedList<>();
+    if (tokens != null) {
+      linkedList.addAll(tokens);
+    }
+    return linkedList;
   }
 
   /**
@@ -253,26 +208,41 @@ public class AstDescentParser<L extends LexerToken<T>, T extends TokenType<?>, C
     // Ok to return 'null', it is only used in NPE safe logic below.
     CommonTokenFlag commonType = tokenType.getCommonTokenType().orElse(null);
     if (commonType == CommonTokenType.ATOM) {
-      NodeSupplier<L, C> supplier = suppliers.getOrDefault(currentToken.getValue(), nodeSupplier);
-      left = uncheckedCast(supplier.createNode(currentToken));
-      this.eat(CommonTokenType.ATOM); // Move iterator if 'ATOM'
+      left = handleAtomToken();
     } else if (commonType == AstCommonTokenType.LPAREN) {
       this.eat(AstCommonTokenType.LPAREN); // Move iterator if 'LPAREN'
       left = this.expression(left, leftOperatorPrecedence);
       this.eat(AstCommonTokenType.RPAREN); // Move iterator if 'RPAREN'
     } else if (commonType == AstCommonTokenType.NOT) {
       left = not(left, leftOperatorPrecedence);
-    } else if (commonType == AstCommonTokenType.FUNCTION) {
-      this.eat();
-      left = createNodeWithArgs();
     } else {
       throw new FarserException("Expression malformed on token " + currentToken);
+    }
+    return left;
+  }
+  
+  private <X> Expression<C, X> handleAtomToken() {
+    Expression<C, X> left;
+    if (getNextCommonTokenFlag() != AstCommonTokenType.LPAREN) {
+      // Atom without args
+      left = uncheckedCast(nodeSupplier.createNode(currentToken));
+      this.eat(CommonTokenType.ATOM); // Move iterator if 'ATOM'
+    } else {
+      left = createNodeWithArgs();
     }
     return left;
   }
 
   private CommonTokenFlag getCommonTokenFlag() {
     return currentToken.getType().getCommonTokenType().orElse(null);
+  }
+
+  private CommonTokenFlag getNextCommonTokenFlag() {
+    L next = tokens.peek();
+    if (next != null) {
+      return next.getCommonType().orElse(null);
+    }
+    return null;
   }
 
   /**
@@ -301,7 +271,7 @@ public class AstDescentParser<L extends LexerToken<T>, T extends TokenType<?>, C
     CommonTokenFlag commonType = getCommonTokenFlag();
     List<L> args = new ArrayList<>();
 
-    while (this.tokenIterator.hasNext()
+    while (!this.tokens.isEmpty()
             && commonType != AstCommonTokenType.RPAREN
             && commonType != AstCommonTokenType.LPAREN) {
       if (commonType != AstCommonTokenType.FUNCTION_ARGS_SEPARATOR) {
@@ -313,8 +283,7 @@ public class AstDescentParser<L extends LexerToken<T>, T extends TokenType<?>, C
     verifyFunctionTokenValidity(AstCommonTokenType.RPAREN);
     this.eat();
 
-    NodeSupplier<L, C> supplier = suppliers.getOrDefault(functionToken.getValue(), nodeSupplier);
-    return uncheckedCast(supplier.createNode(functionToken, args));
+    return uncheckedCast(nodeSupplier.createNode(functionToken, args));
   }
 
   /**
@@ -327,8 +296,8 @@ public class AstDescentParser<L extends LexerToken<T>, T extends TokenType<?>, C
     // The 'eat' call seems to always get called from within an if/while anyways where the type is
     // already known. Except for one single case 'eat(CommonTokenType.RPAREN)' where the RPAREN is
     // assumed.
-    if (currentToken.getType().isEqual(type) && this.tokenIterator.hasNext()) {
-      currentToken = this.tokenIterator.next();
+    if (currentToken.getType().isEqual(type) && this.tokens.peek() != null) {
+      currentToken = this.tokens.pop();
     }
   }
 
@@ -336,8 +305,8 @@ public class AstDescentParser<L extends LexerToken<T>, T extends TokenType<?>, C
    * Move the iterator forward.
    */
   private void eat() {
-    if (this.tokenIterator.hasNext()) {
-      currentToken = this.tokenIterator.next();
+    if (this.tokens.peek() != null) {
+      currentToken = this.tokens.pop();
     }
   }
 

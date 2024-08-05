@@ -13,7 +13,6 @@ import com.mmm.his.cer.utility.farser.ast.parser.DescentParser;
 import com.mmm.his.cer.utility.farser.ast.setup.MaskedContext;
 import com.mmm.his.cer.utility.farser.lexer.DrgFormulaLexer;
 import com.mmm.his.cer.utility.farser.lexer.drg.DrgLexerToken;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import org.junit.Test;
@@ -30,8 +29,8 @@ public class PrintingJsonTest {
   public void testPrintTreeAsJson() throws Exception {
 
     List<DrgLexerToken> lexerTokens = DrgFormulaLexer.lex("(A & B | C) & D | (E & F & G)");
-    DescentParser<MaskedContext<String>> parser = new DescentParser<>(lexerTokens.listIterator(),
-        new StringOperandSupplier(), Collections.emptyMap());
+    DescentParser<MaskedContext<String>> parser = new DescentParser<>(lexerTokens,
+        new StringOperandSupplier());
 
     AbstractSyntaxTree<MaskedContext<String>, Boolean> ast = parser.buildTree();
 
@@ -74,8 +73,6 @@ public class PrintingJsonTest {
    * get it to work and see if it can be possible. A lot in this code is not very nice :)
    *
    * @author Thomas Naeff
-   *
-   * @param <T>
    */
   private static class NodePrinterJson {
 
