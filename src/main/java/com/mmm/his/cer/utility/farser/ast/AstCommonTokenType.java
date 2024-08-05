@@ -29,11 +29,6 @@ public enum AstCommonTokenType implements CommonTokenFlag {
   NOT,
 
   /**
-   * A function call.
-   */
-  FUNCTION,
-
-  /**
    * A separator for function arguments/parameters.
    */
   FUNCTION_ARGS_SEPARATOR,

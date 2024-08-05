@@ -250,11 +250,12 @@ public class AstDescentParser<L extends LexerToken<T>, T extends TokenType<?>, C
    *
    * @param expected The expected token.
    */
-  private void verifyFunctionTokenValidity(AstCommonTokenType expected) {
+  private void verifyAndEat(AstCommonTokenType expected) {
     if (getCommonTokenFlag() != expected) {
       throw new FarserException("Function expression malformed on token '" + currentToken
               + "'. Expected '" + expected + "'");
     }
+    this.eat();
   }
 
   /**
@@ -265,8 +266,7 @@ public class AstDescentParser<L extends LexerToken<T>, T extends TokenType<?>, C
   private <X> Expression<C, X> createNodeWithArgs() {
     final L functionToken = currentToken; // save the function name
     this.eat();
-    verifyFunctionTokenValidity(AstCommonTokenType.LPAREN);
-    this.eat();
+    this.verifyAndEat(AstCommonTokenType.LPAREN);
 
     CommonTokenFlag commonType = getCommonTokenFlag();
     List<L> args = new ArrayList<>();
@@ -280,9 +280,8 @@ public class AstDescentParser<L extends LexerToken<T>, T extends TokenType<?>, C
       this.eat();
       commonType = getCommonTokenFlag();
     }
-    verifyFunctionTokenValidity(AstCommonTokenType.RPAREN);
-    this.eat();
-
+    this.verifyAndEat(AstCommonTokenType.RPAREN);
+    
     return uncheckedCast(nodeSupplier.createNode(functionToken, args));
   }
 
