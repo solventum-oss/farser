@@ -273,7 +273,8 @@ public class AstDescentParser<L extends LexerToken<T>, T extends TokenType<?>, C
 
     while (!this.tokens.isEmpty()
             && commonType != AstCommonTokenType.RPAREN
-            && commonType != AstCommonTokenType.LPAREN) {
+            // just checking for validation, not relevant to the actual parsing 
+            && commonType != AstCommonTokenType.LPAREN) { 
       if (commonType != AstCommonTokenType.FUNCTION_ARGS_SEPARATOR) {
         args.add(currentToken);
       }
