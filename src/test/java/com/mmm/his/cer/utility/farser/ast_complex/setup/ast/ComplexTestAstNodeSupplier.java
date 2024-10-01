@@ -11,16 +11,19 @@ import com.mmm.his.cer.utility.farser.ast_complex.setup.ast.non_terminal.Complex
 import com.mmm.his.cer.utility.farser.ast_complex.setup.ast.non_terminal.ComplexTestInOperator;
 import com.mmm.his.cer.utility.farser.ast_complex.setup.ast.non_terminal.ComplexTestInTableOperator;
 import com.mmm.his.cer.utility.farser.ast_complex.setup.ast.non_terminal.ComplexTestLessThanOperator;
-import com.mmm.his.cer.utility.farser.ast_complex.setup.ast.terminal.ComplexTestTerminalContainsNode;
-import com.mmm.his.cer.utility.farser.ast_complex.setup.ast.terminal.ComplexTestTerminalLookupNode;
-import com.mmm.his.cer.utility.farser.ast_complex.setup.ast.terminal.ComplexTestTerminalNumberNode;
-import com.mmm.his.cer.utility.farser.ast_complex.setup.ast.terminal.ComplexTestTerminalStringNode;
+import com.mmm.his.cer.utility.farser.ast_complex.setup.ast.terminal.*;
 import com.mmm.his.cer.utility.farser.ast_complex.setup.lex.ComplexTestToken;
 import com.mmm.his.cer.utility.farser.lexer.FarserException;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 public class ComplexTestAstNodeSupplier implements NodeSupplier<ComplexTestToken, ComplexTestAstContext> {
   
+  private static final String containsStringsFn = "containsStrings";
+  private static final String maxNumberFn = "maxNumber";
+
   private boolean isInteger(String value) {
     boolean result = true;
     try {
@@ -56,6 +59,21 @@ public class ComplexTestAstNodeSupplier implements NodeSupplier<ComplexTestToken
     return expression;
   }
 
+  @Override
+  public Expression<ComplexTestAstContext, ?> createNode(ComplexTestToken functionToken, List<ComplexTestToken> args) {
+    Expression<ComplexTestAstContext, ?> expression;
+
+    if (functionToken.value.equals(containsStringsFn)) {
+      expression = new ComplexTestContainsStringsNode(args);
+    } else if (functionToken.value.equals(maxNumberFn)) {
+      int exclusion = Integer.parseInt(args.get(0).value);
+      List<String> keys = args.stream().map(v -> v.value).collect(Collectors.toList());
+      expression = new ComplexTestMaxNumberNode(keys, exclusion);
+    } else {
+      throw new FarserException(functionToken + " not implemented");
+    }
+    return expression;
+  }
 
   @Override
   public BaseNonTerminal<ComplexTestAstContext, ?> createNonTerminalNode(ComplexTestToken token) {

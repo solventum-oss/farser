@@ -3,8 +3,7 @@ package com.mmm.his.cer.utility.farser.ast.parser;
 import com.mmm.his.cer.utility.farser.ast.node.supplier.NodeSupplier;
 import com.mmm.his.cer.utility.farser.lexer.drg.DrgFormulaToken;
 import com.mmm.his.cer.utility.farser.lexer.drg.DrgLexerToken;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.List;
 
 /**
  * Recursive descent parser that will build an Abstract syntax tree from <b>a DRG formula</b> (list
@@ -18,9 +17,8 @@ import java.util.Map;
  */
 public class DescentParser<C> extends AstDescentParser<DrgLexerToken, DrgFormulaToken, C, Boolean> {
 
-  public DescentParser(Iterator<DrgLexerToken> tokenIterator,
-      NodeSupplier<DrgLexerToken, C> defaultSupplier,
-      Map<String, NodeSupplier<DrgLexerToken, C>> suppliers) {
-    super(tokenIterator, defaultSupplier, suppliers);
+  public DescentParser(List<DrgLexerToken> linkedTokens,
+      NodeSupplier<DrgLexerToken, C> defaultSupplier) {
+    super(linkedTokens, defaultSupplier);
   }
 }

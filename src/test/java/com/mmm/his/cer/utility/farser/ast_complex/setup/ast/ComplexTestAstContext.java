@@ -1,7 +1,6 @@
 package com.mmm.his.cer.utility.farser.ast_complex.setup.ast;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -12,23 +11,20 @@ public class ComplexTestAstContext {
   private final List<String> listData;
 
   public ComplexTestAstContext() {
-    this.mappingData = new HashMap<>();
-    this.listData = new ArrayList<>();
+    this(null, null);
   }
 
   public ComplexTestAstContext(Map<String, Integer> mappingData, List<String> listData) {
-    this.mappingData = mappingData;
-    this.listData = listData;
+    this.mappingData = mappingData != null ? mappingData : Collections.emptyMap();
+    this.listData = listData != null ? listData : Collections.emptyList();
   }
 
   public ComplexTestAstContext(Map<String, Integer> mappingData) {
-    this.mappingData = mappingData;
-    this.listData = new ArrayList<>();
+    this(mappingData, null);
   }
 
   public ComplexTestAstContext(List<String> listData) {
-    this.listData = listData;
-    this.mappingData = new HashMap<>();
+    this(null, listData);
   }
 
   public Optional<Integer> getIntegerMapping(String key) {
@@ -39,4 +35,7 @@ public class ComplexTestAstContext {
     return listData.contains(value);
   }
 
+  public boolean contains(List<String> values) {
+    return listData.containsAll(values);
+  }
 }

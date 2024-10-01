@@ -15,7 +15,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertThrows;
@@ -34,7 +33,7 @@ public class ComplexFormulaAstTest {
     List<ComplexTestToken> tokens = Lexer.lex(ComplexTestTokenType.class, input, factory);
 
     AstDescentParser<ComplexTestToken, ComplexTestTokenType, ComplexTestAstContext, Boolean> parser =
-        new AstDescentParser<>(tokens.iterator(), defaultNodeSupplier);
+        new AstDescentParser<>(tokens, defaultNodeSupplier);
     AbstractSyntaxTree<ComplexTestAstContext, Boolean> ast = parser.buildTree();
 
     String printed = AbstractSyntaxTreePrinter.printTree(ast);
@@ -59,7 +58,7 @@ public class ComplexFormulaAstTest {
     List<ComplexTestToken> tokens = Lexer.lex(ComplexTestTokenType.class, input, factory);
 
     AstDescentParser<ComplexTestToken, ComplexTestTokenType, ComplexTestAstContext, Boolean> parser =
-        new AstDescentParser<>(tokens.iterator(), defaultNodeSupplier);
+        new AstDescentParser<>(tokens, defaultNodeSupplier);
     AbstractSyntaxTree<ComplexTestAstContext, Boolean> ast = parser.buildTree();
 
     String printed = AbstractSyntaxTreePrinter.printTree(ast);
@@ -88,7 +87,7 @@ public class ComplexFormulaAstTest {
     List<ComplexTestToken> tokens = Lexer.lex(ComplexTestTokenType.class, input, factory);
 
     AstDescentParser<ComplexTestToken, ComplexTestTokenType, ComplexTestAstContext, Boolean> parser =
-        new AstDescentParser<>(tokens.iterator(), defaultNodeSupplier);
+        new AstDescentParser<>(tokens, defaultNodeSupplier);
     AbstractSyntaxTree<ComplexTestAstContext, Boolean> ast = parser.buildTree();
 
     String printed = AbstractSyntaxTreePrinter.printTree(ast);
@@ -119,7 +118,7 @@ public class ComplexFormulaAstTest {
     List<ComplexTestToken> lexerTokens =
         Lexer.lex(ComplexTestTokenType.class, "X & Y & Z", factory);
     AstDescentParser<ComplexTestToken, ComplexTestTokenType, ComplexTestAstContext, Boolean> parser = new AstDescentParser<>(
-        lexerTokens.listIterator(), defaultNodeSupplier);
+        lexerTokens, defaultNodeSupplier);
 
     AbstractSyntaxTree<ComplexTestAstContext, Boolean> ast = parser.buildTree();
 
@@ -141,7 +140,7 @@ public class ComplexFormulaAstTest {
     List<ComplexTestToken> lexerTokens =
         Lexer.lex(ComplexTestTokenType.class, "X & Y & Z", factory);
     AstDescentParser<ComplexTestToken, ComplexTestTokenType, ComplexTestAstContext, Boolean> parser = new AstDescentParser<>(
-        lexerTokens.listIterator(), defaultNodeSupplier);
+        lexerTokens, defaultNodeSupplier);
 
     AbstractSyntaxTree<ComplexTestAstContext, Boolean> ast = parser.buildTree();
 
@@ -158,7 +157,7 @@ public class ComplexFormulaAstTest {
     List<ComplexTestToken> lexerTokens =
         Lexer.lex(ComplexTestTokenType.class, "X & Y & Z", factory);
     AstDescentParser<ComplexTestToken, ComplexTestTokenType, ComplexTestAstContext, Boolean> parser = new AstDescentParser<>(
-        lexerTokens.listIterator(), defaultNodeSupplier);
+        lexerTokens, defaultNodeSupplier);
 
     AbstractSyntaxTree<ComplexTestAstContext, Boolean> ast = parser.buildTree();
 
@@ -175,7 +174,7 @@ public class ComplexFormulaAstTest {
     List<ComplexTestToken> lexerTokens =
         Lexer.lex(ComplexTestTokenType.class, "X > Y > Z", factory);
     AstDescentParser<ComplexTestToken, ComplexTestTokenType, ComplexTestAstContext, Boolean> parser = new AstDescentParser<>(
-        lexerTokens.listIterator(), defaultNodeSupplier);
+        lexerTokens, defaultNodeSupplier);
 
     AbstractSyntaxTree<ComplexTestAstContext, Boolean> ast = parser.buildTree();
 
@@ -200,7 +199,7 @@ public class ComplexFormulaAstTest {
     List<ComplexTestToken> lexerTokens =
         Lexer.lex(ComplexTestTokenType.class, "x & Y & Z", factory);
     AstDescentParser<ComplexTestToken, ComplexTestTokenType, ComplexTestAstContext, Boolean> parser = new AstDescentParser<>(
-        lexerTokens.listIterator(), defaultNodeSupplier);
+        lexerTokens, defaultNodeSupplier);
 
     AbstractSyntaxTree<ComplexTestAstContext, Boolean> ast = parser.buildTree();
 
@@ -219,7 +218,7 @@ public class ComplexFormulaAstTest {
         Lexer.lex(ComplexTestTokenType.class, "3 > 2 & 2 > 1", factory);
     AstDescentParser<ComplexTestToken, ComplexTestTokenType, ComplexTestAstContext, Boolean> parser =
         new AstDescentParser<>(
-            lexerTokens.listIterator(), defaultNodeSupplier);
+            lexerTokens, defaultNodeSupplier);
 
     AbstractSyntaxTree<ComplexTestAstContext, Boolean> ast = parser.buildTree();
 
@@ -245,7 +244,7 @@ public class ComplexFormulaAstTest {
     List<ComplexTestToken> tokens = Lexer.lex(ComplexTestTokenType.class, input, factory);
 
     AstDescentParser<ComplexTestToken, ComplexTestTokenType, ComplexTestAstContext, Boolean> parser =
-        new AstDescentParser<>(tokens.iterator(), defaultNodeSupplier);
+        new AstDescentParser<>(tokens, defaultNodeSupplier);
     AbstractSyntaxTree<ComplexTestAstContext, Boolean> ast = parser.buildTree();
 
     Map<String, Integer> runtimeData = new HashMap<>();
@@ -264,7 +263,7 @@ public class ComplexFormulaAstTest {
     List<ComplexTestToken> tokens = Lexer.lex(ComplexTestTokenType.class, input, factory);
 
     AstDescentParser<ComplexTestToken, ComplexTestTokenType, ComplexTestAstContext, Boolean> parser =
-        new AstDescentParser<>(tokens.iterator(), defaultNodeSupplier);
+        new AstDescentParser<>(tokens, defaultNodeSupplier);
     AbstractSyntaxTree<ComplexTestAstContext, Boolean> ast = parser.buildTree();
 
     Map<String, Integer> runtimeData = new HashMap<>();
@@ -283,7 +282,7 @@ public class ComplexFormulaAstTest {
     List<ComplexTestToken> tokens = Lexer.lex(ComplexTestTokenType.class, input, factory);
 
     AstDescentParser<ComplexTestToken, ComplexTestTokenType, ComplexTestAstContext, Boolean> parser =
-        new AstDescentParser<>(tokens.iterator(), defaultNodeSupplier);
+        new AstDescentParser<>(tokens, defaultNodeSupplier);
     AbstractSyntaxTree<ComplexTestAstContext, Boolean> ast = parser.buildTree();
 
     Map<String, Integer> runtimeData = new HashMap<>();
@@ -305,7 +304,7 @@ public class ComplexFormulaAstTest {
     List<ComplexTestToken> tokens = Lexer.lex(ComplexTestTokenType.class, input, factory);
 
     AstDescentParser<ComplexTestToken, ComplexTestTokenType, ComplexTestAstContext, Boolean> parser =
-        new AstDescentParser<>(tokens.iterator(), defaultNodeSupplier);
+        new AstDescentParser<>(tokens, defaultNodeSupplier);
     AbstractSyntaxTree<ComplexTestAstContext, Boolean> ast = parser.buildTree();
 
     Map<String, Integer> runtimeData = new HashMap<>();
@@ -327,7 +326,7 @@ public class ComplexFormulaAstTest {
     List<ComplexTestToken> tokens = Lexer.lex(ComplexTestTokenType.class, input, factory);
 
     AstDescentParser<ComplexTestToken, ComplexTestTokenType, ComplexTestAstContext, Boolean> parser =
-        new AstDescentParser<>(tokens.iterator(), defaultNodeSupplier);
+        new AstDescentParser<>(tokens, defaultNodeSupplier);
     AbstractSyntaxTree<ComplexTestAstContext, Boolean> ast = parser.buildTree();
 
     String printed = AbstractSyntaxTreePrinter.printTree(ast);
@@ -349,7 +348,7 @@ public class ComplexFormulaAstTest {
     List<ComplexTestToken> tokens = Lexer.lex(ComplexTestTokenType.class, input, factory);
 
     AstDescentParser<ComplexTestToken, ComplexTestTokenType, ComplexTestAstContext, Boolean> parser =
-        new AstDescentParser<>(tokens.iterator(), defaultNodeSupplier);
+        new AstDescentParser<>(tokens, defaultNodeSupplier);
     AbstractSyntaxTree<ComplexTestAstContext, Boolean> ast = parser.buildTree();
 
     String printed = AbstractSyntaxTreePrinter.printTree(ast);
@@ -371,7 +370,7 @@ public class ComplexFormulaAstTest {
     List<ComplexTestToken> tokens = Lexer.lex(ComplexTestTokenType.class, input, factory);
 
     AstDescentParser<ComplexTestToken, ComplexTestTokenType, ComplexTestAstContext, Boolean> parser =
-        new AstDescentParser<>(tokens.iterator(), defaultNodeSupplier);
+        new AstDescentParser<>(tokens, defaultNodeSupplier);
     AbstractSyntaxTree<ComplexTestAstContext, Boolean> ast = parser.buildTree();
 
     ExpressionResult<ComplexTestAstContext, Boolean> result =
@@ -387,11 +386,110 @@ public class ComplexFormulaAstTest {
     List<ComplexTestToken> tokens = Lexer.lex(ComplexTestTokenType.class, input, factory);
 
     AstDescentParser<ComplexTestToken, ComplexTestTokenType, ComplexTestAstContext, Boolean> parser =
-        new AstDescentParser<>(tokens.iterator(), defaultNodeSupplier);
+        new AstDescentParser<>(tokens, defaultNodeSupplier);
     AbstractSyntaxTree<ComplexTestAstContext, Boolean> ast = parser.buildTree();
 
     ExpressionResult<ComplexTestAstContext, Boolean> result =
         ast.evaluateExpression(new ComplexTestAstContext());
+
+    assertThat(result.getResult(), is(false));
+  }
+
+  @Test
+  public void evaluateContainsStringIntegrationTrue() {
+    String input = "containsStrings(a, b) & A > 5";
+    List<ComplexTestToken> tokens = Lexer.lex(ComplexTestTokenType.class, input, factory);
+
+    AstDescentParser<ComplexTestToken, ComplexTestTokenType, ComplexTestAstContext, Boolean> parser =
+            new AstDescentParser<>(tokens, defaultNodeSupplier);
+    AbstractSyntaxTree<ComplexTestAstContext, Boolean> ast = parser.buildTree();
+
+    Map<String, Integer> runtimeData = new HashMap<>();
+    runtimeData.put("A", 6);
+
+    ExpressionResult<ComplexTestAstContext, Boolean> result =
+            ast.evaluateExpression(new ComplexTestAstContext(runtimeData, Arrays.asList("a", "b")));
+
+    assertThat(result.getResult(), is(true));
+  }
+
+  @Test
+  public void evaluateContainsStringIntegrationFalse() {
+    String input = "containsStrings(a, b) & A > 5";
+    List<ComplexTestToken> tokens = Lexer.lex(ComplexTestTokenType.class, input, factory);
+
+    AstDescentParser<ComplexTestToken, ComplexTestTokenType, ComplexTestAstContext, Boolean> parser =
+            new AstDescentParser<>(tokens, defaultNodeSupplier);
+    AbstractSyntaxTree<ComplexTestAstContext, Boolean> ast = parser.buildTree();
+
+    Map<String, Integer> runtimeData = new HashMap<>();
+    runtimeData.put("A", 6);
+
+    ExpressionResult<ComplexTestAstContext, Boolean> result =
+            ast.evaluateExpression(new ComplexTestAstContext(runtimeData, Arrays.asList("a", "c")));
+
+    assertThat(result.getResult(), is(false));
+  }
+
+  @Test
+  public void evaluateGetMaxNumber() {
+    String input = "maxNumber(9, A, B, C)";
+    List<ComplexTestToken> tokens = Lexer.lex(ComplexTestTokenType.class, input, factory);
+
+    AstDescentParser<ComplexTestToken, ComplexTestTokenType, ComplexTestAstContext, Integer> parser =
+            new AstDescentParser<>(tokens, defaultNodeSupplier);
+    AbstractSyntaxTree<ComplexTestAstContext, Integer> ast = parser.buildTree();
+
+    Map<String, Integer> runtimeData = new HashMap<>();
+    runtimeData.put("A", 9);
+    runtimeData.put("B", 5);
+    runtimeData.put("C", 3);
+
+
+    ExpressionResult<ComplexTestAstContext, Integer> result =
+            ast.evaluateExpression(new ComplexTestAstContext(runtimeData));
+
+    assertThat(result.getResult(), is(5));
+  }
+
+  @Test
+  public void evaluateMaxNumberGreaterThanTrue() {
+    String input = "maxNumber(9, A, B, C) > 7";
+    List<ComplexTestToken> tokens = Lexer.lex(ComplexTestTokenType.class, input, factory);
+
+    AstDescentParser<ComplexTestToken, ComplexTestTokenType, ComplexTestAstContext, Boolean> parser =
+            new AstDescentParser<>(tokens, defaultNodeSupplier);
+    AbstractSyntaxTree<ComplexTestAstContext, Boolean> ast = parser.buildTree();
+
+    Map<String, Integer> runtimeData = new HashMap<>();
+    runtimeData.put("A", 9);
+    runtimeData.put("B", 10);
+    runtimeData.put("C", 3);
+
+
+    ExpressionResult<ComplexTestAstContext, Boolean> result =
+            ast.evaluateExpression(new ComplexTestAstContext(runtimeData));
+
+    assertThat(result.getResult(), is(true));
+  }
+
+  @Test
+  public void evaluateMaxNumberGreaterThanFalse() {
+    String input = "maxNumber(9, A, B, C) > 7";
+    List<ComplexTestToken> tokens = Lexer.lex(ComplexTestTokenType.class, input, factory);
+
+    AstDescentParser<ComplexTestToken, ComplexTestTokenType, ComplexTestAstContext, Boolean> parser =
+            new AstDescentParser<>(tokens, defaultNodeSupplier);
+    AbstractSyntaxTree<ComplexTestAstContext, Boolean> ast = parser.buildTree();
+
+    Map<String, Integer> runtimeData = new HashMap<>();
+    runtimeData.put("A", 9);
+    runtimeData.put("B", 5);
+    runtimeData.put("C", 3);
+
+
+    ExpressionResult<ComplexTestAstContext, Boolean> result =
+            ast.evaluateExpression(new ComplexTestAstContext(runtimeData));
 
     assertThat(result.getResult(), is(false));
   }

@@ -1,6 +1,6 @@
 package com.mmm.his.cer.utility.farser.lexer;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -30,7 +30,7 @@ public class Lexer {
    */
   public static <L extends LexerToken<T>, T extends TokenType<?>> List<L>
       lex(Class<T> tokenTypeEnumClass, String input, LexerTokenFactory<L, T> factory) {
-    List<L> result = new ArrayList<>();
+    List<L> result = new LinkedList<>();
     Pattern delimiterPattern = TokenType.createTokenPattern(tokenTypeEnumClass);
     Matcher delimiterMatcher = delimiterPattern.matcher(input);
 
